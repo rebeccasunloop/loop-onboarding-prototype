@@ -1,0 +1,1826 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loop | Open a business account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Loop Design System — Colors/Brand (Figma wT39SoimuAWJsoZZxEE5Sn, node 1525:271581) */
+  --brand-25:#EAFAF2; --brand-50:#D9F5E6; --brand-100:#BBE5D0; --brand-200:#94CCB1; --brand-300:#67AC8D;
+  --brand-400:#348263; --brand-500:#045B3F; --brand-600:#004932; --brand-700:#003926; --brand-800:#00291A; --brand-900:#001D11;
+  --success-25:#F6FEF9; --success-50:#EDFCF2; --success-100:#D3F8DF; --success-200:#AAF0C4; --success-300:#73E2A3;
+  --success-400:#3CCB7F; --success-500:#16B364; --success-600:#099250; --success-700:#087443; --success-800:#095C37; --success-900:#084C2E;
+  --gray-25:#FCFCFD; --gray-50:#F8FAFC; --gray-100:#EEF2F6; --gray-200:#E3E8EF; --gray-300:#CDD5DF;
+  --gray-400:#9AA4B2; --gray-500:#697586; --gray-600:#4B5565; --gray-700:#364152; --gray-800:#202939; --gray-900:#121926;
+  --error-25:#FFF5F6; --error-50:#FFF1F3; --error-100:#FFE4E8; --error-200:#FECDD6; --error-300:#FEA3B4;
+  --error-400:#FD6F8E; --error-500:#F63D68; --error-600:#E31B54; --error-700:#C01048; --error-800:#A11043; --error-900:#89123E;
+  --warn-25:#FFFCF5; --warn-50:#FFFAEB; --warn-100:#FEF0C7; --warn-200:#FEDF89; --warn-300:#FEC84B;
+  --warn-400:#FDB022; --warn-500:#F79009; --warn-600:#DC6803; --warn-700:#B54708; --warn-800:#93370D; --warn-900:#7A2E0E;
+  --shadow-overlay:0 0 0 1px rgba(0,0,0,.06),0 12px 16px -4px rgba(0,0,0,.08),0 4px 6px -2px rgba(0,0,0,.03);
+  --shadow-sm:0 1px 2px rgba(16,24,40,.05);
+  --rail:268px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:"DM Sans",sans-serif;color:var(--gray-900);background:#fff;font-size:15px;line-height:1.5}
+.hidden{display:none!important}
+a{color:var(--brand-500)}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+::placeholder{color:var(--gray-400)}
+
+/* ---------- progress line ---------- */
+#progressLine{position:fixed;top:0;left:0;right:0;height:3px;background:var(--gray-100);z-index:60}
+#progressFill{height:100%;width:0;background:var(--brand-500);transition:width .4s ease}
+
+/* ---------- auth ---------- */
+.auth-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--gray-50);padding:40px 20px}
+.auth-card{background:#fff;border:1px solid var(--gray-200);border-radius:18px;box-shadow:var(--shadow-sm);padding:44px 44px 36px;width:100%;max-width:460px}
+.auth-logo{margin-bottom:28px}
+.auth-card h1{font-size:25px;font-weight:500;letter-spacing:-.3px;margin-bottom:6px}
+.auth-sub{color:var(--gray-600);margin-bottom:26px;font-size:14.5px}
+.auth-foot{margin-top:22px;font-size:13.5px;color:var(--gray-500);text-align:center}
+.auth-legal{margin-top:18px;font-size:12px;color:var(--gray-500);line-height:1.55;text-align:center}
+.auth-legal a{color:var(--gray-600)}
+.pw-hint{font-size:12.5px;color:var(--gray-500);margin:-8px 0 0 2px}
+.pw-hint.ok{color:var(--success-700)}
+
+/* verify code */
+.code-row{display:flex;gap:10px;justify-content:center;margin:26px 0 6px}
+.code-row input{width:52px;height:60px;text-align:center;font-size:24px;font-weight:600;border:1px solid var(--gray-300);border-radius:10px;color:var(--gray-900)}
+.code-row input:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.14)}
+.code-row.sm input{width:42px;height:50px;font-size:19px}
+.code-row.sm{justify-content:flex-start;margin:16px 0 4px}
+
+/* ---------- logo ---------- */
+.logo{display:inline-flex;align-items:center;text-decoration:none}
+.logo img{display:block;height:30px;width:auto}
+.sidebar .logo img,.topbar .logo img{height:24px}
+
+/* ---------- app shell ---------- */
+.app{display:block}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--rail);background:var(--gray-25);border-right:1px solid var(--gray-200);display:flex;flex-direction:column;padding:26px 16px 18px;z-index:40;overflow-y:auto}
+.sidebar .logo{margin:0 8px 30px;flex:0 0 auto}
+.step-meta{font-size:11px;font-weight:700;letter-spacing:.09em;color:var(--gray-500);text-transform:uppercase;margin:0 12px 10px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:8px;font-size:14px;color:var(--gray-600);background:none;border:none;text-align:left;width:100%}
+.nav-item:hover{background:var(--gray-100)}
+.nav-item.active{background:var(--brand-25);color:var(--brand-700);font-weight:600}
+.nav-item .stat{flex:0 0 18px;height:18px;display:inline-flex;align-items:center;justify-content:center}
+.nav-sub{display:flex;flex-direction:column;margin:2px 0 6px}
+.nav-sub button{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-500);background:none;border:none;text-align:left;padding:6px 12px 6px 41px;border-radius:6px;width:100%}
+.nav-sub button:hover{color:var(--gray-700);background:var(--gray-100)}
+.nav-sub button.cur{color:var(--brand-700);font-weight:600;background:var(--brand-25)}
+.nav-sub .mini{margin-left:auto;display:inline-flex;align-items:center}
+.side-spacer{flex:1}
+.save-pill{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--gray-500);padding:8px 12px;border-radius:8px;transition:color .25s}
+.save-pill.flash{color:var(--success-700)}
+.userbox{border-top:1px solid var(--gray-200);margin-top:8px;padding:14px 12px 0}
+.userbox .em{font-size:12.5px;color:var(--gray-600);word-break:break-all;margin-bottom:6px}
+.userbox button{background:none;border:none;font-size:13.5px;color:var(--gray-600);padding:0;display:flex;align-items:center;gap:7px}
+.userbox button:hover{color:var(--gray-900)}
+
+main{margin-left:var(--rail);padding:72px 48px 120px;display:flex;justify-content:center}
+.col{width:100%;max-width:640px}
+h1.page-h{font-size:38px;font-weight:500;letter-spacing:-.9px;margin-bottom:10px}
+.page-sub{color:var(--gray-600);font-size:15.5px;margin-bottom:8px}
+.pagebody{margin-top:36px}
+.pagebody h2{font-size:19px;font-weight:600;letter-spacing:-.2px;margin-bottom:6px}
+.desc{color:var(--gray-600);font-size:14px;margin-bottom:18px}
+h3.sub-h{font-size:15.5px;font-weight:600;margin-bottom:6px}
+ul.accepts{margin:0 0 16px 4px;list-style:none}
+ul.accepts li{display:flex;gap:9px;font-size:14px;color:var(--gray-600);padding:3px 0}
+ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23099250" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>') no-repeat center}
+
+/* ---------- fields ---------- */
+.fgrid{display:flex;flex-direction:column;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{position:relative}
+.field input,.field select{width:100%;height:58px;padding:25px 42px 9px 16px;border:1px solid var(--gray-300);border-radius:10px;font-size:15px;color:var(--gray-900);background:#fff;appearance:none;transition:border-color .12s,box-shadow .12s}
+.field select{cursor:pointer}
+.field input:focus,.field select:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.12)}
+.field input[readonly]{background:var(--gray-50);color:var(--gray-600)}
+.field label{position:absolute;left:17px;top:50%;transform:translateY(-50%);color:var(--gray-500);font-size:15px;pointer-events:none;transition:all .13s ease;white-space:nowrap;max-width:calc(100% - 50px);overflow:hidden;text-overflow:ellipsis}
+.field.filled label,.field:focus-within label,.field.fixed label{top:10px;transform:none;font-size:11.5px;letter-spacing:.02em}
+.field .chev{position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--gray-500)}
+.field .err-dot{display:none;position:absolute;right:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;border:1.6px solid var(--error-600);border-radius:50%;color:var(--error-600);font-size:11.5px;font-weight:700;text-align:center;line-height:15px}
+.field.invalid input,.field.invalid select{border-color:var(--error-600)}
+.field.invalid label{color:var(--error-600)}
+.field.invalid .err-dot{display:block}
+.field.invalid .chev{display:none}
+.fixedbox{display:flex;flex-direction:column;justify-content:center;height:58px;border:1px solid var(--gray-300);border-radius:10px;padding:9px 16px}
+.fixedbox .t{font-size:11.5px;color:var(--gray-500)}
+.fixedbox .v{font-size:15px}
+.fhelp{font-size:12.5px;color:var(--gray-500);margin:-8px 0 0 2px}
+
+/* question-format fields (finance page, Mercury style) */
+.fsec{margin-top:46px}
+.fsec:first-child{margin-top:0}
+.fsec h2{font-size:19px;font-weight:600;letter-spacing:-.2px;margin-bottom:5px}
+.fsec .why{font-size:14px;color:var(--gray-600);margin:0 0 6px;max-width:540px;line-height:1.55}
+.q{margin-top:26px}
+.q-label{font-size:14.5px;font-weight:600;margin-bottom:12px}
+.q-label .req-mark{color:var(--gray-500);font-weight:400}
+.qfield select,.qfield input{width:100%;height:48px;padding:0 40px 0 14px;border:1px solid var(--gray-300);border-radius:10px;font-size:15px;color:var(--gray-900);background:#fff;appearance:none}
+.qfield input{padding-right:14px}
+.qfield{position:relative}
+.qfield select:focus,.qfield input:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.12)}
+.qfield .chev{position:absolute;right:16px;bottom:17px;pointer-events:none;color:var(--gray-500)}
+.q.invalid .q-label{color:var(--error-600)}
+.q.invalid .qfield select,.q.invalid .qfield input{border-color:var(--error-600)}
+
+/* sliders (Ramp style) */
+.sliderq{margin-top:26px}
+.sliderq input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:var(--gray-100);outline:none;margin:10px 0 2px;cursor:pointer}
+.sliderq input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2.5px solid var(--brand-500);box-shadow:0 1px 3px rgba(16,24,40,.18);cursor:grab}
+.sliderq input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;box-shadow:0 0 0 6px rgba(4,91,63,.12)}
+.sliderq input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:2.5px solid var(--brand-500);box-shadow:0 1px 3px rgba(16,24,40,.18);cursor:grab}
+.slider-read{font-size:13.5px;color:var(--gray-600);margin-top:8px}
+.slider-read strong{color:var(--gray-900);font-weight:600}
+.sliderq.invalid .q-label{color:var(--error-600)}
+.sliderq.invalid .slider-read{color:var(--error-600)}
+.slider-pair{display:grid;grid-template-columns:1fr 1fr;gap:0 36px}
+
+/* chips + segmented */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--gray-300);border-radius:999px;padding:10px 18px;font-size:14px;color:var(--gray-600);cursor:pointer;user-select:none;transition:all .12s;background:#fff}
+.chip input{display:none}
+.chip.on{border-color:var(--brand-500);background:var(--brand-25);color:var(--brand-700);font-weight:600}
+.chips-wrap{margin-top:8px}
+.chips-wrap+.chips-wrap{margin-top:22px}
+.fsec .chips-wrap{margin-top:26px}
+.chips-label{font-size:14.5px;font-weight:600;margin-bottom:12px}
+.chips-label .req-mark{color:var(--gray-500);font-weight:400}
+.chips-wrap.invalid .chips-label{color:var(--error-600)}
+.chips-wrap.invalid .chip{border-color:var(--error-200)}
+
+/* uploads */
+.upload{border:1.5px dashed var(--gray-300);border-radius:12px;padding:30px 20px;text-align:center;cursor:pointer;transition:all .12s;background:#fff}
+.upload.sm{padding:18px 16px}
+.upload:hover{border-color:var(--brand-400);background:var(--brand-25)}
+.upload .u1{font-size:15px;font-weight:600;color:var(--gray-700);margin-top:8px}
+.upload.sm .u1{font-size:14px;margin-top:4px}
+.upload .u2{font-size:12.5px;color:var(--gray-500);margin-top:3px}
+.upload.invalid{border-color:var(--error-600);background:var(--error-50)}
+.upload.invalid .u1{color:var(--error-700)}
+.filechip{display:flex;align-items:center;gap:12px;border:1px solid var(--gray-200);border-radius:12px;padding:14px 16px;background:#fff}
+.filechip .fname{flex:1;font-size:14.5px;font-weight:600;color:var(--gray-700);word-break:break-all}
+.filechip .fsub{font-size:12px;color:var(--success-700);font-weight:600}
+.filechip button{background:none;border:none;color:var(--gray-500);padding:4px}
+.filechip button:hover{color:var(--error-600)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:54px;padding:0 26px;border-radius:10px;font-size:15.5px;font-weight:600;border:none;transition:background .12s}
+.btn-primary{background:var(--brand-500);color:#fff;width:100%}
+.btn-primary:hover{background:var(--brand-600)}
+.btn-primary[disabled]{background:var(--gray-200);color:var(--gray-500);cursor:not-allowed}
+.btn-secondary{background:#fff;color:var(--gray-700);border:1px solid var(--gray-300);width:100%}
+.btn-secondary:hover{border-color:var(--gray-400);background:var(--gray-50)}
+.btn-link{background:none;border:none;font-size:15px;font-weight:600;color:var(--gray-700);text-decoration:underline;text-underline-offset:3px;padding:10px 4px}
+.btn-sm{height:44px;font-size:14.5px;padding:0 20px;width:auto}
+.continue-wrap{margin-top:56px}
+
+/* registry check */
+.reg-panel{border:1px solid var(--gray-200);border-radius:14px;background:#fff;box-shadow:var(--shadow-sm);padding:10px 24px;margin-top:30px}
+.reg-row{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--gray-100)}
+.reg-row:last-child{border-bottom:none}
+.reg-row .ic{flex:0 0 20px;height:20px;display:flex;align-items:center;justify-content:center}
+.reg-row .t{font-size:14.5px;color:var(--gray-700)}
+.reg-row.done .t{color:var(--gray-900)}
+.reg-row .t strong{font-weight:600}
+.spinner{width:17px;height:17px;border:2.5px solid var(--gray-200);border-top-color:var(--brand-500);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.reg-done-banner{display:flex;align-items:center;gap:10px;margin-top:18px;border:1px solid var(--success-100);background:var(--success-25);border-radius:12px;padding:14px 16px;font-size:14px;font-weight:600;color:var(--success-800)}
+.reg-hint{font-size:12.5px;color:var(--gray-500);margin-top:14px}
+.reg-badge{display:flex;align-items:center;gap:9px;border:1px solid var(--success-100);background:var(--success-25);border-radius:10px;padding:11px 14px;font-size:13.5px;font-weight:600;color:var(--success-800)}
+
+/* individuals */
+.ind-empty{border:1.5px dashed var(--gray-300);border-radius:12px;padding:26px;text-align:center;color:var(--gray-500);font-size:14.5px;background:var(--gray-25)}
+.ind-card{display:flex;align-items:center;gap:14px;border:1px solid var(--gray-200);border-radius:12px;padding:18px 18px;background:#fff;box-shadow:var(--shadow-sm)}
+.ind-card .av{flex:0 0 40px;height:40px;border-radius:50%;background:var(--brand-25);color:var(--brand-700);font-weight:700;font-size:14.5px;display:flex;align-items:center;justify-content:center}
+.ind-card .who{flex:1;min-width:0}
+.ind-card .nm{font-weight:600;font-size:15px}
+.ind-card .rl{font-size:13px;color:var(--gray-500);margin-top:1px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.pill.amber{background:var(--warn-50);color:var(--warn-700)}
+.pill.green{background:var(--success-50);color:var(--success-800)}
+.icobtn{background:none;border:none;color:var(--gray-500);padding:7px;border-radius:7px}
+.icobtn:hover{background:var(--gray-100);color:var(--gray-900)}
+.consent{display:flex;gap:12px;margin-top:18px;font-size:13.5px;color:var(--gray-600);line-height:1.55;cursor:pointer}
+.consent input{display:none}
+.consent .box{flex:0 0 20px;height:20px;border:1.6px solid var(--gray-300);border-radius:6px;margin-top:1px;background:#fff;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.consent input:checked+.box{background:var(--brand-500);border-color:var(--brand-500)}
+.consent input:checked+.box svg{display:block}
+.consent .box svg{display:none}
+.consent.invalid .box{border-color:var(--error-600)}
+
+/* drawer */
+#drawerOverlay{position:fixed;inset:0;background:rgba(18,25,38,.4);z-index:80}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:620px;max-width:94vw;background:#fff;z-index:81;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(18,25,38,.18)}
+#drawer .dr-head{padding:34px 40px 8px;position:relative}
+#drawer h2.dr-title{font-size:30px;font-weight:500;letter-spacing:-.6px}
+#drawer .dr-x{position:absolute;top:22px;right:22px;background:none;border:none;color:var(--gray-500);padding:8px;border-radius:8px}
+#drawer .dr-x:hover{background:var(--gray-100);color:var(--gray-900)}
+#drawer .dr-body{flex:1;overflow-y:auto;padding:10px 40px 30px}
+#drawer .dr-foot{border-top:1px solid var(--gray-200);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+#drawer .dr-foot .btn-primary{width:auto}
+.dr-sec{margin-top:30px}
+.dr-sec h3{font-size:17px;font-weight:600;margin-bottom:5px}
+.dr-sec .desc{font-size:13.5px;color:var(--gray-600);margin-bottom:14px}
+.rolecard{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--gray-300);border-radius:12px;padding:15px 16px;cursor:pointer;margin-bottom:10px;transition:all .12s;background:#fff}
+.rolecard.on{border-color:var(--brand-500);background:var(--brand-25)}
+.rolecard .rt{font-weight:600;font-size:14.5px}
+.rolecard .rd{font-size:13px;color:var(--gray-500);margin-top:2px;line-height:1.5}
+.rolecard .cb{flex:0 0 20px;height:20px;border:1.6px solid var(--gray-300);border-radius:6px;margin-top:2px;display:flex;align-items:center;justify-content:center;background:#fff}
+.rolecard.on .cb{background:var(--brand-500);border-color:var(--brand-500)}
+.rolecard .cb svg{display:none}
+.rolecard.on .cb svg{display:block}
+.roles-wrap.invalid .rolecard{border-color:var(--error-200)}
+.idv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.idv-grid .idv-label{font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:7px}
+.idv-ok{display:flex;align-items:center;gap:9px;margin-top:14px;border:1px solid var(--success-100);background:var(--success-25);border-radius:10px;padding:11px 14px;font-size:13.5px;font-weight:600;color:var(--success-800)}
+
+/* review */
+.rev-sec{margin-top:46px}
+.rev-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.rev-head h2{font-size:21px;font-weight:600;letter-spacing:-.3px}
+.rev-head .spacer{flex:1}
+.rev-head a.edit{font-size:14px;font-weight:600}
+.chip-warn{background:var(--warn-50);color:var(--warn-700);font-size:12px;font-weight:700;border-radius:6px;padding:3px 9px}
+.rev-card{border:1px solid var(--gray-200);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm);overflow:hidden}
+.rev-row{padding:13px 18px;border-bottom:1px solid var(--gray-100)}
+.rev-row:last-child{border-bottom:none}
+.rev-row .rl{font-size:12.5px;color:var(--gray-500)}
+.rev-row .rv{font-size:14.5px;margin-top:1px}
+.rev-row .rv.muted{color:var(--gray-400)}
+.rev-row .rv.good{color:var(--success-700);font-weight:600;font-size:13px}
+.rev-row a.req{color:var(--error-600);font-weight:600;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+
+/* sign / submit cards */
+.signcard{border:1px solid var(--gray-200);border-radius:14px;padding:26px 26px 24px;background:#fff;box-shadow:var(--shadow-sm);margin-top:14px}
+.signcard .cert{font-size:14px;color:var(--gray-600);line-height:1.6;margin-bottom:18px}
+.smallprint{font-size:12.5px;color:var(--gray-500);line-height:1.65;margin:18px 0 22px}
+.smallprint a{color:var(--gray-600);font-weight:600}
+.gaps{border:1px solid var(--warn-100);background:var(--warn-50);border-radius:12px;padding:18px 20px;margin-top:26px}
+.gaps h4{font-size:14.5px;font-weight:700;color:var(--warn-700);margin-bottom:8px}
+.gaps a{display:block;font-size:13.5px;color:var(--warn-700);padding:3px 0;text-decoration:underline;text-underline-offset:3px}
+
+/* modal */
+#modalOverlay{position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:90;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:#fff;border-radius:14px;box-shadow:var(--shadow-overlay);width:100%;max-width:480px;overflow:hidden}
+.modal .m-body{padding:30px 32px 26px}
+.modal h3{font-size:20px;font-weight:600;letter-spacing:-.2px;margin-bottom:10px}
+.modal p{font-size:14.5px;color:var(--gray-600);line-height:1.6}
+.modal .m-foot{border-top:1px solid var(--gray-200);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+.modal .m-foot .btn-primary{width:auto;height:48px}
+
+/* welcome */
+.wsteps{display:flex;flex-direction:column;gap:0;margin:34px 0 8px}
+.wstep{display:flex;gap:18px;padding:20px 0;border-bottom:1px solid var(--gray-100)}
+.wstep:last-child{border-bottom:none}
+.wstep .num{flex:0 0 36px;height:36px;border-radius:50%;background:var(--brand-25);color:var(--brand-700);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px}
+.wstep .wt{font-weight:600;font-size:16px}
+.wstep .wd{font-size:14px;color:var(--gray-600);margin-top:2px}
+.wstep .tm{margin-left:auto;font-size:13px;color:var(--gray-500);white-space:nowrap;padding-top:8px}
+.needcard{border:1px solid var(--gray-200);background:var(--gray-25);border-radius:14px;padding:22px 24px;margin-top:26px}
+.needcard h3{font-size:15px;font-weight:600;margin-bottom:10px}
+.autosave-note{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:var(--gray-600);margin-top:22px}
+
+/* ---------- setup hub ---------- */
+.topbar{display:flex;align-items:center;gap:18px;padding:16px 40px;border-bottom:1px solid var(--gray-200);background:#fff}
+.topbar .sp{flex:1}
+.topbar .em{font-size:13px;color:var(--gray-600)}
+.topbar button{background:none;border:none;font-size:13.5px;color:var(--gray-600);display:flex;align-items:center;gap:7px}
+.topbar button:hover{color:var(--gray-900)}
+.setup-wrap{display:flex;gap:48px;max-width:1100px;margin:0 auto;padding:56px 40px 120px;align-items:flex-start}
+.setup-main{flex:1;min-width:0;max-width:660px}
+.setup-count{font-size:13px;font-weight:600;color:var(--gray-500);margin:26px 0 12px;letter-spacing:.02em}
+.setup-item{border:1px solid var(--gray-200);border-radius:14px;background:#fff;box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden}
+.setup-head{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;background:none;border:none;width:100%;text-align:left}
+.setup-head:hover{background:var(--gray-25)}
+.setup-head .n{flex:0 0 30px;height:30px;border-radius:50%;background:var(--brand-25);color:var(--brand-700);font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center}
+.setup-head .ttl{font-weight:600;font-size:15.5px;flex:1}
+.setup-head .meta{font-size:12.5px;color:var(--gray-500)}
+.setup-body{padding:2px 20px 24px 64px}
+.setup-body .desc{margin-bottom:14px}
+.dep-box{border:1px solid var(--gray-200);background:var(--gray-25);border-radius:12px;padding:16px 18px;margin:6px 0 16px}
+.dep-box .dl{font-size:12px;color:var(--gray-500)}
+.dep-box .dv{font-size:14.5px;font-weight:600;margin-bottom:10px}
+.dep-box .dv:last-child{margin-bottom:0}
+.done-banner{display:flex;align-items:center;gap:10px;border:1px solid var(--success-100);background:var(--success-25);border-radius:12px;padding:13px 16px;font-size:13.5px;font-weight:600;color:var(--success-800)}
+.invite-row{display:grid;grid-template-columns:1fr 170px auto;gap:10px;margin-bottom:10px}
+.invited{display:flex;align-items:center;gap:10px;border:1px solid var(--gray-200);border-radius:10px;padding:11px 14px;margin-bottom:8px;font-size:14px}
+.invited .iv-em{flex:1;font-weight:600;word-break:break-all}
+.invited .iv-role{font-size:12.5px;color:var(--gray-500)}
+.plancard{display:flex;gap:14px;border:1px solid var(--gray-300);border-radius:12px;padding:16px 18px;cursor:pointer;margin-bottom:10px;background:#fff;transition:all .12s;position:relative}
+.plancard.on{border-color:var(--brand-500);background:var(--brand-25)}
+.plancard .pn{font-weight:600;font-size:15px}
+.plancard .pp{font-size:13.5px;color:var(--gray-600)}
+.plancard .pf{font-size:13px;color:var(--gray-500);margin-top:6px;line-height:1.6}
+.plancard .pop{position:absolute;top:14px;right:16px;background:var(--brand-500);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:3px 9px}
+.plancard.on .pop{background:var(--brand-700)}
+.plan-note{font-size:12.5px;color:var(--gray-500);margin-top:10px}
+/* timeline card */
+.tcard{width:300px;flex:0 0 300px;border:1px solid var(--gray-200);border-radius:14px;padding:22px;box-shadow:var(--shadow-sm);position:sticky;top:32px;background:#fff}
+.tcard h3{font-size:15px;font-weight:600;margin-bottom:16px}
+.tstep{display:flex;gap:13px}
+.tstep .trail{display:flex;flex-direction:column;align-items:center}
+.tstep .tdot{width:11px;height:11px;border-radius:50%;flex:0 0 11px;margin-top:5px}
+.tstep .tdot.done{background:var(--brand-500)}
+.tstep .tdot.cur{background:var(--brand-500);box-shadow:0 0 0 4px var(--brand-50)}
+.tstep .tdot.todo{background:var(--gray-300)}
+.tstep .tbar{width:2px;flex:1;background:var(--gray-200);min-height:22px;margin:4px 0 2px}
+.tstep .tb{padding-bottom:16px}
+.tstep .tt{font-weight:600;font-size:14px}
+.tstep .td{font-size:12.5px;color:var(--gray-600);margin-top:1px;line-height:1.5}
+.tstep .td.fast{color:var(--success-700);font-weight:600}
+.tcard .tsupport{border-top:1px solid var(--gray-100);margin-top:6px;padding-top:16px;font-size:12.5px;color:var(--gray-600);line-height:1.6}
+.tcard .tsupport strong{font-size:13px;color:var(--gray-900)}
+
+/* approved / live */
+.sub-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--gray-50);padding:40px 20px}
+.sub-card{background:#fff;border:1px solid var(--gray-200);border-radius:20px;box-shadow:var(--shadow-sm);max-width:620px;width:100%;padding:52px 56px}
+.sub-check{width:60px;height:60px;border-radius:50%;background:var(--success-50);display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+.sub-card h1{font-size:30px;font-weight:500;letter-spacing:-.5px;margin-bottom:8px}
+.sub-card .ref{font-size:13.5px;color:var(--gray-500);margin-bottom:8px}
+.sub-card .lead{font-size:15px;color:var(--gray-600);margin-bottom:10px}
+.sub-out{margin-top:26px}
+.sub-out button{background:none;border:none;font-size:14px;color:var(--gray-600);text-decoration:underline;text-underline-offset:3px;padding:0}
+.live-rows{margin:22px 0 6px}
+.live-row{display:flex;gap:11px;align-items:flex-start;padding:9px 0;font-size:14px;color:var(--gray-600)}
+.live-row svg{flex:0 0 15px;margin-top:3px}
+
+@media (max-width:1020px){
+  .tcard{display:none}
+}
+@media (max-width:980px){
+  .sidebar{display:none}
+  main{margin-left:0;padding:48px 22px 100px}
+  #drawer{width:100vw;max-width:100vw}
+  .slider-pair{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="progressLine" class="hidden"><div id="progressFill"></div></div>
+
+<!-- ================= AUTH ================= -->
+<div id="view-auth" class="auth-wrap hidden">
+  <div class="auth-card">
+    <div class="auth-logo"><span class="logo" id="logoAuth"></span></div>
+
+    <div id="authSignup">
+      <h1>Open a business account</h1>
+      <p class="auth-sub">Create your account to start the application. Your progress saves as you go.</p>
+      <div class="fgrid">
+        <div class="row">
+          <div class="field"><input id="su-fn" autocomplete="given-name"><label for="su-fn">Legal first name</label><span class="err-dot">!</span></div>
+          <div class="field"><input id="su-ln" autocomplete="family-name"><label for="su-ln">Legal last name</label><span class="err-dot">!</span></div>
+        </div>
+        <div class="field"><input id="su-email" type="email" autocomplete="email"><label for="su-email">Work email</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="su-pass" type="password" autocomplete="new-password"><label for="su-pass">Password</label><span class="err-dot">!</span></div>
+        <p class="pw-hint" id="pwHint">At least 8 characters</p>
+        <button class="btn btn-primary" id="btnSignup">Create account</button>
+      </div>
+      <p class="auth-foot">Already started an application? <a href="#" id="toSignin">Sign in</a></p>
+      <p class="auth-legal">By creating an account, you agree to Loop's <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+    </div>
+
+    <div id="authSignin" class="hidden">
+      <h1>Sign in</h1>
+      <p class="auth-sub">Pick up where you left off.</p>
+      <div class="fgrid">
+        <div class="field"><input id="si-email" type="email" autocomplete="email"><label for="si-email">Work email</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="si-pass" type="password" autocomplete="current-password"><label for="si-pass">Password</label><span class="err-dot">!</span></div>
+        <button class="btn btn-primary" id="btnSignin">Sign in</button>
+      </div>
+      <p class="auth-foot">New to Loop? <a href="#" id="toSignup">Create an account</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= VERIFY EMAIL ================= -->
+<div id="view-verify" class="auth-wrap hidden">
+  <div class="auth-card" style="text-align:center">
+    <div class="auth-logo"><span class="logo" id="logoVerify"></span></div>
+    <h1>Check your email</h1>
+    <p class="auth-sub" style="margin-bottom:0">Enter the 6-digit code we sent to <strong id="verifyEmail"></strong>.</p>
+    <div class="code-row" id="codeRow">
+      <input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1">
+    </div>
+    <div style="margin-top:20px"><button class="btn btn-primary" id="btnVerify" disabled>Verify email</button></div>
+    <p class="auth-foot">Didn't get it? <a href="#" id="resend">Resend code</a></p>
+  </div>
+</div>
+
+<!-- ================= APP SHELL ================= -->
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <span class="logo" id="logoSide"></span>
+    <div class="step-meta" id="stepMeta">Getting started</div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-spacer"></div>
+    <div class="save-pill" id="savePill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span id="saveTxt">All changes saved</span></div>
+    <div class="userbox">
+      <div class="em" id="userEmail"></div>
+      <button id="signOut"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="col">
+
+      <!-- WELCOME -->
+      <div id="page-welcome" class="appage hidden">
+        <h1 class="page-h">Let's open your account</h1>
+        <p class="page-sub">Seven short pages across three parts. Most businesses finish in about 15 minutes, and our team reviews every application before the account opens.</p>
+        <div class="wsteps">
+          <div class="wstep"><div class="num">1</div><div><div class="wt">Business details</div><div class="wd">Identity, location, finance, and documents. We confirm your business against the registry as you go.</div></div><div class="tm">~8 min</div></div>
+          <div class="wstep"><div class="num">2</div><div><div class="wt">Key individuals</div><div class="wd">Directors, owners of 25% or more, and identity verification for each.</div></div><div class="tm">~5 min</div></div>
+          <div class="wstep"><div class="num">3</div><div><div class="wt">Review and submit</div><div class="wd">Confirm everything and send it for review.</div></div><div class="tm">~2 min</div></div>
+        </div>
+        <div class="needcard">
+          <h3>Have these ready</h3>
+          <ul class="accepts">
+            <li>Incorporation or registration document</li>
+            <li>Proof of operations, such as your website or an invoice</li>
+            <li>Government photo ID and a selfie for each owner and director</li>
+            <li>Date of birth and home address for each owner and director</li>
+          </ul>
+        </div>
+        <div class="autosave-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#045B3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 16px;margin-top:2px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>Your application saves automatically each time you continue. Sign back in anytime to finish.</span></div>
+        <div class="continue-wrap"><button class="btn btn-primary" id="btnStart">Start application</button></div>
+      </div>
+
+      <!-- PAGE: BUSINESS IDENTITY -->
+      <div id="page-identity" class="appage hidden">
+        <h1 class="page-h">Business identity</h1>
+        <p class="page-sub">Tell us who the business is. We confirm this against the registry on the next screen.</p>
+        <div class="pagebody">
+          <div class="fgrid">
+            <div class="field"><input data-k="legalName" id="f-legalName"><label for="f-legalName">Legal business name (required)</label><span class="err-dot">!</span></div>
+            <div class="field"><input data-k="operatingName" id="f-operatingName"><label for="f-operatingName">Operating or trade name (optional)</label><span class="err-dot">!</span></div>
+            <div class="field"><input data-k="website" id="f-website" type="url" autocapitalize="off"><label for="f-website">Business website (required)</label><span class="err-dot">!</span></div>
+            <div class="row">
+              <div class="field"><select data-k="entityType" id="f-entityType"></select><label for="f-entityType">Business structure (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="regNumber" id="f-regNumber"><label for="f-regNumber">Corporation or business number (required)</label><span class="err-dot">!</span></div>
+            </div>
+            <div class="field"><select data-k="industry" id="f-industry"></select><label for="f-industry">Industry (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+            <div class="reg-badge hidden" id="regBadge"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span id="regBadgeTxt">Confirmed in the registry</span></div>
+            <div class="chips-wrap" id="restrictedWrap">
+              <div class="chips-label">Do any of these describe your business? <span class="req-mark">(select all that apply)</span></div>
+              <div class="chips" id="restrictedChips"></div>
+            </div>
+            <div class="chips-wrap" id="cadDirWrap">
+              <div class="chips-label">Is at least one director or owner a Canadian resident?</div>
+              <div class="chips" id="cadDirSeg"></div>
+            </div>
+          </div>
+        </div>
+        <div class="continue-wrap"><button class="btn btn-primary" data-cont="identity">Save and continue <span>&#8594;</span></button></div>
+      </div>
+
+      <!-- PAGE: REGISTRY CHECK -->
+      <div id="page-registry" class="appage hidden">
+        <h1 class="page-h">Checking the registry</h1>
+        <p class="page-sub" id="regSub">We're confirming your business with the federal and provincial registries.</p>
+        <div class="reg-panel" id="regPanel"></div>
+        <div class="reg-done-banner hidden" id="regDoneBanner"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Your business checks out. You won't need to prove any of this again.</span></div>
+        <p class="reg-hint" id="regHint">This usually takes a few seconds.</p>
+        <div class="continue-wrap"><button class="btn btn-primary" id="contRegistry" disabled>Continue <span>&#8594;</span></button></div>
+      </div>
+
+      <!-- PAGE: LOCATION -->
+      <div id="page-location" class="appage hidden">
+        <h1 class="page-h">Business location</h1>
+        <p class="page-sub">Enter a physical Canadian address. We can't accept PO boxes or virtual offices.</p>
+        <div class="pagebody">
+          <div class="fgrid">
+            <div class="field"><input data-k="street" id="f-street"><label for="f-street">Street address (required)</label><span class="err-dot">!</span></div>
+            <div class="field"><input data-k="unit" id="f-unit"><label for="f-unit">Floor, suite, or unit (optional)</label><span class="err-dot">!</span></div>
+            <div class="field"><input data-k="city" id="f-city"><label for="f-city">City (required)</label><span class="err-dot">!</span></div>
+            <div class="row">
+              <div class="field"><select data-k="province" id="f-province"></select><label for="f-province">Province or territory (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="postal" id="f-postal" autocapitalize="characters" maxlength="7"><label for="f-postal">Postal code (required)</label><span class="err-dot">!</span></div>
+            </div>
+            <div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; Canada</span></div>
+          </div>
+        </div>
+        <div class="continue-wrap"><button class="btn btn-primary" data-cont="location">Save and continue <span>&#8594;</span></button></div>
+      </div>
+
+      <!-- PAGE: FINANCE -->
+      <div id="page-finance" class="appage hidden">
+        <h1 class="page-h">Finance</h1>
+        <p class="page-sub">A few details about how money moves through your business. Estimates are all we need.</p>
+        <div class="pagebody">
+
+          <div class="fsec">
+            <h2>General account usage</h2>
+            <p class="why">Banking regulations ask us to understand how you'll use Loop. Nothing here is binding, and you can update it later.</p>
+            <div class="chips-wrap" id="earnWrap">
+              <div class="chips-label">How does the business earn?</div>
+              <div class="chips" id="earnSeg"></div>
+            </div>
+            <div class="sliderq" data-slider="revenue" data-suffix=" per year">
+              <div class="q-label">What is your annual revenue? <span class="req-mark">(estimate)</span></div>
+              <input type="range" min="0" max="6" step="1" value="0" aria-label="Annual revenue">
+              <div class="slider-read"></div>
+            </div>
+            <div class="q" id="q-sourceFunds">
+              <div class="q-label">Where does the money in the account mainly come from?</div>
+              <div class="qfield"><select data-k="sourceFunds" id="f-sourceFunds"></select><span class="chev">&#9662;</span></div>
+            </div>
+            <div class="chips-wrap" id="useWrap">
+              <div class="chips-label">What will you use Loop for? <span class="req-mark">(select all that apply)</span></div>
+              <div class="chips" id="useChips"></div>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <h2>Payments</h2>
+            <p class="why">Your estimates set the right limits on day one, so your first payments aren't held for review. Drag each slider, roughly is fine.</p>
+            <div class="slider-pair">
+              <div class="sliderq" data-slider="outValue" data-suffix=" out per year, USD">
+                <div class="q-label">How much money goes out?</div>
+                <input type="range" min="0" max="3" step="1" value="0" aria-label="Money out per year">
+                <div class="slider-read"></div>
+              </div>
+              <div class="sliderq" data-slider="outCount" data-suffix=" payments out per year">
+                <div class="q-label">Across how many payments?</div>
+                <input type="range" min="0" max="3" step="1" value="0" aria-label="Outgoing payments per year">
+                <div class="slider-read"></div>
+              </div>
+              <div class="sliderq" data-slider="inValue" data-suffix=" in per year, USD">
+                <div class="q-label">How much money comes in?</div>
+                <input type="range" min="0" max="3" step="1" value="0" aria-label="Money in per year">
+                <div class="slider-read"></div>
+              </div>
+              <div class="sliderq" data-slider="inCount" data-suffix=" payments in per year">
+                <div class="q-label">Across how many payments?</div>
+                <input type="range" min="0" max="3" step="1" value="0" aria-label="Incoming payments per year">
+                <div class="slider-read"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fsec">
+            <h2>Cross-border activity</h2>
+            <p class="why">Different corridors carry different requirements, so we check yours up front instead of pausing a payment later.</p>
+            <div class="chips-wrap" id="travelWrap">
+              <div class="chips-label">Where does your money travel? <span class="req-mark">(select all that apply)</span></div>
+              <div class="chips" id="travelChips"></div>
+            </div>
+            <div class="q" id="q-hearAbout">
+              <div class="q-label">How did you hear about Loop? <span class="req-mark">(optional)</span></div>
+              <div class="qfield"><select data-k="hearAbout" id="f-hearAbout"></select><span class="chev">&#9662;</span></div>
+            </div>
+          </div>
+
+        </div>
+        <div class="continue-wrap"><button class="btn btn-primary" data-cont="finance">Save and continue <span>&#8594;</span></button></div>
+      </div>
+
+      <!-- PAGE: DOCUMENTS -->
+      <div id="page-documents" class="appage hidden">
+        <h1 class="page-h">Documents</h1>
+        <p class="page-sub">Two documents, and you're done with the business.</p>
+        <div class="pagebody">
+          <div>
+            <h3 class="sub-h">Incorporation or registration document</h3>
+            <p class="desc" style="margin-bottom:12px">Your document must show your legal business name and corporation or registration number. We accept:</p>
+            <ul class="accepts">
+              <li>Certificate or Articles of Incorporation</li>
+              <li>Corporate registry search report</li>
+              <li>Master Business Licence or registration</li>
+            </ul>
+            <div id="upInc"></div>
+          </div>
+          <div style="margin-top:34px">
+            <h3 class="sub-h">Proof of operations</h3>
+            <p class="desc" style="margin-bottom:12px">Anything that shows your business is active. We accept:</p>
+            <ul class="accepts">
+              <li>A screenshot of your business website</li>
+              <li>A recent customer invoice or contract</li>
+              <li>A supplier agreement or lease</li>
+            </ul>
+            <div id="upOps"></div>
+          </div>
+        </div>
+        <div class="continue-wrap"><button class="btn btn-primary" data-cont="documents">Save and continue <span>&#8594;</span></button></div>
+      </div>
+
+      <!-- PAGE: PEOPLE -->
+      <div id="page-people" class="appage hidden">
+        <h1 class="page-h">Key individuals</h1>
+        <p class="page-sub">We're required to verify the people behind the business.</p>
+        <div class="pagebody">
+          <p class="desc" style="margin-bottom:10px">Add every person who is:</p>
+          <ul class="accepts">
+            <li>A director of the business</li>
+            <li>A signing officer</li>
+            <li>An owner of 25% or more, directly or indirectly</li>
+            <li>The person who controls the business day to day</li>
+          </ul>
+          <p class="desc" style="margin-top:10px">One person can hold more than one role. Start with yourself if you hold any of them. Each person verifies their identity with a government photo ID and a selfie, right in this application.</p>
+
+          <label class="consent" id="notOwnerWrap" style="margin:0 0 18px">
+            <input type="checkbox" id="f-notOwner">
+            <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span>I'm completing this application on the business's behalf and I'm not an owner, director, or signing officer.</span>
+          </label>
+
+          <div id="indList" style="display:flex;flex-direction:column;gap:12px"></div>
+          <button class="btn btn-secondary" id="btnAddInd" style="margin-top:12px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add key individual</button>
+
+          <label class="consent" id="consentWrap">
+            <input type="checkbox" id="f-consent">
+            <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span>You confirm that each person above consents to Loop verifying their identity, as described in the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+          </label>
+        </div>
+        <div class="continue-wrap"><button class="btn btn-primary" data-cont="people">Save and continue <span>&#8594;</span></button></div>
+      </div>
+
+      <!-- PAGE: CORPORATE OWNERSHIP -->
+      <div id="page-corp" class="appage hidden">
+        <h1 class="page-h">Corporate ownership</h1>
+        <p class="page-sub">Tell us if another company owns part of yours.</p>
+        <div class="pagebody">
+          <div class="chips-wrap" id="corpOwnerWrap" style="margin-top:4px">
+            <div class="chips-label">Does another company own 25% or more of your business?</div>
+            <div class="chips" id="corpOwnerSeg"></div>
+          </div>
+          <div class="fgrid hidden" id="holdcoFields" style="margin-top:16px">
+            <div class="field"><input data-k="holdcoName" id="f-holdcoName"><label for="f-holdcoName">Holding company legal name (required)</label><span class="err-dot">!</span></div>
+            <div class="field"><input data-k="holdcoAddress" id="f-holdcoAddress"><label for="f-holdcoAddress">Registered address: street, city, province, postal code (required)</label><span class="err-dot">!</span></div>
+          </div>
+        </div>
+        <div class="continue-wrap"><button class="btn btn-primary" data-cont="corp">Save and continue <span>&#8594;</span></button></div>
+      </div>
+
+      <!-- PAGE: REVIEW -->
+      <div id="page-review" class="appage hidden">
+        <h1 class="page-h">Review and submit</h1>
+        <p class="page-sub">Check your application, then send it for review.</p>
+        <div id="reviewSections"></div>
+
+        <div class="rev-sec">
+          <div class="rev-head"><h2>Submit</h2></div>
+          <div class="signcard">
+            <p class="cert">As an authorized signing officer of <strong id="certBiz">the business</strong>, I certify that the information in this application is true, accurate, and complete, and that I am authorized to submit it on behalf of the business.</p>
+            <button class="btn btn-primary" id="btnSubmit">Submit application</button>
+            <p class="smallprint" style="margin:16px 0 0">Once approved, you'll sign the Deposit Account Agreement, ACH Payment Terms, and Tax Form to activate the account.</p>
+            <div id="gapsBox"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ================= SETUP HUB (in review) ================= -->
+<div id="view-setup" class="hidden">
+  <div class="topbar">
+    <span class="logo" id="logoSetup"></span>
+    <div class="sp"></div>
+    <span class="em" id="setupEmail"></span>
+    <button id="setupSignOut"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button>
+  </div>
+  <div class="setup-wrap">
+    <div class="setup-main">
+      <h1 class="page-h">You're nearly there</h1>
+      <p class="page-sub">Your application is in review. Set up your account now so everything's ready the moment it's approved.</p>
+      <div class="setup-count" id="setupCount"></div>
+      <div id="setupList"></div>
+    </div>
+    <aside class="tcard">
+      <h3>Application timeline</h3>
+      <div id="timelineBody"></div>
+      <div class="tsupport"><strong>Questions?</strong><br>Our team can help: <a href="mailto:support@bankonloop.com">support@bankonloop.com</a><br><span id="tcardRef"></span></div>
+    </aside>
+  </div>
+</div>
+
+<!-- ================= APPROVED: SIGN AGREEMENTS ================= -->
+<div id="view-approved" class="sub-wrap hidden">
+  <div class="sub-card">
+    <div class="sub-check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h1 id="apTitle">You're approved</h1>
+    <p class="lead" id="apLead">One signature left. Sign your agreements to activate the account.</p>
+    <div class="signcard" style="margin-top:22px">
+      <p class="cert">As an authorized signing officer of <strong id="apBiz">the business</strong>, I have read and agree to the agreements below on its behalf.</p>
+      <div class="field"><input id="ap-sign" autocomplete="name"><label for="ap-sign">Your full legal name (required)</label><span class="err-dot">!</span></div>
+      <p class="smallprint">By activating the account, you acknowledge that you have read and agree to the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Deposit Account Agreement&nbsp;&#8599;</a>, the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">ACH Payment Terms&nbsp;&#8599;</a>, and the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Tax Form&nbsp;&#8599;</a>. Your consent is recorded with a timestamp, and signed copies are emailed to <span id="apEmail"></span>.</p>
+      <button class="btn btn-primary" id="btnActivate" disabled>Sign and activate</button>
+    </div>
+    <div class="sub-out"><button id="apSignOut">Sign out</button></div>
+  </div>
+</div>
+
+<!-- ================= LIVE ================= -->
+<div id="view-live" class="sub-wrap hidden">
+  <div class="sub-card">
+    <div class="sub-check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h1>You're live</h1>
+    <p class="lead" id="liveLead">Your account is open and ready.</p>
+    <div class="live-rows" id="liveRows"></div>
+    <a class="btn btn-primary" href="https://app.bankonloop.com" target="_blank" rel="noopener" style="text-decoration:none;margin-top:10px">Go to your account</a>
+    <div class="sub-out"><button id="liveSignOut">Sign out</button></div>
+  </div>
+</div>
+
+<!-- ================= DRAWER ================= -->
+<div id="drawerOverlay" class="hidden"></div>
+<aside id="drawer" class="hidden" role="dialog" aria-modal="true" aria-label="Add key individual">
+  <div class="dr-head">
+    <h2 class="dr-title" id="drTitle">Add key individual</h2>
+    <button class="dr-x" id="drClose" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body">
+    <div class="dr-sec">
+      <h3>Roles</h3>
+      <p class="desc">Select all that apply.</p>
+      <div class="roles-wrap" id="rolesWrap">
+        <div class="rolecard" data-role="Director"><div><div class="rt">Director</div><div class="rd">Elected or appointed to oversee the management and direction of the business.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+        <div class="rolecard" data-role="Signing officer"><div><div class="rt">Signing officer</div><div class="rd">Authorized to sign documents, contracts, and financial agreements on behalf of the business.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+        <div class="rolecard" data-role="Beneficial owner"><div><div class="rt">Beneficial owner</div><div class="rd">Owns 25% or more of the business, directly or indirectly.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+        <div class="rolecard" data-role="Control person"><div><div class="rt">Control person</div><div class="rd">Exercises significant control over the business day to day.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+      </div>
+      <div class="field hidden" id="ownPctWrap" style="margin-top:4px"><input id="d-ownPct" inputmode="numeric" maxlength="3"><label for="d-ownPct">Ownership percentage (required)</label><span class="err-dot">!</span></div>
+    </div>
+
+    <div class="dr-sec">
+      <h3>Personal details</h3>
+      <label class="consent" id="isMeWrap" style="margin:2px 0 16px">
+        <input type="checkbox" id="d-isMe">
+        <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>This is me</span>
+      </label>
+      <div class="fgrid">
+        <div class="row">
+          <div class="field"><input id="d-firstName"><label for="d-firstName">First name (required)</label><span class="err-dot">!</span></div>
+          <div class="field"><input id="d-lastName"><label for="d-lastName">Last name (required)</label><span class="err-dot">!</span></div>
+        </div>
+        <div class="field fixed"><input id="d-dob" type="date"><label for="d-dob">Date of birth (required)</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-email" type="email" autocapitalize="off"><label for="d-email">Email (required)</label><span class="err-dot">!</span></div>
+        <p class="fhelp hidden" id="emailLockHint">Locked to your sign-in email.</p>
+        <div class="row" style="grid-template-columns:130px 1fr">
+          <div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div>
+          <div class="field"><input id="d-phone" type="tel" inputmode="tel"><label for="d-phone">Phone number (required)</label><span class="err-dot">!</span></div>
+        </div>
+        <div class="field"><input id="d-occupation"><label for="d-occupation">Occupation (required)</label><span class="err-dot">!</span></div>
+      </div>
+    </div>
+
+    <div class="dr-sec">
+      <h3>Home address</h3>
+      <p class="desc">A residential address. We can't accept PO boxes or mail forwarding.</p>
+      <div class="fgrid">
+        <div class="field"><input id="d-street"><label for="d-street">Street address (required)</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-unit"><label for="d-unit">Floor, suite, or unit (optional)</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-city"><label for="d-city">City (required)</label><span class="err-dot">!</span></div>
+        <div class="row">
+          <div class="field"><select id="d-province"></select><label for="d-province">Province or territory (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+          <div class="field"><input id="d-postal" autocapitalize="characters" maxlength="7"><label for="d-postal">Postal code (required)</label><span class="err-dot">!</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dr-sec" id="idvSec">
+      <h3>Identity verification</h3>
+      <p class="desc">Upload a government photo ID and a clear selfie. We check the capture instantly, and there's nothing to finish later.</p>
+      <div class="idv-grid">
+        <div>
+          <div class="idv-label">Government photo ID</div>
+          <div id="upIdDoc"></div>
+        </div>
+        <div>
+          <div class="idv-label">Selfie</div>
+          <div id="upSelfie"></div>
+        </div>
+      </div>
+      <p class="fhelp" style="margin-top:10px">Passport, driver's licence, or provincial photo ID. Make sure all four corners are visible and the photo is sharp.</p>
+      <div class="idv-ok hidden" id="idvOk"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Capture looks good. Identity verified.</div>
+    </div>
+  </div>
+  <div class="dr-foot">
+    <button class="btn-link" id="drCancel">Cancel</button>
+    <button class="btn btn-primary" id="drSave">Add key individual</button>
+  </div>
+</aside>
+
+<!-- ================= MODAL ================= -->
+<div id="modalOverlay" class="hidden">
+  <div class="modal">
+    <div class="m-body">
+      <h3>Continue with incomplete fields?</h3>
+      <p id="modalBody"></p>
+    </div>
+    <div class="m-foot">
+      <button class="btn-link" id="modalBack">Back</button>
+      <button class="btn btn-primary" id="modalGo">Save and continue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================ data ============================ */
+var LOGO = '<img src="data:image/png;base64,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" alt="Loop">';
+var KEY = 'loop-onboarding-app-v4';
+
+var PROVINCES = ['Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland and Labrador','Northwest Territories','Nova Scotia','Nunavut','Ontario','Prince Edward Island','Quebec','Saskatchewan','Yukon'];
+var ENTITIES = ['Corporation (federal)','Corporation (provincial)','Sole proprietorship','Partnership','Cooperative','Holding company'];
+var INDUSTRIES = ['Software and technology','Professional services','E-commerce and retail','Wholesale and distribution','Manufacturing','Construction and trades','Healthcare','Transportation and logistics','Hospitality and food service','Agriculture','Media and marketing','Real estate services','Education','Other'];
+var REVENUES = ['Pre-revenue','Under $100K','$100K to $500K','$500K to $1M','$1M to $5M','$5M to $25M','Over $25M'];
+var SOURCES = ['Revenue from operations','Investment or venture funding','Owner capital','Loans or financing','Other'];
+var USES = ['Send payments','Receive payments','Corporate cards','Foreign exchange','Hold multi-currency balances'];
+var RESTRICTED = ['Money services business','Crypto or digital assets','Cannabis','Gambling','Adult content','Nonprofit or charity','None of these'];
+var FLOWVALS = ['Under $100K','$100K to $500K','$500K to $2M','Over $2M'];
+var FLOWCOUNTS = ['Under 50','50 to 250','250 to 1,000','Over 1,000'];
+var TRAVEL = ['Domestic only','United States or Mexico','South America','Europe or United Kingdom','Asia Pacific','Middle East or Africa'];
+var HEAR = ['A friend or colleague','Search','Social media','Podcast','Accountant or advisor','Other'];
+var YESNO = ['Yes','No'];
+var EARN = ['Active income: selling products or services','Passive income: investments and holding assets'];
+var ROLES_TEAM = ['Admin','Finance manager','Bookkeeper','Card member'];
+var SLIDERS = {revenue:REVENUES,outValue:FLOWVALS,outCount:FLOWCOUNTS,inValue:FLOWVALS,inCount:FLOWCOUNTS};
+var PLANS = [
+  {name:'Basic',price:'$0/mo',pop:false,feat:'Competitive FX rates (0.47%) &middot; Free USD, EUR, and GBP accounts &middot; Unlimited team members &middot; 20 virtual and 2 physical cards'},
+  {name:'Loop Plus',price:'$79/mo, or $71/mo billed annually',pop:true,feat:'Preferred FX rates (0.27%) &middot; 2x points on CAD spend &middot; Unlimited virtual cards &middot; 10 free physical cards'},
+  {name:'Loop Power',price:'$299/mo, or $250/mo billed annually',pop:false,feat:'Institutional FX rates (0.12%) &middot; 2x points on all card spend &middot; 50 free physical cards &middot; Dedicated customer success manager'}
+];
+
+var LABELS = {
+  legalName:'Legal business name', operatingName:'Operating or trade name', website:'Business website',
+  entityType:'Business structure', regNumber:'Corporation or business number', industry:'Industry',
+  restricted:'Restricted business categories', canadianDirector:'Canadian resident director or owner',
+  street:'Street address', unit:'Floor, suite, or unit', city:'City', province:'Province or territory', postal:'Postal code',
+  revenue:'Annual revenue', sourceFunds:'Primary source of funds', earnType:'How the business earns',
+  outValue:'Money out per year (USD)', outCount:'Outgoing payments per year',
+  inValue:'Money in per year (USD)', inCount:'Incoming payments per year',
+  travel:'Where your money travels', intendedUse:'How you will use Loop', hearAbout:'How you heard about Loop',
+  docInc:'Incorporation or registration document', docOps:'Proof of operations',
+  individuals:'At least one key individual', consent:'Consent confirmation',
+  corpOwner:'Corporate ownership answer', holdcoName:'Holding company legal name', holdcoAddress:'Holding company registered address'
+};
+
+var GROUPS = [
+  {title:'Business details', pages:[['identity','Business identity'],['location','Location'],['finance','Finance'],['documents','Documents']]},
+  {title:'Key individuals', pages:[['people','People'],['corp','Corporate ownership']]},
+  {title:'Review and submit', pages:[['review','Review and submit']]}
+];
+var PAGE_ORDER = ['identity','location','finance','documents','people','corp','review'];
+var NEXT_PAGE = {registry:'location',location:'finance',finance:'documents',documents:'people',people:'corp',corp:'review'};
+
+var K_IDENTITY = ['legalName','website','entityType','regNumber','industry'];
+var K_LOCATION = ['street','city','province','postal'];
+var K_FINANCE = ['revenue','sourceFunds','earnType','outValue','outCount','inValue','inCount'];
+
+/* ============================ state ============================ */
+function freshFields(){return {legalName:'',operatingName:'',website:'',entityType:'',regNumber:'',industry:'',restricted:[],canadianDirector:'',street:'',unit:'',city:'',province:'',postal:'',revenue:'',sourceFunds:'',earnType:'',outValue:'',outCount:'',inValue:'',inCount:'',travel:[],intendedUse:[],hearAbout:'',docInc:null,docOps:null,individuals:[],notOwner:false,consent:false,corpOwner:'',holdcoName:'',holdcoAddress:''};}
+function freshSetup(){return {open:0,etSent:false,etAmount:'',invites:[],plan:'',tfaPhone:'',tfaCodeSent:false,tfaEnabled:false};}
+function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},regCheckedFor:'',f:freshFields(),setup:freshSetup(),submitted:false,approved:false,activated:false,ref:null,submittedAt:null,signName:''};}
+var S = load();
+function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);s.f=Object.assign(freshFields(),s.f||{});s.setup=Object.assign(freshSetup(),s.setup||{});return s;}}catch(e){}return freshState();}
+var pillT=null;
+function persist(){localStorage.setItem(KEY,JSON.stringify(S));}
+function save(){
+  persist();
+  var pill=document.getElementById('savePill'),txt=document.getElementById('saveTxt');
+  if(pill){pill.classList.add('flash');txt.textContent='Saved just now';clearTimeout(pillT);
+    pillT=setTimeout(function(){pill.classList.remove('flash');txt.textContent='All changes saved';},1600);}
+  paintProgress();paintNav();
+}
+
+/* ============================ helpers ============================ */
+function $(id){return document.getElementById(id);}
+function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fillSelect(sel,opts){sel.innerHTML='<option value=""></option>'+opts.map(function(o){return '<option value="'+esc(o)+'">'+esc(o)+'</option>';}).join('');}
+function indName(p){return (p.firstName+' '+p.lastName).trim()||'Unnamed individual';}
+function indVerified(p){return !!(p.idDoc&&p.selfie);}
+function labelFor(k){
+  if(k.indexOf('idv:')===0){var p=S.f.individuals[+k.slice(4)];return 'ID verification for '+(p?indName(p):'an individual');}
+  return LABELS[k]||k;
+}
+function regKey(){return S.f.legalName+'|'+S.f.regNumber;}
+function regVerified(){return !!(S.f.legalName&&S.f.regNumber)&&S.regCheckedFor===regKey();}
+function fmtDate(ts){return new Date(ts).toLocaleDateString('en-CA',{month:'long',day:'numeric'});}
+
+/* missing-field computation, per page */
+function missingPage(id){
+  var m=[],f=S.f;
+  if(id==='identity'){
+    K_IDENTITY.forEach(function(k){if(!f[k])m.push(k);});
+    if(!f.restricted.length)m.push('restricted');
+    if(!f.canadianDirector)m.push('canadianDirector');
+  }else if(id==='location'){
+    K_LOCATION.forEach(function(k){if(!f[k])m.push(k);});
+  }else if(id==='finance'){
+    K_FINANCE.forEach(function(k){if(!f[k])m.push(k);});
+    if(!f.travel.length)m.push('travel');
+    if(!f.intendedUse.length)m.push('intendedUse');
+  }else if(id==='documents'){
+    if(!f.docInc)m.push('docInc');
+    if(!f.docOps)m.push('docOps');
+  }else if(id==='people'){
+    if(!f.individuals.length)m.push('individuals');
+    f.individuals.forEach(function(p,i){if(!indVerified(p))m.push('idv:'+i);});
+    if(!f.consent)m.push('consent');
+  }else if(id==='corp'){
+    if(!f.corpOwner)m.push('corpOwner');
+    if(f.corpOwner==='Yes'){
+      if(!f.holdcoName)m.push('holdcoName');
+      if(!f.holdcoAddress)m.push('holdcoAddress');
+    }
+  }
+  return m;
+}
+function keyPage(k){
+  if(k.indexOf('idv:')===0||k==='individuals'||k==='consent')return 'people';
+  if(k==='corpOwner'||k==='holdcoName'||k==='holdcoAddress')return 'corp';
+  if(K_LOCATION.indexOf(k)>=0||k==='unit')return 'location';
+  if(K_FINANCE.indexOf(k)>=0||k==='travel'||k==='intendedUse'||k==='hearAbout')return 'finance';
+  if(k==='docInc'||k==='docOps')return 'documents';
+  return 'identity';
+}
+function allMissing(){
+  var m=[];
+  PAGE_ORDER.forEach(function(p){m=m.concat(missingPage(p));});
+  return m;
+}
+function requiredTotal(){
+  return K_IDENTITY.length+2
+    +K_LOCATION.length
+    +K_FINANCE.length+2
+    +2
+    +2+S.f.individuals.length
+    +1+(S.f.corpOwner==='Yes'?2:0);
+}
+
+/* ============================ views ============================ */
+function show(view){
+  S.view=view;persist();
+  ['view-auth','view-verify','app','view-setup','view-approved','view-live'].forEach(function(id){$(id).classList.add('hidden');});
+  $('progressLine').classList.add('hidden');
+  if(view==='auth'){$('view-auth').classList.remove('hidden');}
+  else if(view==='verify'){$('view-verify').classList.remove('hidden');$('verifyEmail').textContent=S.email;}
+  else if(view==='setup'){
+    $('view-setup').classList.remove('hidden');
+    $('setupEmail').textContent=S.email;
+    renderSetup();renderTimeline();
+  }
+  else if(view==='approved'){
+    $('view-approved').classList.remove('hidden');
+    $('apTitle').textContent='You’re approved'+(S.firstName?', '+S.firstName:'');
+    $('apBiz').textContent=S.f.legalName||'the business';
+    $('apEmail').textContent=S.email;
+    $('ap-sign').value=S.signName||'';
+    $('ap-sign').closest('.field').classList.toggle('filled',!!S.signName);
+    $('btnActivate').disabled=!S.signName;
+  }
+  else if(view==='live'){
+    $('view-live').classList.remove('hidden');
+    renderLive();
+  }
+  else{
+    $('app').classList.remove('hidden');$('progressLine').classList.remove('hidden');
+    $('userEmail').textContent=S.email;
+    showPage(S.page);
+  }
+  window.scrollTo(0,0);
+}
+
+var regTimers=[];
+function showPage(id){
+  S.page=id;persist();
+  regTimers.forEach(clearTimeout);regTimers=[];
+  document.querySelectorAll('.appage').forEach(function(p){p.classList.add('hidden');});
+  var div=$('page-'+id);
+  if(div)div.classList.remove('hidden');
+  if(id==='welcome'){$('stepMeta').textContent='Getting started';}
+  else if(id==='registry'){
+    $('stepMeta').textContent='Step 1 of '+PAGE_ORDER.length;
+    startRegistry();
+  }else{
+    $('stepMeta').textContent='Step '+(PAGE_ORDER.indexOf(id)+1)+' of '+PAGE_ORDER.length;
+    if(id==='identity')syncRegBadge();
+    if(id==='finance')syncSliders();
+    if(id==='people')renderIndividuals();
+    if(id==='review')renderReview();
+    refreshInvalid(id);
+  }
+  paintNav();paintProgress();
+  window.scrollTo(0,0);
+}
+
+/* ============================ registry check ============================ */
+function startRegistry(){
+  var panel=$('regPanel');panel.innerHTML='';
+  $('regDoneBanner').classList.add('hidden');
+  $('regHint').classList.remove('hidden');
+  $('contRegistry').disabled=true;
+  $('regSub').textContent='We’re confirming '+(S.f.legalName||'your business')+' with the federal and provincial registries.';
+  var rows=[
+    ['Searching the federal and provincial registries','Business found: <strong>'+esc(S.f.legalName)+'</strong>'],
+    ['Matching the corporation or business number','Number matches: <strong>'+esc(S.f.regNumber)+'</strong>'],
+    ['Confirming entity status','Status: <strong>Active and in good standing</strong>']
+  ];
+  var spin='<span class="spinner"></span>';
+  var check='<svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#045B3F"/><path d="M6.4 10.2l2.4 2.4 4.8-5" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  rows.forEach(function(r,i){
+    var row=el('div','reg-row','<span class="ic">'+spin+'</span><span class="t">'+r[0]+'</span>');
+    panel.appendChild(row);
+    regTimers.push(setTimeout(function(){
+      row.className='reg-row done';
+      row.innerHTML='<span class="ic">'+check+'</span><span class="t">'+r[1]+'</span>';
+      if(i===rows.length-1){
+        regTimers.push(setTimeout(function(){
+          $('regDoneBanner').classList.remove('hidden');
+          $('regHint').classList.add('hidden');
+          $('contRegistry').disabled=false;
+          S.regCheckedFor=regKey();
+          save();
+        },450));
+      }
+    },800+i*900));
+  });
+}
+function syncRegBadge(){
+  var ok=regVerified();
+  $('regBadge').classList.toggle('hidden',!ok);
+  if(ok)$('regBadgeTxt').textContent='Confirmed in the registry: '+S.f.legalName+' · Active';
+}
+
+/* ============================ sidebar ============================ */
+var IC={
+  todo:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.6" fill="none" stroke="#9AA4B2" stroke-width="1.7"/></svg>',
+  cur:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.6" fill="none" stroke="#045B3F" stroke-width="1.9"/><circle cx="10" cy="10" r="3.4" fill="#045B3F"/></svg>',
+  done:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#045B3F"/><path d="M6.4 10.2l2.4 2.4 4.8-5" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  warn:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#FEF0C7"/><text x="10" y="14" text-anchor="middle" font-size="11.5" font-weight="700" fill="#B54708">!</text></svg>'
+};
+var MINI={
+  done:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#099250" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  warn:'<svg width="13" height="13" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#FEF0C7"/><text x="10" y="14" text-anchor="middle" font-size="11.5" font-weight="700" fill="#B54708">!</text></svg>'
+};
+function curPageForNav(){return S.page==='registry'?'identity':S.page;}
+function pageStatus(id){
+  var miss=missingPage(id).length;
+  if(id==='review')return curPageForNav()==='review'?'cur':'todo';
+  if(!miss)return 'done';
+  if(S.attempted[id])return 'warn';
+  return curPageForNav()===id?'cur':'todo';
+}
+function groupStatus(g){
+  var anyWarn=false,allDone=true,hasCur=false;
+  g.pages.forEach(function(pg){
+    var st=pageStatus(pg[0]);
+    if(st!=='done')allDone=false;
+    if(st==='warn')anyWarn=true;
+    if(pg[0]===curPageForNav())hasCur=true;
+  });
+  if(allDone)return 'done';
+  if(anyWarn)return 'warn';
+  if(hasCur)return 'cur';
+  return 'todo';
+}
+function paintNav(){
+  var nav=$('nav');nav.innerHTML='';
+  var cur=curPageForNav();
+  GROUPS.forEach(function(g){
+    var gActive=g.pages.some(function(pg){return pg[0]===cur;});
+    var b=el('button','nav-item'+(gActive?' active':''),'<span class="stat">'+IC[groupStatus(g)]+'</span><span>'+g.title+'</span>');
+    b.onclick=function(){showPage(g.pages[0][0]);};
+    nav.appendChild(b);
+    if(g.pages.length>1){
+      var sub=el('div','nav-sub');
+      g.pages.forEach(function(pg){
+        var st=pageStatus(pg[0]);
+        var mini=st==='done'?MINI.done:st==='warn'?MINI.warn:'';
+        var a=el('button',pg[0]===cur?'cur':'',pg[1]+'<span class="mini">'+mini+'</span>');
+        a.onclick=function(){showPage(pg[0]);};
+        sub.appendChild(a);
+      });
+      nav.appendChild(sub);
+    }
+  });
+}
+function paintProgress(){
+  var total=requiredTotal();
+  var pct=Math.round((total-allMissing().length)/total*100);
+  if(S.submitted)pct=100;
+  $('progressFill').style.width=pct+'%';
+}
+
+/* ============================ field binding ============================ */
+function bindFields(){
+  document.querySelectorAll('[data-k]').forEach(function(inp){
+    var k=inp.dataset.k;
+    var w=inp.closest('.field');
+    var set=function(){
+      var v=inp.value;
+      if(k==='postal')v=inp.value=v.toUpperCase();
+      S.f[k]=v;
+      if(w){w.classList.toggle('filled',!!v);if(v)w.classList.remove('invalid');}
+      var q=inp.closest('.q');
+      if(q&&v)q.classList.remove('invalid');
+      if(k==='legalName'||k==='regNumber')syncRegBadge();
+      save();
+    };
+    inp.addEventListener('input',set);
+    inp.addEventListener('change',set);
+  });
+}
+function hydrateFields(){
+  document.querySelectorAll('[data-k]').forEach(function(inp){
+    var k=inp.dataset.k;
+    inp.value=S.f[k]||'';
+    var w=inp.closest('.field');
+    if(w)w.classList.toggle('filled',!!S.f[k]);
+  });
+  $('f-consent').checked=!!S.f.consent;
+  $('f-notOwner').checked=!!S.f.notOwner;
+  renderAllChips();renderUploads();syncHoldco();syncSliders();
+}
+
+/* sliders (Ramp style) */
+function sliderEls(){return document.querySelectorAll('.sliderq[data-slider]');}
+function paintSlider(sq){
+  var k=sq.dataset.slider,opts=SLIDERS[k],inp=sq.querySelector('input'),read=sq.querySelector('.slider-read');
+  var v=S.f[k];
+  var idx=v?opts.indexOf(v):-1;
+  inp.value=idx>=0?idx:0;
+  var p=(idx>=0?idx:0)/(opts.length-1)*100;
+  inp.style.background='linear-gradient(to right, var(--brand-500) '+p+'%, var(--gray-100) '+p+'%)';
+  if(idx>=0){
+    read.innerHTML='Selected: <strong>'+esc(v)+'</strong>'+esc(sq.dataset.suffix||'');
+    sq.classList.remove('invalid');
+  }else{
+    read.textContent='Drag the slider to select an estimate';
+  }
+}
+function bindSliders(){
+  sliderEls().forEach(function(sq){
+    var k=sq.dataset.slider,opts=SLIDERS[k],inp=sq.querySelector('input');
+    inp.max=opts.length-1;
+    var set=function(){
+      S.f[k]=opts[+inp.value];
+      paintSlider(sq);
+      save();
+    };
+    inp.addEventListener('input',set);
+    inp.addEventListener('change',set);
+  });
+}
+function syncSliders(){sliderEls().forEach(paintSlider);}
+
+/* chips + seg */
+function renderChips(boxId,wrapId,key,options,exclusive){
+  var box=$(boxId);box.innerHTML='';
+  options.forEach(function(u){
+    var on=S.f[key].indexOf(u)>=0;
+    var c=el('label','chip'+(on?' on':''),'<input type="checkbox"'+(on?' checked':'')+'><span>'+esc(u)+'</span>');
+    c.querySelector('input').addEventListener('change',function(e){
+      if(e.target.checked){
+        if(exclusive&&u===exclusive)S.f[key]=[u];
+        else{S.f[key]=S.f[key].filter(function(x){return x!==exclusive;});S.f[key].push(u);}
+      }else S.f[key]=S.f[key].filter(function(x){return x!==u;});
+      $(wrapId).classList.remove('invalid');
+      save();renderChips(boxId,wrapId,key,options,exclusive);
+    });
+    box.appendChild(c);
+  });
+}
+function renderSeg(boxId,wrapId,key,options){
+  var box=$(boxId);box.innerHTML='';
+  options.forEach(function(u){
+    var on=S.f[key]===u;
+    var c=el('label','chip'+(on?' on':''),'<input type="radio"'+(on?' checked':'')+'><span>'+esc(u)+'</span>');
+    c.querySelector('input').addEventListener('change',function(){
+      S.f[key]=u;
+      $(wrapId).classList.remove('invalid');
+      save();renderSeg(boxId,wrapId,key,options);
+      if(key==='corpOwner')syncHoldco();
+    });
+    box.appendChild(c);
+  });
+}
+function renderAllChips(){
+  renderChips('restrictedChips','restrictedWrap','restricted',RESTRICTED,'None of these');
+  renderChips('travelChips','travelWrap','travel',TRAVEL,'Domestic only');
+  renderChips('useChips','useWrap','intendedUse',USES,null);
+  renderSeg('cadDirSeg','cadDirWrap','canadianDirector',YESNO);
+  renderSeg('earnSeg','earnWrap','earnType',EARN);
+  renderSeg('corpOwnerSeg','corpOwnerWrap','corpOwner',YESNO);
+}
+function syncHoldco(){$('holdcoFields').classList.toggle('hidden',S.f.corpOwner!=='Yes');}
+
+function refreshInvalid(id){
+  if(!S.attempted[id])return;
+  var miss=missingPage(id);
+  function mark(k){
+    var inp=document.querySelector('[data-k="'+k+'"]');
+    if(inp&&inp.closest('.field'))inp.closest('.field').classList.toggle('invalid',miss.indexOf(k)>=0);
+  }
+  if(id==='identity'){
+    K_IDENTITY.forEach(mark);
+    $('restrictedWrap').classList.toggle('invalid',miss.indexOf('restricted')>=0);
+    $('cadDirWrap').classList.toggle('invalid',miss.indexOf('canadianDirector')>=0);
+  }
+  if(id==='location')K_LOCATION.forEach(mark);
+  if(id==='finance'){
+    sliderEls().forEach(function(sq){sq.classList.toggle('invalid',miss.indexOf(sq.dataset.slider)>=0);});
+    $('q-sourceFunds').classList.toggle('invalid',miss.indexOf('sourceFunds')>=0);
+    $('travelWrap').classList.toggle('invalid',miss.indexOf('travel')>=0);
+    $('useWrap').classList.toggle('invalid',miss.indexOf('intendedUse')>=0);
+    $('earnWrap').classList.toggle('invalid',miss.indexOf('earnType')>=0);
+  }
+  if(id==='documents')renderUploads();
+  if(id==='people'){
+    $('consentWrap').classList.toggle('invalid',miss.indexOf('consent')>=0);
+    renderIndividuals();
+  }
+  if(id==='corp'){
+    $('corpOwnerWrap').classList.toggle('invalid',miss.indexOf('corpOwner')>=0);
+    mark('holdcoName');mark('holdcoAddress');
+  }
+}
+
+/* uploads */
+function uploadBox(mount,getFile,setFile,opts){
+  var box=$(mount);box.innerHTML='';
+  var f=getFile();
+  if(f){
+    var chip=el('div','filechip',
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#045B3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'+
+      '<div style="flex:1;min-width:0"><div class="fname">'+esc(f.name)+'</div><div class="fsub">Uploaded</div></div>'+
+      '<button aria-label="Remove file"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>');
+    chip.querySelector('button').onclick=function(){setFile(null);};
+    box.appendChild(chip);
+  }else{
+    var invalid=!!(opts&&opts.invalid);
+    var up=el('div','upload'+(opts&&opts.small?' sm':'')+(invalid?' invalid':''),
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+(invalid?'#C01048':'#697586')+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+
+      '<div class="u1">'+(opts&&opts.label?esc(opts.label):'Drag and drop, or click to upload')+(invalid?' (required)':'')+'</div><div class="u2">'+(opts&&opts.hint?esc(opts.hint):'One PDF, JPEG, or PNG, up to 10 MB')+'</div>');
+    var inp=document.createElement('input');inp.type='file';inp.accept='.pdf,.jpg,.jpeg,.png';inp.style.display='none';
+    inp.addEventListener('change',function(){if(inp.files&&inp.files[0])setFile({name:inp.files[0].name});});
+    up.appendChild(inp);
+    up.onclick=function(){inp.click();};
+    ['dragover','dragenter'].forEach(function(ev){up.addEventListener(ev,function(e){e.preventDefault();up.style.borderColor='#045B3F';});});
+    up.addEventListener('dragleave',function(){up.style.borderColor='';});
+    up.addEventListener('drop',function(e){
+      e.preventDefault();
+      if(e.dataTransfer.files&&e.dataTransfer.files[0])setFile({name:e.dataTransfer.files[0].name});
+    });
+    box.appendChild(up);
+  }
+}
+function renderUploads(){
+  uploadBox('upInc',function(){return S.f.docInc;},function(v){S.f.docInc=v;save();renderUploads();},{invalid:S.attempted['documents']&&!S.f.docInc});
+  uploadBox('upOps',function(){return S.f.docOps;},function(v){S.f.docOps=v;save();renderUploads();},{invalid:S.attempted['documents']&&!S.f.docOps});
+}
+
+/* ============================ individuals ============================ */
+function renderIndividuals(){
+  var list=$('indList');list.innerHTML='';
+  if(!S.f.individuals.length){
+    var inv=S.attempted['people']&&!S.f.individuals.length;
+    var empty=el('div','ind-empty','No key individuals added'+(inv?' <span style="color:var(--error-600);font-weight:600">(required)</span>':' (required)'));
+    if(inv){empty.style.borderColor='var(--error-600)';empty.style.background='var(--error-50)';}
+    list.appendChild(empty);
+  }
+  S.f.individuals.forEach(function(p,i){
+    var initials=((p.firstName||' ')[0]+(p.lastName||' ')[0]).toUpperCase();
+    var roles=p.roles.join(' &middot; ')+(p.roles.indexOf('Beneficial owner')>=0&&p.ownPct?' ('+esc(p.ownPct)+'%)':'')+(p.isMe?' &middot; You':'');
+    var ok=indVerified(p);
+    var card=el('div','ind-card',
+      '<div class="av">'+esc(initials)+'</div>'+
+      '<div class="who"><div class="nm">'+esc(indName(p))+'</div><div class="rl">'+roles+'</div></div>'+
+      '<span class="pill '+(ok?'green':'amber')+'">'+(ok?'Identity verified':'ID verification required')+'</span>'+
+      '<button class="icobtn" data-act="edit" aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>'+
+      '<button class="icobtn" data-act="del" aria-label="Remove"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>');
+    card.querySelector('[data-act="edit"]').onclick=function(){openDrawer(i);};
+    card.querySelector('[data-act="del"]').onclick=function(){S.f.individuals.splice(i,1);save();renderIndividuals();};
+    list.appendChild(card);
+  });
+}
+
+/* drawer */
+var editIdx=-1, drRoles=[], drIdDoc=null, drSelfie=null;
+var DK=['firstName','lastName','dob','email','phone','occupation','street','unit','city','province','postal'];
+function renderDrawerUploads(){
+  uploadBox('upIdDoc',function(){return drIdDoc;},function(v){drIdDoc=v;renderDrawerUploads();},{small:true,label:'Upload ID',hint:'PDF, JPEG, or PNG'});
+  uploadBox('upSelfie',function(){return drSelfie;},function(v){drSelfie=v;renderDrawerUploads();},{small:true,label:'Upload selfie',hint:'JPEG or PNG'});
+  $('idvOk').classList.toggle('hidden',!(drIdDoc&&drSelfie));
+}
+function syncIsMe(){
+  var on=$('d-isMe').checked;
+  var em=$('d-email');
+  if(on){
+    if(!$('d-firstName').value)$('d-firstName').value=S.firstName||'';
+    if(!$('d-lastName').value)$('d-lastName').value=S.lastName||'';
+    em.value=S.email;em.readOnly=true;
+    ['d-firstName','d-lastName','d-email'].forEach(function(id){var f=$(id).closest('.field');f.classList.toggle('filled',!!$(id).value);f.classList.remove('invalid');});
+  }else{
+    em.readOnly=false;
+  }
+  $('emailLockHint').classList.toggle('hidden',!on);
+}
+function openDrawer(idx){
+  editIdx=idx;
+  var p=idx>=0?S.f.individuals[idx]:null;
+  drRoles=p?p.roles.slice():[];
+  drIdDoc=p?(p.idDoc||null):null;
+  drSelfie=p?(p.selfie||null):null;
+  $('drTitle').textContent=p?'Edit key individual':'Add key individual';
+  $('drSave').textContent=p?'Save changes':'Add key individual';
+  DK.forEach(function(k){
+    var inp=$('d-'+k);inp.value=p?(p[k]||''):'';
+    inp.closest('.field').classList.toggle('filled',!!inp.value);
+    inp.closest('.field').classList.remove('invalid');
+  });
+  $('d-ownPct').value=p?(p.ownPct||''):'';
+  $('d-ownPct').closest('.field').classList.toggle('filled',!!(p&&p.ownPct));
+  $('d-isMe').checked=!!(p&&p.isMe);
+  document.querySelectorAll('.rolecard').forEach(function(rc){rc.classList.toggle('on',drRoles.indexOf(rc.dataset.role)>=0);});
+  $('rolesWrap').classList.remove('invalid');
+  syncOwnPct();syncIsMe();renderDrawerUploads();
+  $('drawer').classList.remove('hidden');$('drawerOverlay').classList.remove('hidden');
+  $('drawer').querySelector('.dr-body').scrollTop=0;
+  document.body.style.overflow='hidden';
+}
+function closeDrawer(){$('drawer').classList.add('hidden');$('drawerOverlay').classList.add('hidden');document.body.style.overflow='';}
+function syncOwnPct(){$('ownPctWrap').classList.toggle('hidden',drRoles.indexOf('Beneficial owner')<0);}
+function saveDrawer(){
+  var ok=true;
+  if(!drRoles.length){$('rolesWrap').classList.add('invalid');ok=false;}
+  DK.forEach(function(k){
+    if(k==='unit')return;
+    var inp=$('d-'+k);
+    var bad=!inp.value;
+    inp.closest('.field').classList.toggle('invalid',bad);
+    if(bad)ok=false;
+  });
+  if(drRoles.indexOf('Beneficial owner')>=0&&!$('d-ownPct').value){$('d-ownPct').closest('.field').classList.add('invalid');ok=false;}
+  if(!ok){$('drawer').querySelector('.dr-body').scrollTop=0;return;}
+  var p={roles:drRoles.slice(),ownPct:$('d-ownPct').value,isMe:$('d-isMe').checked,idDoc:drIdDoc,selfie:drSelfie};
+  DK.forEach(function(k){p[k]=$('d-'+k).value;});
+  if(editIdx>=0)S.f.individuals[editIdx]=p;else S.f.individuals.push(p);
+  save();closeDrawer();renderIndividuals();
+}
+
+/* ============================ review ============================ */
+function fieldVal(k){
+  var v=S.f[k];
+  if(k==='restricted'||k==='travel'||k==='intendedUse')return v.length?v.join(', '):'';
+  if(k==='docInc'||k==='docOps')return v?v.name:'';
+  return v||'';
+}
+function reqLink(page,key){return '<a class="req" href="#" data-goto="'+page+'" data-key="'+key+'">Required</a>';}
+function gotoTarget(k){
+  if(k.indexOf('idv:')===0)return null;
+  if(SLIDERS[k])return document.querySelector('.sliderq[data-slider="'+k+'"]');
+  return k==='docInc'?$('upInc'):k==='docOps'?$('upOps')
+    :k==='sourceFunds'?$('q-sourceFunds')
+    :k==='intendedUse'?$('useWrap'):k==='restricted'?$('restrictedWrap'):k==='travel'?$('travelWrap')
+    :k==='canadianDirector'?$('cadDirWrap'):k==='earnType'?$('earnWrap'):k==='corpOwner'?$('corpOwnerWrap')
+    :k==='individuals'?$('indList'):k==='consent'?$('consentWrap')
+    :document.querySelector('[data-k="'+k+'"]');
+}
+function wireGapLinks(root){
+  root.querySelectorAll('a[data-goto]').forEach(function(a){
+    a.onclick=function(ev){
+      ev.preventDefault();
+      var pg=a.dataset.goto, k=a.dataset.key||'';
+      S.attempted[pg]=true;
+      showPage(pg);
+      if(k.indexOf('idv:')===0){setTimeout(function(){openDrawer(+k.slice(4));},120);return;}
+      if(k)setTimeout(function(){
+        var t=gotoTarget(k);
+        if(t){t.scrollIntoView({behavior:'smooth',block:'center'});if(t.focus&&t.tagName!=='DIV')t.focus({preventScroll:true});}
+      },60);
+    };
+  });
+}
+function revSection(title,page,miss,bodyEl,topMargin){
+  var sec=el('div','rev-sec');
+  if(topMargin)sec.style.marginTop=topMargin;
+  sec.appendChild(el('div','rev-head','<h2>'+title+'</h2>'+(miss.length?'<span class="chip-warn">'+miss.length+' incomplete</span>':'')+'<div class="spacer"></div><a class="edit" href="#" data-goto="'+page+'">Edit</a>'));
+  sec.appendChild(bodyEl);
+  return sec;
+}
+function kvCard(page,keys){
+  var card=el('div','rev-card');
+  keys.forEach(function(k){
+    var optional=(k==='operatingName'||k==='unit'||k==='hearAbout');
+    var v=fieldVal(k);
+    var inner;
+    if(v)inner='<div class="rv">'+esc(v)+'</div>';
+    else if(optional)inner='<div class="rv muted">Not provided</div>';
+    else inner=reqLink(page,k);
+    card.appendChild(el('div','rev-row','<div class="rl">'+esc(LABELS[k])+'</div>'+inner));
+  });
+  return card;
+}
+function renderReview(){
+  var R=$('reviewSections');R.innerHTML='';
+
+  var idCard=kvCard('identity',['legalName','operatingName','website','entityType','regNumber','industry','restricted','canadianDirector']);
+  if(regVerified())idCard.appendChild(el('div','rev-row','<div class="rl">Registry check</div><div class="rv good">Confirmed in the registry: Active and in good standing</div>'));
+  R.appendChild(revSection('Business identity','identity',missingPage('identity'),idCard,'38px'));
+
+  R.appendChild(revSection('Business location','location',missingPage('location'),kvCard('location',['street','unit','city','province','postal'])));
+  R.appendChild(revSection('Finance','finance',missingPage('finance'),kvCard('finance',['earnType','revenue','sourceFunds','outValue','outCount','inValue','inCount','travel','intendedUse','hearAbout'])));
+  R.appendChild(revSection('Documents','documents',missingPage('documents'),kvCard('documents',['docInc','docOps'])));
+
+  var pCard=el('div','rev-card');
+  if(S.f.individuals.length){
+    S.f.individuals.forEach(function(p,i){
+      var ok=indVerified(p);
+      pCard.appendChild(el('div','rev-row','<div class="rl">'+esc(p.roles.join(' / '))+(p.isMe?' &middot; You':'')+'</div><div class="rv">'+esc(indName(p))+' &middot; '+esc(p.email||'')+'</div>'+(ok?'<div class="rv good">Identity verified</div>':reqLink('people','idv:'+i))));
+    });
+  }else{
+    pCard.appendChild(el('div','rev-row','<div class="rl">Key individuals</div>'+reqLink('people','individuals')));
+  }
+  pCard.appendChild(el('div','rev-row','<div class="rl">Consent to verify identities</div>'+(S.f.consent?'<div class="rv">Confirmed</div>':reqLink('people','consent'))));
+  R.appendChild(revSection('Key individuals','people',missingPage('people'),pCard));
+
+  var cCard=el('div','rev-card');
+  cCard.appendChild(el('div','rev-row','<div class="rl">Another company owns 25% or more</div>'+(S.f.corpOwner?'<div class="rv">'+esc(S.f.corpOwner==='Yes'?('Yes'+(S.f.holdcoName?': '+S.f.holdcoName:'')):'No, all owners are individuals')+'</div>':reqLink('corp','corpOwner'))));
+  if(S.f.corpOwner==='Yes'){
+    if(!S.f.holdcoName)cCard.appendChild(el('div','rev-row','<div class="rl">'+esc(LABELS.holdcoName)+'</div>'+reqLink('corp','holdcoName')));
+    if(!S.f.holdcoAddress)cCard.appendChild(el('div','rev-row','<div class="rl">'+esc(LABELS.holdcoAddress)+'</div>'+reqLink('corp','holdcoAddress')));
+  }
+  R.appendChild(revSection('Corporate ownership','corp',missingPage('corp'),cCard));
+
+  $('certBiz').textContent=S.f.legalName||'the business';
+  wireGapLinks(R);
+  paintGaps();
+}
+function paintGaps(){
+  var box=$('gapsBox');var all=allMissing();
+  $('btnSubmit').disabled=all.length>0;
+  if(!all.length){box.innerHTML='';return;}
+  var html='<div class="gaps"><h4>Complete '+all.length+' required item'+(all.length>1?'s':'')+' to submit</h4>';
+  all.forEach(function(k){
+    html+='<a href="#" data-goto="'+keyPage(k)+'" data-key="'+k+'">'+esc(labelFor(k))+'</a>';
+  });
+  html+='</div>';
+  box.innerHTML=html;
+  wireGapLinks(box);
+}
+
+/* ============================ setup hub ============================ */
+function setupDone(){
+  return [S.setup.etSent,S.setup.invites.length>0,!!S.setup.plan,S.setup.tfaEnabled];
+}
+function renderTimeline(){
+  var t=$('timelineBody');
+  var fast=S.setup.etSent;
+  t.innerHTML=
+    '<div class="tstep"><div class="trail"><div class="tdot done"></div><div class="tbar"></div></div><div class="tb"><div class="tt">Apply</div><div class="td">Submitted on '+fmtDate(S.submittedAt||Date.now())+'</div></div></div>'+
+    '<div class="tstep"><div class="trail"><div class="tdot cur"></div><div class="tbar"></div></div><div class="tb"><div class="tt">In review</div><div class="td'+(fast?' fast':'')+'">'+(fast?'Priority review: approx. 1 to 2 business days':'Approx. 2 to 6 business days')+'</div></div></div>'+
+    '<div class="tstep"><div class="trail"><div class="tdot todo"></div></div><div class="tb" style="padding-bottom:0"><div class="tt">Account ready</div><div class="td">Sign your agreements and you’re live.</div></div></div>';
+  $('tcardRef').textContent='Application '+(S.ref||'');
+}
+var NCHECK='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+function setupHead(i,title,done,meta){
+  return '<button class="setup-head'+(done?' done':'')+'" data-toggle="'+i+'">'+
+    '<span class="n"'+(done?' style="background:var(--success-500);color:#fff"':'')+'>'+(done?NCHECK:(i+1))+'</span>'+
+    '<span class="ttl">'+title+'</span>'+
+    (meta?'<span class="meta">'+meta+'</span>':'')+
+    '</button>';
+}
+function renderSetup(){
+  var d=setupDone();
+  $('setupCount').textContent=d.filter(Boolean).length+' of 4 complete';
+  var open=S.setup.open;
+  var list=$('setupList');list.innerHTML='';
+
+  /* 1 — e-Transfer */
+  var it1=el('div','setup-item',setupHead(0,'Make your first deposit',d[0],d[0]?'Priority review applied':'Speeds up your review'));
+  if(open===0){
+    var b1=el('div','setup-body');
+    if(S.setup.etSent){
+      b1.innerHTML='<div class="done-banner"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Your e-Transfer'+(S.setup.etAmount?' of $'+esc(S.setup.etAmount):'')+' is on its way. We’ll credit it the moment your account opens, and your application is now in the priority queue.</span></div>';
+    }else{
+      b1.innerHTML=
+        '<ul class="accepts" style="margin-bottom:14px">'+
+          '<li>Priority review for applications with a deposit</li>'+
+          '<li>Instant access to transactions and payments at approval</li>'+
+          '<li>Funds are credited the moment your account opens</li>'+
+        '</ul>'+
+        '<div class="dep-box">'+
+          '<div class="dl">Send an Interac e-Transfer to</div><div class="dv">deposits@bankonloop.com</div>'+
+          '<div class="dl">Reference (include in the message field)</div><div class="dv">'+esc(S.ref||'')+'</div>'+
+        '</div>'+
+        '<p class="fhelp" style="margin:0 0 14px">Autodeposit is enabled. The reference lets us match your transfer instantly.</p>'+
+        '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount <span class="req-mark">(optional)</span></div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
+        '<button class="btn btn-primary btn-sm" id="etSentBtn">I’ve sent the e-Transfer</button>';
+    }
+    it1.appendChild(b1);
+  }
+  list.appendChild(it1);
+
+  /* 2 — invites */
+  var it2=el('div','setup-item',setupHead(1,'Invite your team',d[1],d[1]?S.setup.invites.length+' invited':''));
+  if(open===1){
+    var b2=el('div','setup-body');
+    var rows='';
+    S.setup.invites.forEach(function(iv,ix){
+      rows+='<div class="invited"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg><span class="iv-em">'+esc(iv.email)+'</span><span class="iv-role">'+esc(iv.role)+' · Invite sends at activation</span><button class="icobtn" data-uninvite="'+ix+'" aria-label="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
+    });
+    b2.innerHTML=
+      '<p class="desc">Teammates get their own login the day the account opens. You stay in control of roles and limits.</p>'+rows+
+      '<div class="invite-row"><div class="qfield"><input id="invEmail" type="email" placeholder="teammate@'+esc((S.email.split('@')[1]||'company.com'))+'"></div>'+
+      '<div class="qfield"><select id="invRole">'+ROLES_TEAM.map(function(r){return '<option>'+r+'</option>';}).join('')+'</select><span class="chev">&#9662;</span></div>'+
+      '<button class="btn btn-secondary btn-sm" id="invAdd">Invite</button></div>';
+    it2.appendChild(b2);
+  }
+  list.appendChild(it2);
+
+  /* 3 — plans */
+  var it3=el('div','setup-item',setupHead(2,'Preview your plan',d[2],d[2]?S.setup.plan:''));
+  if(open===2){
+    var b3=el('div','setup-body');
+    var cards='';
+    PLANS.forEach(function(p){
+      var on=S.setup.plan===p.name;
+      cards+='<div class="plancard'+(on?' on':'')+'" data-plan="'+esc(p.name)+'">'+(p.pop?'<span class="pop">Most popular</span>':'')+
+        '<div style="flex:1;min-width:0"><div class="pn">'+esc(p.name)+'</div><div class="pp">'+esc(p.price)+'</div><div class="pf">'+p.feat+'</div></div></div>';
+    });
+    b3.innerHTML='<p class="desc">Every plan has 0% FX fees on card purchases, free wire transfers, and no account minimums.</p>'+cards+
+      '<p class="plan-note">You can change plans anytime. Billing starts only after your account is active.</p>';
+    it3.appendChild(b3);
+  }
+  list.appendChild(it3);
+
+  /* 4 — 2FA */
+  var it4=el('div','setup-item',setupHead(3,'Enable two-factor authentication',d[3],d[3]?'On':''));
+  if(open===3){
+    var b4=el('div','setup-body');
+    if(S.setup.tfaEnabled){
+      b4.innerHTML='<div class="done-banner"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Two-factor authentication is on. We’ll text '+esc(S.setup.tfaPhone)+' a code each time you sign in.</span></div>';
+    }else if(S.setup.tfaCodeSent){
+      b4.innerHTML='<p class="desc">Enter the 6-digit code we sent to '+esc(S.setup.tfaPhone)+'.</p>'+
+        '<div class="code-row sm" id="tfaCodeRow"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>'+
+        '<button class="btn btn-primary btn-sm" id="tfaEnable" disabled style="margin-top:12px">Enable 2FA</button>';
+    }else{
+      b4.innerHTML='<p class="desc">Protect the account before there’s money in it. We’ll text a code each time you sign in.</p>'+
+        '<div class="invite-row" style="grid-template-columns:130px 1fr auto"><div class="fixedbox" style="height:48px"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div>'+
+        '<div class="qfield"><input id="tfaPhone" type="tel" inputmode="tel" placeholder="(416) 555-0123" value="'+esc(S.setup.tfaPhone)+'"></div>'+
+        '<button class="btn btn-secondary btn-sm" id="tfaSend">Text me a code</button></div>';
+    }
+    it4.appendChild(b4);
+  }
+  list.appendChild(it4);
+
+  /* wiring */
+  list.querySelectorAll('[data-toggle]').forEach(function(h){
+    h.onclick=function(){S.setup.open=+h.dataset.toggle===S.setup.open?-1:+h.dataset.toggle;persist();renderSetup();};
+  });
+  var amt=$('etAmount');if(amt)amt.addEventListener('input',function(){S.setup.etAmount=amt.value.replace(/[^0-9.]/g,'');persist();});
+  var etb=$('etSentBtn');if(etb)etb.onclick=function(){S.setup.etSent=true;persist();renderSetup();renderTimeline();};
+  var inv=$('invAdd');if(inv)inv.onclick=function(){
+    var em=$('invEmail');
+    if(!em.value||em.value.indexOf('@')<1){em.style.borderColor='var(--error-600)';return;}
+    S.setup.invites.push({email:em.value.trim(),role:$('invRole').value});
+    persist();renderSetup();
+  };
+  list.querySelectorAll('[data-uninvite]').forEach(function(b){
+    b.onclick=function(){S.setup.invites.splice(+b.dataset.uninvite,1);persist();renderSetup();};
+  });
+  list.querySelectorAll('.plancard').forEach(function(pc){
+    pc.onclick=function(){S.setup.plan=pc.dataset.plan;persist();renderSetup();};
+  });
+  var tfp=$('tfaPhone');if(tfp)tfp.addEventListener('input',function(){S.setup.tfaPhone=tfp.value;persist();});
+  var tfs=$('tfaSend');if(tfs)tfs.onclick=function(){
+    if(!S.setup.tfaPhone){$('tfaPhone').style.borderColor='var(--error-600)';return;}
+    S.setup.tfaCodeSent=true;persist();renderSetup();
+  };
+  var tcr=$('tfaCodeRow');
+  if(tcr){
+    var cis=Array.prototype.slice.call(tcr.querySelectorAll('input'));
+    cis.forEach(function(inp,i){
+      inp.addEventListener('input',function(){
+        inp.value=inp.value.replace(/\D/g,'').slice(0,1);
+        if(inp.value&&i<5)cis[i+1].focus();
+        $('tfaEnable').disabled=!cis.every(function(c){return c.value;});
+      });
+      inp.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!inp.value&&i>0)cis[i-1].focus();});
+    });
+    cis[0].focus();
+  }
+  var tfe=$('tfaEnable');if(tfe)tfe.onclick=function(){S.setup.tfaEnabled=true;persist();renderSetup();};
+}
+
+/* ============================ live ============================ */
+function renderLive(){
+  $('liveLead').textContent=(S.f.legalName||'Your business')+'’s account is open and ready.';
+  var ic='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  var rows='';
+  rows+='<div class="live-row">'+ic+'<span>Agreements signed by '+esc(S.signName||'')+' · copies sent to '+esc(S.email)+'</span></div>';
+  rows+=S.setup.etSent
+    ?'<div class="live-row">'+ic+'<span>Your e-Transfer'+(S.setup.etAmount?' of $'+esc(S.setup.etAmount):'')+' has been credited to your CAD account</span></div>'
+    :'<div class="live-row">'+ic+'<span>Make your first deposit from the dashboard to start transacting</span></div>';
+  rows+='<div class="live-row">'+ic+'<span>'+(S.setup.plan?('You’re on '+esc(S.setup.plan)+'. Change plans anytime in settings'):'You’re on Basic. Upgrade anytime in settings')+'</span></div>';
+  if(S.setup.invites.length)rows+='<div class="live-row">'+ic+'<span>'+S.setup.invites.length+' team invitation'+(S.setup.invites.length>1?'s':'')+' sent</span></div>';
+  rows+='<div class="live-row">'+ic+'<span>Two-factor authentication is '+(S.setup.tfaEnabled?'on':'off, you can enable it in security settings')+'</span></div>';
+  $('liveRows').innerHTML=rows;
+}
+
+/* ============================ modal ============================ */
+var modalNext=null;
+function openModal(count,next){
+  modalNext=next;
+  $('modalBody').textContent=count+(count===1?' field isn’t':' fields aren’t')+' complete. You can move on now, but you’ll need to complete '+(count===1?'it':'them')+' before submitting.';
+  $('modalOverlay').classList.remove('hidden');
+}
+function closeModal(){$('modalOverlay').classList.add('hidden');modalNext=null;}
+
+/* ============================ continue ============================ */
+function continueFrom(id){
+  S.attempted[id]=true;
+  var miss=missingPage(id);
+  refreshInvalid(id);
+  save();
+  var next=function(){
+    if(id==='identity'){
+      if(S.f.legalName&&S.f.regNumber&&!regVerified())showPage('registry');
+      else showPage('location');
+    }else showPage(NEXT_PAGE[id]);
+  };
+  if(miss.length)openModal(miss.length,next);
+  else next();
+}
+
+/* ============================ wire up ============================ */
+document.addEventListener('DOMContentLoaded',function(){
+  ['logoAuth','logoVerify','logoSide','logoSetup'].forEach(function(id){$(id).innerHTML=LOGO;});
+  fillSelect($('f-entityType'),ENTITIES);
+  fillSelect($('f-industry'),INDUSTRIES);
+  fillSelect($('f-province'),PROVINCES);
+  fillSelect($('f-sourceFunds'),SOURCES);
+  fillSelect($('f-hearAbout'),HEAR);
+  fillSelect($('d-province'),PROVINCES);
+  bindFields();bindSliders();hydrateFields();
+
+  /* auth */
+  $('toSignin').onclick=function(e){e.preventDefault();$('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');};
+  $('toSignup').onclick=function(e){e.preventDefault();$('authSignin').classList.add('hidden');$('authSignup').classList.remove('hidden');};
+  ['su-fn','su-ln','su-email','su-pass','si-email','si-pass'].forEach(function(id){
+    var inp=$(id);
+    inp.addEventListener('input',function(){
+      inp.closest('.field').classList.toggle('filled',!!inp.value);
+      inp.closest('.field').classList.remove('invalid');
+      if(id==='su-pass'){$('pwHint').classList.toggle('ok',inp.value.length>=8);}
+    });
+  });
+  $('btnSignup').onclick=function(){
+    var fn=$('su-fn'),ln=$('su-ln'),em=$('su-email'),pw=$('su-pass'),ok=true;
+    if(!fn.value){fn.closest('.field').classList.add('invalid');ok=false;}
+    if(!ln.value){ln.closest('.field').classList.add('invalid');ok=false;}
+    if(!em.value||em.value.indexOf('@')<1){em.closest('.field').classList.add('invalid');ok=false;}
+    if(pw.value.length<8){pw.closest('.field').classList.add('invalid');ok=false;}
+    if(!ok)return;
+    if(em.value.trim().toLowerCase()!==(S.email||'').toLowerCase()){S=freshState();}
+    S.email=em.value.trim();S.firstName=fn.value.trim();S.lastName=ln.value.trim();S.verified=false;
+    save();show('verify');
+    $('codeRow').querySelector('input').focus();
+  };
+  $('btnSignin').onclick=function(){
+    var em=$('si-email'),pw=$('si-pass'),ok=true;
+    if(!em.value||em.value.indexOf('@')<1){em.closest('.field').classList.add('invalid');ok=false;}
+    if(!pw.value){pw.closest('.field').classList.add('invalid');ok=false;}
+    if(!ok)return;
+    if(em.value.trim().toLowerCase()===(S.email||'').toLowerCase()&&S.verified){
+      if(S.activated)show('live');
+      else if(S.submitted){S.approved=true;persist();show('approved');}
+      else show('app');
+    }else{
+      S=freshState();S.email=em.value.trim();save();show('verify');
+      $('codeRow').querySelector('input').focus();
+    }
+  };
+
+  /* verify */
+  var codeInputs=Array.prototype.slice.call($('codeRow').querySelectorAll('input'));
+  codeInputs.forEach(function(inp,i){
+    inp.addEventListener('input',function(){
+      inp.value=inp.value.replace(/\D/g,'').slice(0,1);
+      if(inp.value&&i<5)codeInputs[i+1].focus();
+      $('btnVerify').disabled=!codeInputs.every(function(c){return c.value;});
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!inp.value&&i>0)codeInputs[i-1].focus();
+    });
+  });
+  $('btnVerify').onclick=function(){
+    S.verified=true;S.page='welcome';save();show('app');
+    codeInputs.forEach(function(c){c.value='';});$('btnVerify').disabled=true;
+  };
+  $('resend').onclick=function(e){e.preventDefault();this.textContent='Code sent';var t=this;setTimeout(function(){t.textContent='Resend code';},2500);};
+
+  /* welcome + continue buttons */
+  $('btnStart').onclick=function(){showPage('identity');};
+  document.querySelectorAll('[data-cont]').forEach(function(b){
+    b.onclick=function(){continueFrom(b.dataset.cont);};
+  });
+  $('contRegistry').onclick=function(){showPage('location');};
+
+  /* people-page checkboxes */
+  $('f-consent').addEventListener('change',function(e){
+    S.f.consent=e.target.checked;
+    if(e.target.checked)$('consentWrap').classList.remove('invalid');
+    save();
+    if(S.page==='review')renderReview();
+  });
+  $('f-notOwner').addEventListener('change',function(e){S.f.notOwner=e.target.checked;save();});
+
+  /* submit */
+  $('btnSubmit').onclick=function(){
+    S.attempted['review']=true;
+    if(allMissing().length){paintGaps();return;}
+    S.submitted=true;
+    S.submittedAt=Date.now();
+    S.ref='LP-'+String(Date.now()).slice(-6);
+    S.setup=freshSetup();
+    save();show('setup');
+  };
+
+  /* approved signing */
+  $('ap-sign').addEventListener('input',function(){
+    S.signName=this.value;
+    this.closest('.field').classList.toggle('filled',!!this.value);
+    $('btnActivate').disabled=!this.value.trim();
+    persist();
+  });
+  $('btnActivate').onclick=function(){
+    if(!S.signName.trim())return;
+    S.activated=true;S.signedAt=Date.now();persist();show('live');
+  };
+
+  /* individuals */
+  $('btnAddInd').onclick=function(){openDrawer(-1);};
+  $('drClose').onclick=closeDrawer;
+  $('drCancel').onclick=closeDrawer;
+  $('drawerOverlay').onclick=closeDrawer;
+  $('drSave').onclick=saveDrawer;
+  $('d-isMe').addEventListener('change',syncIsMe);
+  document.querySelectorAll('.rolecard').forEach(function(rc){
+    rc.onclick=function(){
+      var r=rc.dataset.role;
+      var i=drRoles.indexOf(r);
+      if(i>=0)drRoles.splice(i,1);else drRoles.push(r);
+      rc.classList.toggle('on',i<0);
+      $('rolesWrap').classList.remove('invalid');
+      syncOwnPct();
+    };
+  });
+  DK.concat(['ownPct']).forEach(function(k){
+    var inp=$('d-'+k);
+    inp.addEventListener('input',function(){
+      if(k==='postal')inp.value=inp.value.toUpperCase();
+      inp.closest('.field').classList.toggle('filled',!!inp.value);
+      if(inp.value)inp.closest('.field').classList.remove('invalid');
+    });
+    inp.addEventListener('change',function(){inp.closest('.field').classList.toggle('filled',!!inp.value);});
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){closeDrawer();closeModal();}
+  });
+
+  /* modal */
+  $('modalBack').onclick=closeModal;
+  $('modalGo').onclick=function(){var n=modalNext;closeModal();if(n)n();};
+
+  /* sign out */
+  function signOut(){S.view='auth';persist();
+    ['si-email','si-pass','su-fn','su-ln','su-email','su-pass'].forEach(function(id){$(id).value='';});
+    document.querySelectorAll('.auth-card .field').forEach(function(f){f.classList.remove('filled','invalid');});
+    $('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');
+    show('auth');
+  }
+  $('signOut').onclick=signOut;
+  $('setupSignOut').onclick=signOut;
+  $('apSignOut').onclick=signOut;
+  $('liveSignOut').onclick=signOut;
+
+  /* restore */
+  if(S.view==='auth')show('auth');
+  else if(S.activated)show('live');
+  else if(S.approved)show('approved');
+  else if(S.submitted)show('setup');
+  else if(S.verified&&S.view==='app')show('app');
+  else if(S.view==='verify'&&S.email)show('verify');
+  else show('auth');
+});
+</script>
+</body>
+</html>
