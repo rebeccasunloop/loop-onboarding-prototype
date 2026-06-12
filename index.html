@@ -226,6 +226,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 #drawer{position:fixed;top:0;right:0;bottom:0;width:620px;max-width:94vw;background:#fff;z-index:81;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(18,25,38,.18)}
 #drawer .dr-head{padding:34px 40px 8px;position:relative}
 #drawer h2.dr-title{font-size:30px;font-weight:500;letter-spacing:-.6px}
+#drawer .dr-sub{font-size:14px;color:var(--gray-600);margin-top:4px}
 #drawer .dr-x{position:absolute;top:22px;right:22px;background:none;border:none;color:var(--gray-500);padding:8px;border-radius:8px}
 #drawer .dr-x:hover{background:var(--gray-100);color:var(--gray-900)}
 #drawer .dr-body{flex:1;overflow-y:auto;padding:10px 40px 30px}
@@ -475,6 +476,20 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* chat (Intercom-style messenger) */
 .chatfab{position:fixed;right:24px;bottom:24px;width:54px;height:54px;border-radius:50%;background:var(--brand-500);border:none;box-shadow:0 8px 24px rgba(0,41,26,.35);display:flex;align-items:center;justify-content:center;color:#fff;z-index:95;transition:background .12s}
 .chatfab:hover{background:var(--brand-600)}
+/* handwritten "Questions?" callout pointing at the chat button */
+.chat-callout{position:fixed;right:92px;bottom:34px;z-index:94;pointer-events:none;display:flex;align-items:flex-start;gap:6px;color:var(--gray-700)}
+.chat-callout .cc-text{font-family:'Bradley Hand','Segoe Print','Comic Sans MS',cursive;font-size:16.5px;line-height:1.3;transform:rotate(-4deg);white-space:nowrap}
+.chat-callout svg{margin-top:10px}
+/* green confetti */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:120;overflow:hidden}
+.confetti-wrap span{position:absolute;top:-16px;display:block;opacity:0;animation:confetti-fall linear forwards}
+@keyframes confetti-fall{
+  0%{opacity:1;transform:translateY(-16px) translateX(0) rotate(0deg)}
+  25%{transform:translateY(25vh) translateX(-14px) rotate(160deg)}
+  50%{transform:translateY(52vh) translateX(12px) rotate(320deg)}
+  75%{opacity:1;transform:translateY(78vh) translateX(-10px) rotate(480deg)}
+  100%{opacity:.6;transform:translateY(106vh) translateX(8px) rotate(620deg)}
+}
 .chatpanel{position:fixed;right:24px;bottom:90px;width:360px;max-width:calc(100vw - 48px);height:540px;max-height:calc(100vh - 130px);background:#fff;border-radius:16px;box-shadow:var(--shadow-overlay),0 20px 50px rgba(18,25,38,.25);display:flex;flex-direction:column;overflow:hidden;z-index:95}
 .chat-head{background:linear-gradient(135deg,var(--brand-700),var(--brand-500));color:#fff;padding:18px 20px}
 .chat-head h4{font-size:16px;font-weight:700}
@@ -846,15 +861,15 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
   <div class="setup-wrap">
     <div class="setup-main">
-      <h1 class="page-h">Keep up the momentum</h1>
-      <p class="page-sub">Your application is in review. Set up your account now so everything's ready the moment it's approved.</p>
+      <h1 class="page-h">Application submitted successfully!</h1>
+      <p class="page-sub">Your application is in review. Keep up the momentum and set up your account now so everything's ready the moment it's approved.</p>
       <div class="setup-count" id="setupCount"></div>
       <div id="setupList"></div>
     </div>
     <aside class="tcard">
       <h3>Application timeline</h3>
       <div id="timelineBody"></div>
-      <div class="tsupport"><strong>Questions?</strong><br>Contact us through the AI agent in the bottom right corner of the screen.<br><span id="tcardRef"></span></div>
+      <div class="tsupport"><span id="tcardRef"></span></div>
     </aside>
   </div>
 
@@ -866,6 +881,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <input id="chatInput" placeholder="Send us a message&hellip;">
       <button id="chatSend" aria-label="Send"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
     </div>
+  </div>
+  <div class="chat-callout" id="chatCallout" aria-hidden="true">
+    <span class="cc-text">Questions? We have answers.</span>
+    <svg width="44" height="42" viewBox="0 0 44 42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 C 16 2.5, 31 8, 37 27 C 37.5 28.5, 38 30, 38.3 31.5"/><path d="M30.5 26.5 L 38.3 31.5 L 40 22.5"/></svg>
   </div>
   <button class="chatfab" id="chatFab" aria-label="Chat with Loop support"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg></button>
 </div>
@@ -929,6 +948,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 <aside id="drawer" class="hidden" role="dialog" aria-modal="true" aria-label="Add key contact">
   <div class="dr-head">
     <h2 class="dr-title" id="drTitle">Add key contact</h2>
+    <p class="dr-sub" id="drSub">Fill out key contact information</p>
     <button class="dr-x" id="drClose" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <div class="dr-body">
@@ -966,7 +986,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           <div class="field"><input id="d-firstName"><label for="d-firstName">First name (required)</label><span class="err-dot">!</span></div>
           <div class="field"><input id="d-lastName"><label for="d-lastName">Last name (required)</label><span class="err-dot">!</span></div>
         </div>
-        <div class="field fixed"><input id="d-dob" type="date"><label for="d-dob">Date of birth (required)</label><span class="err-dot">!</span></div>
+        <div class="field fixed"><input id="d-dob" inputmode="numeric" placeholder="YYYY-MM-DD" maxlength="10" autocomplete="bday"><label for="d-dob">Date of birth (required)</label><span class="err-dot">!</span></div>
         <p class="fhelp hidden" id="dobErr" style="color:var(--error-600);font-weight:600">This person is under 18. Key contacts must be at least 18 years old.</p>
         <div class="field"><input id="d-email" type="email" autocapitalize="off"><label for="d-email">Email (required)</label><span class="err-dot">!</span></div>
         <p class="fhelp hidden" id="emailLockHint">Locked to your sign-in email.</p>
@@ -1154,7 +1174,7 @@ var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 
 /* ============================ state ============================ */
 function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',countryInc:'Canada',phone:'',website:'',entityId:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',outValue:'',outCount:'',inValue:'',inCount:'',regions:[],docs:[],docScreenFor:'',certify:false};}
-function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,flinksLinked:false,etAmount:'',invites:[],plan:'',billing:'monthly',accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{}};}
+function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],plan:'',billing:'monthly',accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{}};}
 function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),submitted:false,approved:false,activated:false,planFinal:'',ref:null,submittedAt:null,signName:''};}
 var S = load();
 function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);s.f=Object.assign(freshFields(),s.f||{});s.setup=Object.assign(freshSetup(),s.setup||{});s.visited=s.visited||{};return s;}}catch(e){}return freshState();}
@@ -1634,7 +1654,7 @@ function uploadBox(mount,getFile,setFile,opts){
     var invalid=!!(opts&&opts.invalid);
     var up=el('div','upload'+(opts&&opts.small?' sm':'')+(invalid?' invalid':''),
       '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+(invalid?'#C01048':'#697586')+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+
-      '<div class="u1">'+(opts&&opts.label?esc(opts.label):'Drag and drop, or click to upload')+(invalid?' (required)':'')+'</div><div class="u2">'+(opts&&opts.hint?esc(opts.hint):'One PDF, JPEG, or PNG, up to 10 MB')+'</div>');
+      '<div class="u1">'+(opts&&opts.label?esc(opts.label):'Drag and drop, or click to upload')+(invalid&&!(opts&&opts.label&&opts.label.indexOf('(required)')>=0)?' (required)':'')+'</div><div class="u2">'+(opts&&opts.hint?esc(opts.hint):'One PDF, JPEG, or PNG, up to 10 MB')+'</div>');
     var inp=document.createElement('input');inp.type='file';inp.accept='.pdf,.jpg,.jpeg,.png';inp.style.display='none';
     inp.addEventListener('change',function(){if(inp.files&&inp.files[0])setFile({name:inp.files[0].name});});
     up.appendChild(inp);
@@ -1662,7 +1682,7 @@ function renderDocs(){
   var req=docRequirements();
   uploadBox('upDocs',function(){return null;},function(v){if(v){S.f.docs.push(v);save();renderDocs();}},
     {invalid:S.attempted['documents']&&req.length>0&&!S.f.docs.length,
-     label:S.f.docs.length?'Add another document':(req.length?'Drag and drop, or click to upload':'Drag and drop, or click to upload (optional)'),
+     label:S.f.docs.length?'Add another document':(req.length?'Drag and drop, or click to upload (required)':'Drag and drop, or click to upload (optional)'),
      hint:'PDF, JPEG, or PNG, up to 10 MB each'});
 }
 
@@ -1802,6 +1822,7 @@ function syncInviteFill(){
     if(s.id!=='drInviteSec')s.classList.toggle('hidden',on);
   });
   $('drSave').textContent=on?'Invite key contact to fill':(editIdx>=0&&!(S.f.individuals[editIdx]&&S.f.individuals[editIdx].invitedFill)?'Save changes':'Add key contact');
+  $('drSub').textContent=on?'Invite key contact to fill':'Fill out key contact information';
 }
 function startQr(){
   $('qrBox').classList.remove('hidden');
@@ -1965,6 +1986,9 @@ function updateCofillBadge(){
 }
 function renderCofillPanel(){
   var panel=$('cofillPanel');
+  /* re-render replaces the body — keep the user's scroll position */
+  var prevBody=panel.querySelector('.cp-body');
+  var keepScroll=prevBody?prevBody.scrollTop:0;
   var taken=cofillTakenKeys();
   var body='';
   COFILL_STRUCT.forEach(function(pg){
@@ -2003,6 +2027,7 @@ function renderCofillPanel(){
       '<div class="cp-send-row"><input id="cpEmail" type="email" placeholder="teammate@'+esc(S.email.split('@')[1]||'company.com')+'" value="'+esc(cfEmailVal)+'"><button type="button" id="cpSend">Send invite</button></div>'+
       '<div class="cofill-track"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 13px;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>For compliance, Loop records who filled and edited every field, whoever contributes.</span></div>'+
     '</div>';
+  panel.querySelector('.cp-body').scrollTop=keepScroll;
   /* clicks inside the panel re-render it (detaching e.target), which would fool the
      document-level outside-click close — stop them at the panel root */
   panel.onclick=function(e){e.stopPropagation();};
@@ -2218,10 +2243,9 @@ function setupDone(){
 }
 function renderTimeline(){
   var t=$('timelineBody');
-  var fast=S.setup.depositDone;
   t.innerHTML=
     '<div class="tstep"><div class="trail"><div class="tdot done"></div><div class="tbar"></div></div><div class="tb"><div class="tt">Apply</div><div class="td">Submitted on '+fmtDate(S.submittedAt||Date.now())+'</div></div></div>'+
-    '<div class="tstep"><div class="trail"><div class="tdot cur"></div><div class="tbar"></div></div><div class="tb"><div class="tt">In review</div><div class="td'+(fast?' fast':'')+'">'+(fast?'Priority review: approx. 1 to 2 business days':'Approx. 2 to 6 business days')+'</div></div></div>'+
+    '<div class="tstep"><div class="trail"><div class="tdot cur"></div><div class="tbar"></div></div><div class="tb"><div class="tt">In review</div><div class="td">Approx. 3 to 6 business days</div></div></div>'+
     '<div class="tstep"><div class="trail"><div class="tdot todo"></div></div><div class="tb" style="padding-bottom:0"><div class="tt">Account ready</div><div class="td">Sign your agreements and you’re live.</div></div></div>';
   $('tcardRef').textContent='Application '+(S.ref||'');
 }
@@ -2242,15 +2266,16 @@ function renderSetup(){
   var list=$('setupList');list.innerHTML='';
 
   /* 1 — deposit */
-  var it1=el('div','setup-item',setupHead(0,'Make your first deposit',d[0],d[0]?'Priority review applied':'Speeds up your review'));
+  var it1=el('div','setup-item',setupHead(0,'Make your first deposit',d[0],d[0]?'Deposit on its way':''));
   if(open===0){
     var b1=el('div','setup-body');
-    if(S.setup.depositDone){
-      b1.innerHTML='<div class="done-banner"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>'+
+    if(S.setup.depositDone&&!S.setup.depositAnother){
+      b1.innerHTML='<div class="done-banner"><span>'+
         (S.setup.flinksLinked
-          ?'RBC Business Chequing &bull;&bull;4521 is connected through Flinks. Your bank account is verified instantly. We’ll pull your deposit'+(S.setup.etAmount?' of $'+esc(S.setup.etAmount):'')+' the moment your account opens, and your application is now in the priority queue.'
-          :'Your deposit'+(S.setup.etAmount?' of $'+esc(S.setup.etAmount):'')+' via '+esc(S.setup.depMethod)+' is on its way. We’ll credit it the moment your account opens, and your application is now in the priority queue.')
-        +'</span></div>';
+          ?'RBC Business Chequing &bull;&bull;4521 is connected through Flinks. Your bank account is verified instantly. We’ll pull your deposit'+(S.setup.etAmount?' of $'+esc(S.setup.etAmount):'')+' the moment your account opens.'
+          :'Your deposit'+(S.setup.etAmount?' of $'+esc(S.setup.etAmount):'')+' via '+esc(S.setup.depMethod)+' is on its way. We’ll credit it the moment your account opens.')
+        +'</span></div>'+
+        '<div style="margin-top:14px"><button class="btn-link" id="depAnotherBtn" style="padding:4px 0;font-size:13.5px">Make another deposit through a different method</button></div>';
     }else{
       var mChips=DEPMETHODS.map(function(mm){
         var on=S.setup.depMethod===mm;
@@ -2281,13 +2306,14 @@ function renderSetup(){
           '<button class="btn btn-primary btn-sm" id="depDoneBtn">I’ve set up the EFT deposit</button>';
       }
       b1.innerHTML=
+        (S.setup.depositAnother?'<div class="done-banner" style="margin-bottom:14px"><span>Your first deposit'+(S.setup.depositAnother.a?' of $'+esc(S.setup.depositAnother.a):'')+' via '+esc(S.setup.depositAnother.m)+' is on its way. Pick a method for your next deposit below.</span></div>':'')+
         '<ul class="accepts" style="margin-bottom:14px">'+
-          '<li>Priority review for applications with a deposit</li>'+
           '<li>Instant bank account verification when you connect with Flinks</li>'+
           '<li>Funds are credited the moment your account opens</li>'+
         '</ul>'+
         '<div class="chips" style="margin-bottom:16px">'+mChips+'</div>'+
-        body+skipLink(0);
+        body+
+        (S.setup.depositAnother?'<div style="margin-top:14px"><button class="btn-link" id="depCancelBtn" style="padding:4px 0;font-size:13.5px;color:var(--gray-500)">Cancel</button></div>':skipLink(0));
     }
     it1.appendChild(b1);
   }
@@ -2302,7 +2328,7 @@ function renderSetup(){
       rows+='<div class="invited"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg><span class="iv-em">'+esc(iv.email)+'</span><span class="iv-role">'+esc(iv.role)+' · Invite sends at activation</span><button class="icobtn" data-uninvite="'+ix+'" aria-label="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
     });
     b2.innerHTML=
-      '<p class="desc">Teammates get their own login the day the account opens. You stay in control of roles and limits.</p>'+rows+
+      '<p class="desc">Teammates are invited to create their own account the moment it opens; add them now so we can let them know immediately.</p>'+rows+
       '<div class="invite-row"><div class="qfield"><input id="invEmail" type="email" placeholder="teammate@'+esc((S.email.split('@')[1]||'company.com'))+'"></div>'+
       '<div class="qfield"><select id="invRole">'+ROLES_TEAM.map(function(r){return '<option>'+r+'</option>';}).join('')+'</select><span class="chev">&#9662;</span></div>'+
       '<button class="btn btn-secondary btn-sm" id="invAdd">Invite</button></div>'+skipLink(1);
@@ -2397,15 +2423,26 @@ function renderSetup(){
   list.querySelectorAll('input[data-depm]').forEach(function(r){
     r.addEventListener('change',function(){S.setup.depMethod=r.dataset.depm;persist();renderSetup();});
   });
-  var dep=$('depDoneBtn');if(dep)dep.onclick=function(){S.setup.depositDone=true;persist();renderSetup();renderTimeline();};
+  var dep=$('depDoneBtn');if(dep)dep.onclick=function(){S.setup.depositDone=true;S.setup.depositAnother=null;persist();renderSetup();renderTimeline();};
   var fl=$('flinksBtn');if(fl)fl.onclick=function(){
     fl.disabled=true;
     fl.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Connecting to your bank&hellip;';
     var hint=$('flinksHint');if(hint)hint.textContent='Flinks secure window open. Signing in to RBC Business Banking…';
     setTimeout(function(){
-      S.setup.depositDone=true;S.setup.flinksLinked=true;
+      S.setup.depositDone=true;S.setup.flinksLinked=true;S.setup.depositAnother=null;
       persist();renderSetup();renderTimeline();
     },1600);
+  };
+  var depA=$('depAnotherBtn');if(depA)depA.onclick=function(){
+    S.setup.depositAnother={m:S.setup.depMethod,a:S.setup.etAmount};
+    S.setup.etAmount='';
+    persist();renderSetup();
+  };
+  var depC=$('depCancelBtn');if(depC)depC.onclick=function(){
+    S.setup.depMethod=S.setup.depositAnother.m;
+    S.setup.etAmount=S.setup.depositAnother.a;
+    S.setup.depositAnother=null;
+    persist();renderSetup();
   };
   wireBillToggle(list,renderSetup);
   list.querySelectorAll('[data-invitee]').forEach(function(b){
@@ -2602,7 +2639,7 @@ function renderInvStep(step){
 /* ============================ chat (waiting room, Intercom-style) ============================ */
 var chatSeeded=false;
 var CHAT_QA={
-  'How long does review take?':'Most applications are reviewed within <strong>2&ndash;6 business days</strong>. Making a first deposit moves you to the priority queue (1&ndash;2 days). You’ll get an email the moment there’s a decision.',
+  'How long does review take?':'Most applications are reviewed within <strong>3&ndash;6 business days</strong>. You’ll get an email the moment there’s a decision.',
   'Can I edit my application?':'Once submitted, your application is locked while our team reviews it. If anything else is needed, we’ll reach out by email, or you can message us right here.',
   'What do my key contacts need to do?':'Each key contact got an email link to verify their identity with a quick live camera check on their own device. They can also choose to create a Loop login. You approve or decline their access from this page.',
   'Talk to a human':'You’re in the queue. Someone from our support team will reply right here, usually within a few minutes. You can also email <a href="mailto:support@bankonloop.com">support@bankonloop.com</a>.'
@@ -2634,6 +2671,22 @@ function chatSendFree(){
   setTimeout(function(){chatMsg('Thanks! A member of our team will get back to you here and by email shortly. <span style="color:var(--gray-500)">(Chat is simulated in this prototype.)</span>');chatQuick();},700);
 }
 
+/* ============================ confetti ============================ */
+function dropConfetti(){
+  var colors=['#16B364','#3CCB7F','#73E2A3','#045B3F','#099250','#AAF0C4'];
+  var wrap=el('div','confetti-wrap');
+  document.body.appendChild(wrap);
+  for(var i=0;i<140;i++){
+    var p=document.createElement('span');
+    var sz=6+Math.random()*7;
+    p.style.cssText='left:'+(Math.random()*100)+'vw;width:'+sz+'px;height:'+(sz*.45)+'px;background:'+colors[i%colors.length]+
+      ';animation-delay:'+(Math.random()*1.4)+'s;animation-duration:'+(2.6+Math.random()*2)+'s;'+
+      (Math.random()<.4?'border-radius:50%;':'');
+    wrap.appendChild(p);
+  }
+  setTimeout(function(){wrap.remove();},6200);
+}
+
 /* ============================ modal ============================ */
 var modalNext=null;
 function openModal(count,next){
@@ -2650,6 +2703,12 @@ function continueFrom(id){
   refreshInvalid(id);
   save();
   var next=function(){showPage(NEXT_PAGE[id]);};
+  /* requested documents are mandatory — no skipping past this page without them */
+  if(id==='documents'&&miss.indexOf('docs')>=0){
+    renderDocs();
+    var t=$('upDocs');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   if(miss.length)openModal(miss.length,next);
   else next();
 }
@@ -2775,6 +2834,7 @@ document.addEventListener('DOMContentLoaded',function(){
   $('chatFab').onclick=function(){
     var p=$('chatPanel');
     p.classList.toggle('hidden');
+    $('chatCallout').classList.toggle('hidden',!p.classList.contains('hidden'));
     if(!p.classList.contains('hidden')&&!chatSeeded){
       chatSeeded=true;
       chatMsg('Hi'+(S.firstName?' '+esc(S.firstName):'')+' &#128075; Your application is in review. How can we help while you wait?');
@@ -2808,6 +2868,7 @@ document.addEventListener('DOMContentLoaded',function(){
     S.ref='LP-'+String(Date.now()).slice(-6);
     S.setup=freshSetup();
     save();show('setup');
+    dropConfetti();
   };
 
   /* approved signing */
@@ -2837,6 +2898,14 @@ document.addEventListener('DOMContentLoaded',function(){
   $('d-isMe').addEventListener('change',syncIsMe);
   $('camStart').onclick=startCam;
   $('qrToggle').onclick=startQr;
+  /* typed DOB: digits only, dashes inserted as you type (YYYY-MM-DD) */
+  $('d-dob').addEventListener('input',function(){
+    var d=this.value.replace(/\D/g,'').slice(0,8);
+    var out=d.slice(0,4);
+    if(d.length>4)out+='-'+d.slice(4,6);
+    if(d.length>6)out+='-'+d.slice(6,8);
+    this.value=out;
+  });
   $('d-dob').addEventListener('change',checkDobAge);
   $('d-dob').addEventListener('input',checkDobAge);
   $('d-inviteFill').addEventListener('change',syncInviteFill);
