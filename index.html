@@ -223,7 +223,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 /* drawer */
 #drawerOverlay{position:fixed;inset:0;background:rgba(18,25,38,.4);z-index:80}
-#drawer{position:fixed;top:0;right:0;bottom:0;width:620px;max-width:94vw;background:#fff;z-index:81;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(18,25,38,.18)}
+#drawer{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;max-width:94vw;max-height:90vh;background:#fff;border-radius:18px;z-index:81;display:flex;flex-direction:column;box-shadow:var(--shadow-overlay),0 24px 60px rgba(18,25,38,.28);overflow:hidden}
 #drawer .dr-head{padding:34px 40px 8px;position:relative}
 #drawer h2.dr-title{font-size:30px;font-weight:500;letter-spacing:-.6px}
 #drawer .dr-sub{font-size:14px;color:var(--gray-600);margin-top:4px}
@@ -514,13 +514,58 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .acc-req .who .em2{font-size:12.5px;color:var(--gray-500)}
 .acc-req .btn-sm{height:36px;font-size:13px;padding:0 14px}
 
+/* MFA setup (optional, after sign-up) */
+.mfa-card{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--gray-300);border-radius:12px;padding:15px 16px;cursor:pointer;margin-bottom:10px;transition:all .12s;background:#fff}
+.mfa-card.on{border-color:var(--brand-500);background:var(--brand-25)}
+.mfa-card .mic{flex:0 0 38px;height:38px;border-radius:10px;background:var(--brand-25);color:var(--brand-700);display:flex;align-items:center;justify-content:center}
+.mfa-card.on .mic{background:var(--brand-500);color:#fff}
+.mfa-card .mt{font-weight:600;font-size:14.5px}
+.mfa-card .md{font-size:12.5px;color:var(--gray-500);margin-top:2px;line-height:1.5}
+.mfa-setup{border:1px solid var(--gray-200);background:var(--gray-25);border-radius:12px;padding:18px;margin:2px 0 14px}
+.mfa-ok{display:flex;align-items:center;gap:9px;border:1px solid var(--success-100);background:var(--success-25);border-radius:10px;padding:12px 14px;font-size:13.5px;font-weight:600;color:var(--success-800);margin-bottom:14px}
+
+/* welcome: collaborators */
+.collab-card{border:1px solid var(--gray-200);background:var(--gray-25);border-radius:14px;padding:22px 24px;margin-top:14px}
+.collab-card h3{font-size:15px;font-weight:600;margin-bottom:4px}
+.collab-card .cc-sub{font-size:13.5px;color:var(--gray-600);line-height:1.55;margin-bottom:14px}
+.collab-row{display:flex;align-items:center;gap:11px;border:1px solid var(--gray-200);border-radius:10px;padding:11px 14px;margin-bottom:8px;background:#fff;font-size:14px}
+.collab-row .cr-av{flex:0 0 32px;height:32px;border-radius:50%;background:var(--brand-25);color:var(--brand-700);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.collab-row .cr-who{flex:1;min-width:0}
+.collab-row .cr-em{font-weight:600;word-break:break-all}
+.collab-row .cr-role{font-size:12px;color:var(--gray-500)}
+.collab-row .cr-access{font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--brand-25);color:var(--brand-700);white-space:nowrap}
+.collab-row .cr-access.lim{background:var(--gray-100);color:var(--gray-600)}
+
+/* co-fill: current-page indicator, collaborator shortcut, access level */
+.cp-page.here{color:var(--brand-700)}
+.cp-page .here-tag{margin-left:7px;font-size:9.5px;font-weight:700;letter-spacing:.04em;background:var(--brand-25);color:var(--brand-700);border-radius:999px;padding:2px 7px;vertical-align:1px}
+.cp-collabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.cp-collabs .lbl{width:100%;font-size:11.5px;font-weight:600;color:var(--gray-500);margin-bottom:1px}
+.cp-collab-chip{border:1px solid var(--brand-300);background:#fff;color:var(--brand-700);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600}
+.cp-collab-chip:hover{background:var(--brand-25)}
+.cp-collab-chip.on{background:var(--brand-500);color:#fff;border-color:var(--brand-500)}
+.cp-access{margin-bottom:10px}
+.cp-access .ttl{font-size:12px;font-weight:700;color:var(--gray-700);margin-bottom:6px}
+.cp-access .opt{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--gray-300);border-radius:9px;padding:9px 11px;margin-bottom:6px;cursor:pointer;font-size:12.5px;background:#fff}
+.cp-access .opt.on{border-color:var(--brand-500);background:var(--brand-25)}
+.cp-access .opt .ar{flex:0 0 16px;height:16px;border:1.6px solid var(--gray-300);border-radius:50%;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.cp-access .opt.on .ar{border-color:var(--brand-500)}
+.cp-access .opt.on .ar::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--brand-500)}
+.cp-access .opt b{font-weight:600}
+.cp-access .opt .ad{color:var(--gray-500);display:block;margin-top:1px}
+.cp-access.invalid .ttl{color:var(--error-600)}
+.cp-access.invalid .opt{border-color:var(--error-200)}
+
+/* per-contact "send verification request" */
+.ind-card .kc-send{height:34px;font-size:12.5px;padding:0 12px;width:auto;white-space:nowrap}
+
 @media (max-width:1020px){
   .tcard{display:none}
 }
 @media (max-width:980px){
   .sidebar{display:none}
   main{margin-left:0;padding:48px 22px 100px}
-  #drawer{width:100vw;max-width:100vw}
+  #drawer{width:100vw;max-width:100vw;height:100vh;max-height:100vh;top:0;left:0;transform:none;border-radius:0}
   .slider-pair{grid-template-columns:1fr}
 }
 </style>
@@ -564,17 +609,14 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
 </div>
 
-<!-- ================= VERIFY EMAIL ================= -->
-<div id="view-verify" class="auth-wrap hidden">
-  <div class="auth-card" style="text-align:center">
-    <div class="auth-logo"><span class="logo" id="logoVerify"></span></div>
-    <h1>Check your email</h1>
-    <p class="auth-sub" style="margin-bottom:0">Enter the 6-digit code we sent to <strong id="verifyEmail"></strong>.</p>
-    <div class="code-row" id="codeRow">
-      <input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1">
-    </div>
-    <div style="margin-top:20px"><button class="btn btn-primary" id="btnVerify" disabled>Verify email</button></div>
-    <p class="auth-foot">Didn't get it? <a href="#" id="resend">Resend code</a></p>
+<!-- ================= MFA SETUP (optional) ================= -->
+<div id="view-mfa" class="auth-wrap hidden">
+  <div class="auth-card">
+    <div class="auth-logo"><span class="logo" id="logoMfa"></span></div>
+    <h1>Add a second step</h1>
+    <p class="auth-sub">Two-step verification protects your account at sign-in. It's optional &mdash; set it up now, or skip and add it anytime from settings.</p>
+    <div id="mfaBody"></div>
+    <p class="auth-foot" style="text-align:left;margin-top:18px"><a href="#" id="mfaSkip">Skip for now and continue without two-step verification &#8594;</a></p>
   </div>
 </div>
 
@@ -615,6 +657,12 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           </ul>
         </div>
         <div class="autosave-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#045B3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 16px;margin-top:2px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>Your application saves automatically each time you continue. Sign back in anytime to finish.</span></div>
+        <div class="collab-card">
+          <h3>Working on this with someone?</h3>
+          <p class="cc-sub">Invite a teammate to collaborate. They can view the application, and you can hand them specific questions to fill in. You can add or change collaborators anytime from the &ldquo;Invite to co-fill&rdquo; panel.</p>
+          <div id="collabList"></div>
+          <button class="btn btn-secondary btn-sm" id="btnAddCollab" style="width:auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button>
+        </div>
         <div class="continue-wrap"><button class="btn btn-primary" id="btnStart">Start application</button></div>
       </div>
 
@@ -689,25 +737,18 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
           <div class="fsec">
             <h2>Related persons</h2>
-            <p class="why">Add any person who is a director, a signing officer, an owner of 25% or more, or who controls the business day to day.<span class="tip" tabindex="0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="tipbox">You'll verify your own identity with a live camera check right in this application. Everyone else gets an email link to verify on their own device after you submit.</span></span></p>
+            <p class="why">Add <u>every</u> person who is a director, a signing officer, an owner of 25% or more, or who controls the business day to day.<span class="tip" tabindex="0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="tipbox">If applicable, you'll verify your own identity with a live camera check right in this application. Everyone else gets an email link to verify on their own device after you submit.</span></span></p>
 
-            <label class="consent" id="notOwnerWrap" style="margin:14px 0 18px">
-              <input type="checkbox" id="f-notOwner">
-              <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>I'm completing this application on the business's behalf and I'm not an owner, director, signing officer, or control person.</span>
-            </label>
-
-            <div id="indList" style="display:flex;flex-direction:column;gap:12px"></div>
+            <div id="indList" style="display:flex;flex-direction:column;gap:12px;margin-top:18px"></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
               <button class="btn btn-secondary" id="btnAddInd" style="width:auto;flex:1;min-width:200px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add key contact</button>
-              <button class="btn btn-secondary hidden" id="btnInviteIdv" style="width:auto;flex:1;min-width:200px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Invite all contacts to verify</button>
+              <button class="btn btn-secondary" id="btnInviteFill" style="width:auto;flex:1;min-width:200px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Invite a key contact to fill</button>
             </div>
-            <p class="fhelp hidden" id="idvInviteNote" style="color:var(--success-700);font-weight:600;margin-top:10px"></p>
 
             <label class="consent" id="consentWrap">
               <input type="checkbox" id="f-consent">
               <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>All directors, owners of 25% or more, signing officers, and control persons have been added above. <span class="req-mark">(required)</span></span>
+              <span>I confirm that all directors, owners of 25% or more, signing officers, and control persons have been added above. <span class="req-mark">(required)</span></span>
             </label>
           </div>
 
@@ -835,13 +876,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="rev-sec">
           <div class="rev-head"><h2>Submit</h2></div>
           <div class="signcard">
-            <label class="consent" id="certifyWrap" style="margin:0 0 22px">
-              <input type="checkbox" id="f-certify">
-              <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>You certify that you have managerial authority to submit this application on behalf of your company, and that all information you've entered is true and accurate. <span class="req-mark">(required)</span></span>
-            </label>
             <div style="display:flex;gap:12px"><button class="btn btn-secondary btn-back" data-back="review"><span>&#8592;</span> Back</button><button class="btn btn-primary" id="btnSubmit" style="flex:1;width:auto">Submit application</button></div>
-            <p class="smallprint" style="margin:16px 0 0">Once approved, you'll sign the Deposit Account Agreement, ACH Payment Terms, and Tax Form to activate the account. After submission the application is locked for review and can't be edited.</p>
+            <div id="submitGate" class="hidden" style="display:flex;gap:9px;align-items:flex-start;margin-top:14px;border:1px solid var(--warn-100);background:var(--warn-50);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--warn-800);line-height:1.5"></div>
+            <p class="smallprint" style="margin:16px 0 0">Only related members with managerial authority can submit this application on behalf of your company. You certify that the information entered is true and accurate.</p>
+            <p class="smallprint" style="margin:8px 0 0">Once approved, you'll sign the Deposit Account Agreement, ACH Payment Terms, and Tax Form to activate the account. After submission the application is locked for review and can't be edited.</p>
             <div id="gapsBox"></div>
           </div>
         </div>
@@ -872,21 +910,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <div class="tsupport"><span id="tcardRef"></span></div>
     </aside>
   </div>
-
-  <!-- chat messenger (Intercom-style, waiting room only) -->
-  <div class="chatpanel hidden" id="chatPanel">
-    <div class="chat-head"><h4>Loop Support</h4><p>We typically reply in a few minutes</p></div>
-    <div class="chat-body" id="chatBody"></div>
-    <div class="chat-foot">
-      <input id="chatInput" placeholder="Send us a message&hellip;">
-      <button id="chatSend" aria-label="Send"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-    </div>
-  </div>
-  <div class="chat-callout" id="chatCallout" aria-hidden="true">
-    <span class="cc-text">Questions? We have answers.</span>
-    <svg width="44" height="42" viewBox="0 0 44 42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 C 16 2.5, 31 8, 37 27 C 37.5 28.5, 38 30, 38.3 31.5"/><path d="M30.5 26.5 L 38.3 31.5 L 40 22.5"/></svg>
-  </div>
-  <button class="chatfab" id="chatFab" aria-label="Chat with Loop support"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg></button>
 </div>
 
 <!-- ================= INVITEE PREVIEW (key contact experience) ================= -->
@@ -940,6 +963,39 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
 </div>
 
+<!-- ================= CHAT (global, all screens) ================= -->
+<div class="chatpanel hidden" id="chatPanel">
+  <div class="chat-head"><h4>Loop Support</h4><p>We typically reply in a few minutes</p></div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-foot">
+    <input id="chatInput" placeholder="Send us a message&hellip;">
+    <button id="chatSend" aria-label="Send"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+</div>
+<div class="chat-callout hidden" id="chatCallout" aria-hidden="true">
+  <span class="cc-text">Questions? We have answers.</span>
+  <svg width="44" height="42" viewBox="0 0 44 42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 C 16 2.5, 31 8, 37 27 C 37.5 28.5, 38 30, 38.3 31.5"/><path d="M30.5 26.5 L 38.3 31.5 L 40 22.5"/></svg>
+</div>
+<button class="chatfab hidden" id="chatFab" aria-label="Chat with Loop support"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg></button>
+
+<!-- ================= ADD COLLABORATOR MODAL ================= -->
+<div id="collabOverlay" class="hidden" style="position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:90;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="modal">
+    <div class="m-body">
+      <h3>Invite a collaborator</h3>
+      <p style="margin-bottom:18px">They'll get an email to view this application. You decide which questions they fill from the &ldquo;Invite to co-fill&rdquo; panel, and they can create a Loop login to suggest edits.</p>
+      <div class="fgrid">
+        <div class="field"><input id="collabEmail" type="email" autocapitalize="off"><label for="collabEmail">Teammate's email (required)</label><span class="err-dot">!</span></div>
+        <div class="field"><select id="collabRole"></select><label for="collabRole">Their role (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn-link" id="collabCancel">Cancel</button>
+      <button class="btn btn-primary" id="collabAdd" style="width:auto;height:48px">Add collaborator</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= INVITE TO CO-FILL PANEL ================= -->
 <div id="cofillPanel" class="cofill-panel hidden"></div>
 
@@ -953,15 +1009,9 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
   <div class="dr-body">
     <div id="drErr" class="hidden" style="margin-top:18px;border:1px solid var(--error-200);background:var(--error-50);color:var(--error-700);border-radius:10px;padding:12px 14px;font-size:13.5px;font-weight:600"></div>
-    <div class="dr-sec" id="drInviteSec" style="margin-top:20px;border:1px solid var(--gray-200);border-radius:12px;padding:16px 18px;background:var(--gray-25)">
-      <label class="consent" style="margin:0">
-        <input type="checkbox" id="d-inviteFill">
-        <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-        <span><strong>Invite related person to fill</strong>: send this key contact entry to them to complete themselves.</span>
-      </label>
-      <div class="field hidden" id="drInviteEmailWrap" style="margin-top:14px;background:#fff;border-radius:10px"><input id="d-inviteEmail" type="email" autocapitalize="off"><label for="d-inviteEmail">Their email (required)</label><span class="err-dot">!</span></div>
+    <div class="dr-sec hidden" id="inviteHint" style="margin-top:20px;border:1px solid var(--blue-200);border-radius:12px;padding:14px 16px;background:var(--blue-25);font-size:13px;color:var(--blue-700);line-height:1.5">
+      We'll email this person a secure link to complete their own details and verify their identity. Just add their name, role, and email below.
     </div>
-    <div class="dr-sec or-divider" aria-hidden="true">OR</div>
     <div class="dr-sec">
       <h3>Roles</h3>
       <p class="desc">Select all that apply.</p>
@@ -990,7 +1040,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <p class="fhelp hidden" id="dobErr" style="color:var(--error-600);font-weight:600">This person is under 18. Key contacts must be at least 18 years old.</p>
         <div class="field"><input id="d-email" type="email" autocapitalize="off"><label for="d-email">Email (required)</label><span class="err-dot">!</span></div>
         <p class="fhelp hidden" id="emailLockHint">Locked to your sign-in email.</p>
-        <div class="row" style="grid-template-columns:130px 1fr">
+        <div class="row" id="phoneRow" style="grid-template-columns:130px 1fr">
           <div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div>
           <div class="field"><input id="d-phone" type="tel" inputmode="tel"><label for="d-phone">Phone number (required)</label><span class="err-dot">!</span></div>
         </div>
@@ -998,7 +1048,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       </div>
     </div>
 
-    <div class="dr-sec">
+    <div class="dr-sec" id="addrSec">
       <h3>Home address</h3>
       <p class="desc">A residential address. We can't accept PO boxes or mail forwarding.</p>
       <div class="fgrid">
@@ -1091,6 +1141,9 @@ var FLOWCOUNTS = ['Under 50','50 to 250','250 to 1,000','Over 1,000'];
 var REGIONS = ['Domestic only','USA / Mexico','South America','UK / Europe','Asia-Pacific','Middle East','Africa'];
 var YESNO = ['Yes','No'];
 var ROLES_TEAM = ['Admin','Finance manager','Bookkeeper','Card member'];
+var COLLAB_ROLES = ['Key contact (director, owner, officer)','Company secretary','Finance team member','Bookkeeper or accountant','Legal counsel','Assistant','Other teammate'];
+/* roles that count as managerial authority for submitting the application */
+var MGMT_ROLES = ['Director','Signing officer','Control person'];
 var DEPMETHODS = ['Interac e-Transfer','Instant bank connection (Flinks)','EFT deposit'];
 var SLIDERS = {outValue:FLOWVALS,outCount:FLOWCOUNTS,inValue:FLOWVALS,inCount:FLOWCOUNTS};
 /* plans per bankonloop.com/pricing */
@@ -1175,9 +1228,9 @@ var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 /* ============================ state ============================ */
 function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',countryInc:'Canada',phone:'',website:'',entityId:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',outValue:'',outCount:'',inValue:'',inCount:'',regions:[],docs:[],docScreenFor:'',certify:false};}
 function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],plan:'',billing:'monthly',accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{}};}
-function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),submitted:false,approved:false,activated:false,planFinal:'',ref:null,submittedAt:null,signName:''};}
+function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,planFinal:'',ref:null,submittedAt:null,signName:''};}
 var S = load();
-function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);s.f=Object.assign(freshFields(),s.f||{});s.setup=Object.assign(freshSetup(),s.setup||{});s.visited=s.visited||{};return s;}}catch(e){}return freshState();}
+function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);s.f=Object.assign(freshFields(),s.f||{});s.setup=Object.assign(freshSetup(),s.setup||{});s.visited=s.visited||{};s.collaborators=s.collaborators||[];return s;}}catch(e){}return freshState();}
 var pillT=null;
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){/* storage unavailable (e.g., private browsing) — keep working in memory */}}
 function save(){
@@ -1194,9 +1247,13 @@ function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=c
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function fillSelect(sel,opts){sel.innerHTML='<option value=""></option>'+opts.map(function(o){return '<option value="'+esc(o)+'">'+esc(o)+'</option>';}).join('');}
 function indName(p){
-  if(p.invitedFill)return cofillName(p.email);
-  return (p.firstName+' '+p.lastName).trim()||'Unnamed contact';
+  var nm=((p.firstName||'')+' '+(p.lastName||'')).trim();
+  if(p.invitedFill)return nm||cofillName(p.email);
+  return nm||'Unnamed contact';
 }
+/* a key contact who can submit: it's the applicant, verified, with a managerial role */
+function hasMgmtRole(p){return (p.roles||[]).some(function(r){return MGMT_ROLES.indexOf(r)>=0;});}
+function submitAuthorized(){return S.f.individuals.some(function(p){return p.isMe&&p.idv&&hasMgmtRole(p);});}
 function indVerified(p){return p.isMe?!!p.idv:true;}
 function ageOf(dob){
   if(!dob)return null;
@@ -1272,10 +1329,10 @@ function requiredTotal(){
 /* ============================ views ============================ */
 function show(view){
   S.view=view;persist();
-  ['view-auth','view-verify','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
+  ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
   if(view==='auth'){$('view-auth').classList.remove('hidden');}
-  else if(view==='verify'){$('view-verify').classList.remove('hidden');$('verifyEmail').textContent=S.email;}
+  else if(view==='mfa'){$('view-mfa').classList.remove('hidden');renderMfa();}
   else if(view==='setup'){
     $('view-setup').classList.remove('hidden');
     $('setupEmail').textContent=S.email;
@@ -1303,6 +1360,7 @@ function show(view){
     $('userEmail').textContent=S.email;
     showPage(S.page);
   }
+  updateChatVisibility();
   window.scrollTo(0,0);
 }
 
@@ -1311,7 +1369,7 @@ function showPage(id){
   document.querySelectorAll('.appage').forEach(function(p){p.classList.add('hidden');});
   var div=$('page-'+id);
   if(div)div.classList.remove('hidden');
-  if(id==='welcome'){$('stepMeta').textContent='Getting started';}
+  if(id==='welcome'){$('stepMeta').textContent='Getting started';renderCollabList();}
   else{
     S.visited[id]=true;persist();
     $('stepMeta').textContent='Step '+(PAGE_ORDER.indexOf(id)+1)+' of '+PAGE_ORDER.length;
@@ -1416,7 +1474,6 @@ function hydrateFields(){
     if(w)w.classList.toggle('filled',!!S.f[k]);
   });
   $('f-consent').checked=!!S.f.consent;
-  $('f-notOwner').checked=!!S.f.notOwner;
   renderAllChips();renderDocs();syncRelBiz();renderRelBizExtra();syncSliders();syncTradeName();syncSubIndustry();syncProvState();renderMsel();syncTaxIdWarn();
 }
 function syncTaxIdWarn(){
@@ -1745,48 +1802,55 @@ function startDocScreen(){
 }
 
 /* ============================ individuals ============================ */
-function idvInviteCandidates(){
-  return S.f.individuals.filter(function(p){return !p.isMe&&!p.invitedFill&&!p.idvInvited&&!p.extIdv;});
-}
 function renderIndividuals(){
   var list=$('indList');list.innerHTML='';
   if(!S.f.individuals.length){
-    var inv=S.attempted['contacts']&&!S.f.individuals.length;
+    var inv=!!S.attempted['contacts'];
     var empty=el('div','ind-empty','No key contacts added'+(inv?' <span style="color:var(--error-600);font-weight:600">(required)</span>':' (required)'));
     if(inv){empty.style.borderColor='var(--error-600)';empty.style.background='var(--error-50)';}
     list.appendChild(empty);
   }
   S.f.individuals.forEach(function(p,i){
-    var initials,roles,pillHtml;
+    var initials,roles,pillHtml,sendBtn='';
+    var rolesTxt=(p.roles||[]).join(' &middot; ')+((p.roles||[]).indexOf('Beneficial owner')>=0&&p.ownPct?' ('+esc(p.ownPct)+'%)':'');
     if(p.invitedFill){
       initials='@';
-      roles='Invited to fill their own details &middot; '+esc(p.email);
-      pillHtml='<span class="pill blue">Waiting to fill</span>';
+      roles=(rolesTxt?rolesTxt+' &middot; ':'')+'Invited to fill &middot; '+esc(p.email||'');
+      pillHtml='<span class="pill blue">Waiting to fill and verify</span>';
     }else{
       initials=((p.firstName||' ')[0]+(p.lastName||' ')[0]).toUpperCase();
-      roles=p.roles.join(' &middot; ')+(p.roles.indexOf('Beneficial owner')>=0&&p.ownPct?' ('+esc(p.ownPct)+'%)':'')+(p.isMe?' &middot; You':'');
-      pillHtml=p.isMe
-        ?'<span class="pill '+(p.idv?'green':'amber')+'">'+(p.idv?'Identity verified':'Live IDV required')+'</span>'
-        :(p.extIdv?'<span class="pill green">Identity verified</span>'
-          :p.idvInvited?'<span class="pill blue">Verification request sent</span>'
-          :'<span class="pill gray">Not yet invited to verify</span>');
+      roles=rolesTxt+(p.isMe?' &middot; You':'');
+      if(p.isMe){
+        pillHtml='<span class="pill '+(p.idv?'green':'amber')+'">'+(p.idv?'Identity verified':'Live IDV required')+'</span>';
+      }else if(p.extIdv){
+        pillHtml='<span class="pill green">Identity verified</span>';
+      }else if(p.idvInvited){
+        pillHtml='<span class="pill blue">Waiting to verify</span>';
+      }else{
+        pillHtml='<span class="pill gray">Not yet invited to verify</span>';
+        sendBtn='<button class="btn btn-secondary kc-send" data-act="send"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Send verification request</button>';
+      }
     }
     var card=el('div','ind-card',
       '<div class="av">'+esc(initials)+'</div>'+
       '<div class="who"><div class="nm">'+esc(indName(p))+'</div><div class="rl">'+roles+'</div></div>'+
-      pillHtml+
+      sendBtn+pillHtml+
       '<button class="icobtn" data-act="edit" aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>'+
       '<button class="icobtn" data-act="del" aria-label="Remove"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>');
     card.querySelector('[data-act="edit"]').onclick=function(){openDrawer(i);};
     card.querySelector('[data-act="del"]').onclick=function(){S.f.individuals.splice(i,1);save();renderIndividuals();};
+    var sb=card.querySelector('[data-act="send"]');if(sb)sb.onclick=function(){sendIdvRequest(i);};
     list.appendChild(card);
   });
-  /* "Invite all contacts to verify" shows only when someone still needs a request */
-  $('btnInviteIdv').classList.toggle('hidden',!S.f.individuals.length||!idvInviteCandidates().length);
+}
+/* send a verification request for a contact the applicant filled out on their behalf */
+function sendIdvRequest(i){
+  var p=S.f.individuals[i];if(!p||p.isMe||p.invitedFill)return;
+  p.idvInvited=true;save();renderIndividuals();
 }
 
 /* drawer */
-var editIdx=-1, drRoles=[], drIdv=false, camT=null, qrT=null;
+var editIdx=-1, drMode='add', drRoles=[], drIdv=false, camT=null, qrT=null;
 var DK=['firstName','lastName','dob','email','phone','occupation','street','unit','city','province','postal'];
 function qrSvg(){
   /* deterministic fake QR */
@@ -1815,14 +1879,21 @@ function renderIdv(){
   st.textContent='Uses your device camera. Nothing is stored in this prototype.';
   if(drIdv)$('drErr').classList.add('hidden');
 }
-function syncInviteFill(){
-  var on=$('d-inviteFill').checked;
-  $('drInviteEmailWrap').classList.toggle('hidden',!on);
-  document.querySelectorAll('#drawer .dr-sec').forEach(function(s){
-    if(s.id!=='drInviteSec')s.classList.toggle('hidden',on);
-  });
-  $('drSave').textContent=on?'Invite key contact to fill':(editIdx>=0&&!(S.f.individuals[editIdx]&&S.f.individuals[editIdx].invitedFill)?'Save changes':'Add key contact');
-  $('drSub').textContent=on?'Invite key contact to fill':'Fill out key contact information';
+function syncDrMode(){
+  var invite=drMode==='invite',editing=editIdx>=0;
+  /* invite mode collects only name, role(s) and email — everything else is hidden
+     and the person completes + verifies it themselves from an emailed link */
+  $('inviteHint').classList.toggle('hidden',!invite);
+  $('addrSec').classList.toggle('hidden',invite);
+  $('idvSec').classList.toggle('hidden',invite);
+  $('isMeWrap').classList.toggle('hidden',invite);
+  $('phoneRow').classList.toggle('hidden',invite);
+  $('d-dob').closest('.field').classList.toggle('hidden',invite);
+  $('d-occupation').closest('.field').classList.toggle('hidden',invite);
+  if(invite)$('dobErr').classList.add('hidden');
+  $('drTitle').textContent=invite?(editing?'Edit invitation':'Invite a key contact to fill'):(editing?'Edit key contact':'Add key contact');
+  $('drSub').textContent=invite?'They complete and verify their own entry':'Fill out key contact information';
+  $('drSave').textContent=invite?(editing?'Save invitation':'Send invitation'):(editing?'Save changes':'Add key contact');
 }
 function startQr(){
   $('qrBox').classList.remove('hidden');
@@ -1871,21 +1942,12 @@ function syncIsMe(){
   $('emailLockHint').classList.toggle('hidden',!on);
   renderIdv();
 }
-function openDrawer(idx){
+function openDrawer(idx,mode){
   editIdx=idx;
   var p=idx>=0?S.f.individuals[idx]:null;
-  drRoles=p?p.roles.slice():[];
+  drMode=mode||(p&&p.invitedFill?'invite':'add');
+  drRoles=p?(p.roles||[]).slice():[];
   drIdv=!!(p&&p.idv);
-  /* if the applicant isn't an owner/director/officer/control person, "This is me" doesn't apply */
-  $('isMeWrap').classList.toggle('hidden',!!S.f.notOwner);
-  if(S.f.notOwner&&p&&p.isMe)p.isMe=false;
-  $('drTitle').textContent=p?'Edit key contact':'Add key contact';
-  $('drSave').textContent=p?'Save changes':'Add key contact';
-  $('d-inviteFill').checked=!!(p&&p.invitedFill);
-  var ie=$('d-inviteEmail');
-  ie.value=(p&&p.invitedFill)?(p.email||''):'';
-  ie.closest('.field').classList.toggle('filled',!!ie.value);
-  ie.closest('.field').classList.remove('invalid');
   DK.forEach(function(k){
     var inp=$('d-'+k);inp.value=p?(p[k]||''):'';
     inp.closest('.field').classList.toggle('filled',!!inp.value);
@@ -1898,12 +1960,13 @@ function openDrawer(idx){
   $('d-isMe').checked=!!(p&&p.isMe);
   document.querySelectorAll('.rolecard').forEach(function(rc){rc.classList.toggle('on',drRoles.indexOf(rc.dataset.role)>=0);});
   $('rolesWrap').classList.remove('invalid');
-  syncOwnPct();syncIsMe();syncInviteFill();
+  syncOwnPct();syncIsMe();syncDrMode();
   $('drawer').classList.remove('hidden');$('drawerOverlay').classList.remove('hidden');
   $('drawer').querySelector('.dr-body').scrollTop=0;
   document.body.style.overflow='hidden';
+  updateChatVisibility();
 }
-function closeDrawer(){$('drawer').classList.add('hidden');$('drawerOverlay').classList.add('hidden');document.body.style.overflow='';}
+function closeDrawer(){$('drawer').classList.add('hidden');$('drawerOverlay').classList.add('hidden');document.body.style.overflow='';updateChatVisibility();}
 function syncOwnPct(){$('ownPctWrap').classList.toggle('hidden',drRoles.indexOf('Beneficial owner')<0);}
 function drError(msg,target){
   var b=$('drErr');
@@ -1914,15 +1977,19 @@ function drError(msg,target){
 }
 function saveDrawer(){
   $('drErr').classList.add('hidden');
-  /* invite-to-fill mode: only the email is needed — the contact fills the rest themselves */
-  if($('d-inviteFill').checked){
-    var ie=$('d-inviteEmail');
-    if(!ie.value||ie.value.indexOf('@')<1){
-      ie.closest('.field').classList.add('invalid');
-      drError('Enter the email of the person who should fill this entry.',ie.closest('.field'));
-      return;
-    }
-    var inv={invitedFill:true,email:ie.value.trim(),roles:[],ownPct:'',isMe:false,idv:false};
+  /* invite-to-fill mode: just name, role(s) and email — they complete and verify the rest themselves */
+  if(drMode==='invite'){
+    var ok2=true,firstBad2=null;
+    if(!drRoles.length){$('rolesWrap').classList.add('invalid');ok2=false;firstBad2=firstBad2||$('rolesWrap');}
+    ['firstName','lastName','email'].forEach(function(k){
+      var inp=$('d-'+k);
+      var bad=!inp.value||(k==='email'&&inp.value.indexOf('@')<1);
+      inp.closest('.field').classList.toggle('invalid',bad);
+      if(bad){ok2=false;firstBad2=firstBad2||inp.closest('.field');}
+    });
+    if(drRoles.indexOf('Beneficial owner')>=0&&!$('d-ownPct').value){$('d-ownPct').closest('.field').classList.add('invalid');ok2=false;firstBad2=firstBad2||$('d-ownPct').closest('.field');}
+    if(!ok2){drError('Add their full name, role, and email to send the invitation.',firstBad2);return;}
+    var inv={invitedFill:true,roles:drRoles.slice(),ownPct:$('d-ownPct').value,firstName:$('d-firstName').value.trim(),lastName:$('d-lastName').value.trim(),email:$('d-email').value.trim(),isMe:false,idv:false};
     if(editIdx>=0)S.f.individuals[editIdx]=inv;else S.f.individuals.push(inv);
     save();closeDrawer();renderIndividuals();
     return;
@@ -1953,7 +2020,7 @@ function saveDrawer(){
     drError('One step left: complete the live camera check in the Identity verification section.',$('idvSec'));
     return;
   }
-  var isMe=!S.f.notOwner&&$('d-isMe').checked;
+  var isMe=$('d-isMe').checked;
   var p={roles:drRoles.slice(),ownPct:$('d-ownPct').value,isMe:isMe,idv:isMe?drIdv:false};
   DK.forEach(function(k){p[k]=$('d-'+k).value;});
   if(editIdx>=0){
@@ -1968,7 +2035,9 @@ function saveDrawer(){
 /* ============================ invite to co-fill (sidebar, multi-select) ============================ */
 var CF_WAIT='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#697586" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 14px;margin-top:2px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
 var CP_CHECK='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-var cfSel={},cfEmailVal='';
+var cfSel={},cfEmailVal='',cfAccess='';
+function collabByEmail(em){em=(em||'').trim().toLowerCase();return (S.collaborators||[]).filter(function(c){return (c.email||'').toLowerCase()===em;})[0]||null;}
+function cofillEmailIsNew(){var v=(cfEmailVal||'').trim();return v.indexOf('@')>0&&!collabByEmail(v);}
 function cofillTakenKeys(){
   var m={};
   S.f.cofill.forEach(function(c){(c.keys||[]).forEach(function(k){m[k]=c;});});
@@ -1992,7 +2061,8 @@ function renderCofillPanel(){
   var taken=cofillTakenKeys();
   var body='';
   COFILL_STRUCT.forEach(function(pg){
-    body+='<div class="cp-page">'+esc(pg.title)+'</div>';
+    var here=pg.page===S.page;
+    body+='<div class="cp-page'+(here?' here':'')+'">'+esc(pg.title)+(here?'<span class="here-tag">YOU\'RE HERE</span>':'')+'</div>';
     pg.sections.forEach(function(sec){
       var keys=sec.keys.filter(cofillKeyAvailable);
       var free=keys.filter(function(k){return !taken[k];});
@@ -2017,14 +2087,32 @@ function renderCofillPanel(){
     });
   }
   var n=Object.keys(cfSel).filter(function(k){return cfSel[k];}).length;
+  var curPg=COFILL_STRUCT.filter(function(p){return p.page===S.page;})[0];
+  var hereNote=curPg?'<p class="note" style="margin-top:6px;color:var(--brand-700);font-weight:600">You&rsquo;re on &ldquo;'+esc(curPg.title)+'&rdquo; &mdash; its questions are highlighted below.</p>':'';
+  var collabChips='';
+  if((S.collaborators||[]).length){
+    collabChips='<div class="cp-collabs"><span class="lbl">Assign to a collaborator</span>'+
+      S.collaborators.map(function(c){
+        var on=(cfEmailVal||'').trim().toLowerCase()===(c.email||'').toLowerCase();
+        return '<button type="button" class="cp-collab-chip'+(on?' on':'')+'" data-cpcollab="'+esc(c.email)+'">'+esc(cofillName(c.email))+'</button>';
+      }).join('')+'</div>';
+  }
+  var showAccess=cofillEmailIsNew();
+  var accessBlock='<div class="cp-access'+(showAccess?'':' hidden')+'" id="cpAccess">'+
+    '<div class="ttl">New teammate &mdash; what can they access?</div>'+
+    '<label class="opt'+(cfAccess==='full'?' on':'')+'" data-cpacc="full"><span class="ar"></span><span><b>Full access</b><span class="ad">Can view the entire application. Usually for key contacts like the CEO.</span></span></label>'+
+    '<label class="opt'+(cfAccess==='limited'?' on':'')+'" data-cpacc="limited"><span class="ar"></span><span><b>Limited access</b><span class="ad">Only sees the fields you assign. For people you don&rsquo;t want to reveal full company information to.</span></span></label>'+
+    '</div>';
   panel.innerHTML=
     '<div class="cp-head"><h4>Invite to co-fill</h4>'+
-    '<p class="note">Hand any part of the application to your teammates. They get an email link scoped to exactly what you pick.</p>'+
+    '<p class="note">Hand any part of the application to your teammates. They get an email link scoped to exactly what you pick.</p>'+hereNote+
     '<button class="cp-x" type="button" id="cpClose" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
     '<div class="cp-body">'+body+sent+'</div>'+
     '<div class="cp-foot">'+
       '<div class="sel-count">'+(n?n+' question'+(n>1?'s':'')+' selected':'Select the questions a teammate should fill')+'</div>'+
+      collabChips+
       '<div class="cp-send-row"><input id="cpEmail" type="email" placeholder="teammate@'+esc(S.email.split('@')[1]||'company.com')+'" value="'+esc(cfEmailVal)+'"><button type="button" id="cpSend">Send invite</button></div>'+
+      accessBlock+
       '<div class="cofill-track"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 13px;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>For compliance, Loop records who filled and edited every field, whoever contributes.</span></div>'+
     '</div>';
   panel.querySelector('.cp-body').scrollTop=keepScroll;
@@ -2050,14 +2138,31 @@ function renderCofillPanel(){
       renderCofillPanel();
     };
   });
+  /* shortcut: pick an existing collaborator's email immediately */
+  panel.querySelectorAll('[data-cpcollab]').forEach(function(b){
+    b.onclick=function(){cfEmailVal=b.dataset.cpcollab;cfAccess='';renderCofillPanel();};
+  });
+  /* access level for a brand-new email */
+  panel.querySelectorAll('[data-cpacc]').forEach(function(o){
+    o.onclick=function(){cfAccess=o.dataset.cpacc;renderCofillPanel();};
+  });
   var em=$('cpEmail');
-  em.addEventListener('input',function(){cfEmailVal=em.value;});
+  em.addEventListener('input',function(){
+    cfEmailVal=em.value;
+    /* show the access question the moment they type a new (non-collaborator) email */
+    $('cpAccess').classList.toggle('hidden',!cofillEmailIsNew());
+  });
   $('cpSend').onclick=function(){
     var keys=Object.keys(cfSel).filter(function(k){return cfSel[k];});
     if(!keys.length){panel.querySelector('.sel-count').style.color='var(--error-600)';return;}
     if(!em.value||em.value.indexOf('@')<1){em.style.borderColor='var(--error-600)';return;}
-    S.f.cofill.push({id:'cf'+Date.now(),email:em.value.trim(),keys:keys});
-    cfSel={};cfEmailVal='';
+    cfEmailVal=em.value;
+    var emV=em.value.trim(),existing=collabByEmail(emV);
+    /* a new email must be granted an access level before the invite can go out */
+    if(!existing&&!cfAccess){$('cpAccess').classList.remove('hidden');$('cpAccess').classList.add('invalid');$('cpAccess').scrollIntoView({block:'nearest'});return;}
+    if(!existing)S.collaborators.push({email:emV,role:'',access:cfAccess});
+    S.f.cofill.push({id:'cf'+Date.now(),email:emV,keys:keys});
+    cfSel={};cfEmailVal='';cfAccess='';
     save();
     renderCofillPanel();
     if($('page-'+S.page))applyCofillLocks(S.page);
@@ -2167,13 +2272,13 @@ function renderReview(){
   if(S.f.individuals.length){
     S.f.individuals.forEach(function(p,i){
       if(p.invitedFill){
-        pCard.appendChild(el('div','rev-row','<div class="rl">Invited to fill their own entry</div><div class="rv">'+esc(indName(p))+' &middot; '+esc(p.email||'')+'</div><div class="rv" style="color:var(--blue-700);font-size:13px;font-weight:600">Waiting for them to fill</div>'));
+        pCard.appendChild(el('div','rev-row','<div class="rl">'+(p.roles&&p.roles.length?esc(p.roles.join(' / '))+' &middot; ':'')+'Invited to fill their own entry</div><div class="rv">'+esc(indName(p))+' &middot; '+esc(p.email||'')+'</div><div class="rv" style="color:var(--blue-700);font-size:13px;font-weight:600">Waiting to fill and verify</div>'));
         return;
       }
       var idvHtml=p.isMe
         ?(p.idv?'<div class="rv good">Identity verified (live capture)</div>':reqLink('contacts','idv:'+i))
         :(p.extIdv?'<div class="rv good">Identity verified</div>'
-          :p.idvInvited?'<div class="rv" style="color:var(--blue-700);font-size:13px;font-weight:600">Verification request sent</div>'
+          :p.idvInvited?'<div class="rv" style="color:var(--blue-700);font-size:13px;font-weight:600">Waiting to verify</div>'
           :'<div class="rv" style="color:var(--gray-500);font-size:13px">Not yet invited to verify</div>');
       pCard.appendChild(el('div','rev-row','<div class="rl">'+esc(p.roles.join(' / '))+(p.isMe?' &middot; You':'')+'</div><div class="rv">'+esc(indName(p))+' &middot; '+esc(p.email||'')+'</div>'+idvHtml));
     });
@@ -2219,14 +2324,21 @@ function renderReview(){
   }
   R.appendChild(revSection('Documents','documents',missingPage('documents'),dCard));
 
-  $('f-certify').checked=!!S.f.certify;
-  if(S.f.certify)$('certifyWrap').classList.remove('invalid');
   wireGapLinks(R);
   paintGaps();
 }
 function paintGaps(){
   var box=$('gapsBox');var all=allMissing();
-  $('btnSubmit').disabled=all.length>0;
+  var auth=submitAuthorized();
+  $('btnSubmit').disabled=all.length>0||!auth;
+  /* explain the authority gate: only a verified key contact with managerial authority can submit */
+  var gate=$('submitGate');
+  if(gate){
+    if(!auth){
+      gate.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 15px;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Only a key contact with managerial authority can submit. Add yourself as a key contact with a director, signing officer, or control person role, and complete the live identity check, to enable submission.</span>';
+      gate.classList.remove('hidden');
+    }else gate.classList.add('hidden');
+  }
   if(!all.length){box.innerHTML='';return;}
   var html='<div class="gaps"><h4>Complete '+all.length+' required item'+(all.length>1?'s':'')+' to submit</h4>';
   all.forEach(function(k){
@@ -2239,7 +2351,7 @@ function paintGaps(){
 
 /* ============================ setup hub ============================ */
 function setupDone(){
-  return [S.setup.depositDone,S.setup.invites.length>0,!!S.setup.plan,S.setup.tfaEnabled];
+  return [S.setup.depositDone,!!S.setup.plan,S.setup.tfaEnabled];
 }
 function renderTimeline(){
   var t=$('timelineBody');
@@ -2261,7 +2373,7 @@ function setupHead(i,title,done,meta){
 function skipLink(i){return '<div style="margin-top:14px"><button class="btn-link" data-skip="'+i+'" style="padding:4px 0;font-size:13.5px;color:var(--gray-500)">Skip for now</button></div>';}
 function renderSetup(){
   var d=setupDone();
-  $('setupCount').textContent=d.filter(Boolean).length+' of 4 complete';
+  $('setupCount').textContent=d.filter(Boolean).length+' of 3 complete';
   var open=S.setup.open;
   var list=$('setupList');list.innerHTML='';
 
@@ -2319,27 +2431,10 @@ function renderSetup(){
   }
   list.appendChild(it1);
 
-  /* 2 — invites */
-  var it2=el('div','setup-item',setupHead(1,'Invite your team',d[1],d[1]?S.setup.invites.length+' invited':''));
+  /* 2 — plans */
+  var planMeta=d[1]?S.setup.plan+' &middot; '+(S.setup.billing==='annual'?'Annual':'Monthly'):'';
+  var it3=el('div','setup-item',setupHead(1,'View and choose your plan',d[1],planMeta));
   if(open===1){
-    var b2=el('div','setup-body');
-    var rows='';
-    S.setup.invites.forEach(function(iv,ix){
-      rows+='<div class="invited"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg><span class="iv-em">'+esc(iv.email)+'</span><span class="iv-role">'+esc(iv.role)+' · Invite sends at activation</span><button class="icobtn" data-uninvite="'+ix+'" aria-label="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
-    });
-    b2.innerHTML=
-      '<p class="desc">Teammates are invited to create their own account the moment it opens; add them now so we can let them know immediately.</p>'+rows+
-      '<div class="invite-row"><div class="qfield"><input id="invEmail" type="email" placeholder="teammate@'+esc((S.email.split('@')[1]||'company.com'))+'"></div>'+
-      '<div class="qfield"><select id="invRole">'+ROLES_TEAM.map(function(r){return '<option>'+r+'</option>';}).join('')+'</select><span class="chev">&#9662;</span></div>'+
-      '<button class="btn btn-secondary btn-sm" id="invAdd">Invite</button></div>'+skipLink(1);
-    it2.appendChild(b2);
-  }
-  list.appendChild(it2);
-
-  /* 3 — plans */
-  var planMeta=d[2]?S.setup.plan+' &middot; '+(S.setup.billing==='annual'?'Annual':'Monthly'):'';
-  var it3=el('div','setup-item',setupHead(2,'View and choose your plan',d[2],planMeta));
-  if(open===2){
     var b3=el('div','setup-body');
     var cards='';
     PLANS.forEach(function(p){
@@ -2349,26 +2444,26 @@ function renderSetup(){
     });
     b3.innerHTML='<p class="desc">Every plan has 0% FX fees on card purchases, free wire transfers, and no account minimums. You’ll confirm your plan after approval.</p>'+
       billToggleHTML('billToggleSetup')+cards+
-      '<p class="plan-note">You can change plans or switch between monthly and annual billing anytime. Billing starts only after your account is active.</p>'+skipLink(2);
+      '<p class="plan-note">You can change plans or switch between monthly and annual billing anytime. Billing starts only after your account is active.</p>'+skipLink(1);
     it3.appendChild(b3);
   }
   list.appendChild(it3);
 
-  /* 4 — 2FA */
-  var it4=el('div','setup-item',setupHead(3,'Enable two-factor authentication',d[3],d[3]?'On':''));
-  if(open===3){
+  /* 3 — 2FA */
+  var it4=el('div','setup-item',setupHead(2,'Enable two-factor authentication',d[2],d[2]?'On':''));
+  if(open===2){
     var b4=el('div','setup-body');
     if(S.setup.tfaEnabled){
       b4.innerHTML='<div class="done-banner"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Two-factor authentication is on. We’ll text '+esc(S.setup.tfaPhone)+' a code each time you sign in.</span></div>';
     }else if(S.setup.tfaCodeSent){
       b4.innerHTML='<p class="desc">Enter the 6-digit code we sent to '+esc(S.setup.tfaPhone)+'.</p>'+
         '<div class="code-row sm" id="tfaCodeRow"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>'+
-        '<button class="btn btn-primary btn-sm" id="tfaEnable" disabled style="margin-top:12px">Enable 2FA</button>'+skipLink(3);
+        '<button class="btn btn-primary btn-sm" id="tfaEnable" disabled style="margin-top:12px">Enable 2FA</button>'+skipLink(2);
     }else{
       b4.innerHTML='<p class="desc">Protect the account before there’s money in it. We’ll text a code each time you sign in.</p>'+
         '<div class="invite-row" style="grid-template-columns:130px 1fr auto"><div class="fixedbox" style="height:48px"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div>'+
         '<div class="qfield"><input id="tfaPhone" type="tel" inputmode="tel" placeholder="(416) 555-0123" value="'+esc(S.setup.tfaPhone)+'"></div>'+
-        '<button class="btn btn-secondary btn-sm" id="tfaSend">Text me a code</button></div>'+skipLink(3);
+        '<button class="btn btn-secondary btn-sm" id="tfaSend">Text me a code</button></div>'+skipLink(2);
     }
     it4.appendChild(b4);
   }
@@ -2458,18 +2553,9 @@ function renderSetup(){
     b.onclick=function(){
       var i=+b.dataset.skip;
       S.setup.skipped[i]=true;
-      S.setup.open=i>=3?-1:i+1;
+      S.setup.open=i>=2?-1:i+1;
       persist();renderSetup();
     };
-  });
-  var inv=$('invAdd');if(inv)inv.onclick=function(){
-    var em=$('invEmail');
-    if(!em.value||em.value.indexOf('@')<1){em.style.borderColor='var(--error-600)';return;}
-    S.setup.invites.push({email:em.value.trim(),role:$('invRole').value});
-    persist();renderSetup();
-  };
-  list.querySelectorAll('[data-uninvite]').forEach(function(b){
-    b.onclick=function(){S.setup.invites.splice(+b.dataset.uninvite,1);persist();renderSetup();};
   });
   list.querySelectorAll('.plancard').forEach(function(pc){
     pc.onclick=function(){S.setup.plan=pc.dataset.plan;persist();renderSetup();};
@@ -2545,9 +2631,10 @@ function wireCodeRow(row,onComplete){
 function invPerson(){return S.f.individuals[invIdx]||{firstName:'your contact',lastName:'',email:'them@company.com',roles:[]};}
 function startInvitee(i){
   invIdx=i;invChose=false;clearTimeout(invT);
-  ['view-auth','view-verify','app','view-setup','view-approved','view-plan','view-live'].forEach(function(id){$(id).classList.add('hidden');});
+  ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
   $('view-invitee').classList.remove('hidden');
+  updateChatVisibility();
   renderInvStep('choice');
   window.scrollTo(0,0);
 }
@@ -2636,7 +2723,86 @@ function renderInvStep(step){
   }
 }
 
-/* ============================ chat (waiting room, Intercom-style) ============================ */
+/* ============================ MFA setup (optional, after sign-up) ============================ */
+var mfaSent=false;
+function mfaFinish(){S.verified=true;S.page='welcome';save();show('app');}
+function renderMfa(){
+  var body=$('mfaBody');if(!body)return;
+  if(S.mfaEnabled){
+    var m=S.mfaMethod,label=m==='passkey'?'a passkey':m==='sms'?('text codes to '+esc(S.mfaPhone||'your phone')):('email codes to '+esc(S.email));
+    body.innerHTML='<div class="mfa-ok"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Two-step verification is on using '+label+'.</div>'+
+      '<button class="btn btn-primary" id="mfaContinue">Continue to your application &#8594;</button>';
+    $('mfaContinue').onclick=mfaFinish;
+    return;
+  }
+  var KEYICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>';
+  var PHONEICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
+  var MAILICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>';
+  var cards=[
+    ['passkey','Passkey','Face ID, a fingerprint, or a security key. The most phishing-resistant option.',KEYICON],
+    ['sms','Text message','We text a 6-digit code to your phone each time you sign in.',PHONEICON],
+    ['email','Email code','We email a 6-digit code to '+esc(S.email)+' each time you sign in.',MAILICON]
+  ];
+  body.innerHTML=cards.map(function(c){
+    return '<div class="mfa-card'+(S.mfaMethod===c[0]?' on':'')+'" data-mfa="'+c[0]+'"><span class="mic">'+c[3]+'</span><div style="flex:1"><div class="mt">'+c[1]+'</div><div class="md">'+c[2]+'</div></div></div>';
+  }).join('')+'<div id="mfaSetup"></div>';
+  body.querySelectorAll('[data-mfa]').forEach(function(card){
+    card.onclick=function(){S.mfaMethod=card.dataset.mfa;mfaSent=false;persist();renderMfa();};
+  });
+  renderMfaSetup();
+}
+function renderMfaSetup(){
+  var box=$('mfaSetup');if(!box)return;
+  var m=S.mfaMethod;if(!m){box.innerHTML='';return;}
+  var codeRow='<div class="code-row sm" id="mfaCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>';
+  if(m==='passkey'){
+    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 12px">Your device will ask for Face ID, your fingerprint, or a security key.</p><button class="btn btn-primary btn-sm" id="mfaPasskey">Create a passkey</button></div>';
+    $('mfaPasskey').onclick=function(){
+      var b=$('mfaPasskey');b.disabled=true;b.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Waiting for your device&hellip;';
+      setTimeout(function(){S.mfaEnabled=true;persist();renderMfa();},1400);
+    };
+  }else if(m==='sms'&&!mfaSent){
+    box.innerHTML='<div class="mfa-setup"><div class="row" style="grid-template-columns:120px 1fr"><div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div><div class="field'+(S.mfaPhone?' filled':'')+'"><input id="mfaPhone" type="tel" inputmode="tel" value="'+esc(S.mfaPhone||'')+'"><label for="mfaPhone">Mobile number</label></div></div><button class="btn btn-primary btn-sm" id="mfaSend" style="margin-top:12px">Text me a code</button></div>';
+    var ph=$('mfaPhone');
+    ph.addEventListener('input',function(){S.mfaPhone=ph.value;ph.closest('.field').classList.toggle('filled',!!ph.value);ph.closest('.field').classList.remove('invalid');persist();});
+    $('mfaSend').onclick=function(){if(!ph.value){ph.closest('.field').classList.add('invalid');return;}mfaSent=true;renderMfaSetup();};
+  }else if(m==='email'&&!mfaSent){
+    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 12px">We&rsquo;ll email a 6-digit code to <strong>'+esc(S.email)+'</strong>.</p><button class="btn btn-primary btn-sm" id="mfaSend">Send code</button></div>';
+    $('mfaSend').onclick=function(){mfaSent=true;renderMfaSetup();};
+  }else{
+    var to=m==='sms'?esc(S.mfaPhone):esc(S.email);
+    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 8px">Enter the 6-digit code we sent to '+to+'.</p>'+codeRow+'<button class="btn btn-primary btn-sm" id="mfaVerify" disabled style="margin-top:12px">Verify and enable</button></div>';
+    wireCodeRow($('mfaCode'),function(ok){$('mfaVerify').disabled=!ok;});
+    $('mfaVerify').onclick=function(){S.mfaEnabled=true;persist();renderMfa();};
+  }
+}
+
+/* ============================ collaborators (added at the start, view access) ============================ */
+function renderCollabList(){
+  var box=$('collabList');if(!box)return;
+  box.innerHTML='';
+  (S.collaborators||[]).forEach(function(c,i){
+    var row=el('div','collab-row',
+      '<div class="cr-av">'+esc((cofillName(c.email)||'?').slice(0,1).toUpperCase())+'</div>'+
+      '<div class="cr-who"><div class="cr-em">'+esc(c.email)+'</div><div class="cr-role">'+esc(c.role||'Collaborator')+'</div></div>'+
+      '<span class="cr-access'+(c.access==='limited'?' lim':'')+'">'+(c.access==='limited'?'Limited access':'Full access')+'</span>'+
+      '<button class="icobtn" data-collabdel="'+i+'" aria-label="Remove collaborator"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>');
+    row.querySelector('[data-collabdel]').onclick=function(){
+      S.collaborators.splice(i,1);persist();renderCollabList();
+      if(!$('cofillPanel').classList.contains('hidden'))renderCofillPanel();
+    };
+    box.appendChild(row);
+  });
+}
+function openCollabModal(){
+  $('collabEmail').value='';$('collabEmail').closest('.field').classList.remove('filled','invalid');
+  var sel=$('collabRole');sel.value='';sel.closest('.field').classList.remove('filled','invalid');
+  $('collabOverlay').classList.remove('hidden');updateChatVisibility();
+  $('collabEmail').focus();
+}
+function closeCollabModal(){$('collabOverlay').classList.add('hidden');updateChatVisibility();}
+
+/* ============================ chat (global, all screens) ============================ */
 var chatSeeded=false;
 var CHAT_QA={
   'How long does review take?':'Most applications are reviewed within <strong>3&ndash;6 business days</strong>. You’ll get an email the moment there’s a decision.',
@@ -2644,20 +2810,40 @@ var CHAT_QA={
   'What do my key contacts need to do?':'Each key contact got an email link to verify their identity with a quick live camera check on their own device. They can also choose to create a Loop login. You approve or decline their access from this page.',
   'Talk to a human':'You’re in the queue. Someone from our support team will reply right here, usually within a few minutes. You can also email <a href="mailto:support@bankonloop.com">support@bankonloop.com</a>.'
 };
+var CHAT_QA_APP={
+  'How long does this take?':'Most businesses finish in about 15 minutes, and progress saves automatically. After you submit, our team reviews within <strong>3&ndash;6 business days</strong>.',
+  'Who counts as a key contact?':'Anyone who is a director, a signing officer, an owner of 25% or more, or who controls the business day to day. You verify your own identity here; everyone else gets an emailed link.',
+  'Can a teammate help me fill this in?':'Yes. Use <strong>Invite to co-fill</strong> in the left panel to hand specific questions to a teammate, or add a collaborator who can view the whole application. You can revoke access anytime.',
+  'Talk to a human':'Happy to help — someone from our team will reply right here, usually within a few minutes. You can also email <a href="mailto:support@bankonloop.com">support@bankonloop.com</a>.'
+};
+function chatQA(){return S.submitted?CHAT_QA:CHAT_QA_APP;}
+function updateChatVisibility(){
+  var fab=$('chatFab');if(!fab)return;
+  var appOpen=$('app')&&!$('app').classList.contains('hidden');
+  var v=S.view;
+  var allowed=appOpen||v==='setup'||v==='approved'||v==='plan'||v==='live';
+  /* tuck the bot away while a modal/drawer covers the screen so it doesn't overlap */
+  var overlay=!$('drawer').classList.contains('hidden')||!$('modalOverlay').classList.contains('hidden')||!$('collabOverlay').classList.contains('hidden');
+  var visible=allowed&&!overlay;
+  fab.classList.toggle('hidden',!visible);
+  var panelOpen=!$('chatPanel').classList.contains('hidden');
+  if(!visible){$('chatPanel').classList.add('hidden');$('chatCallout').classList.add('hidden');}
+  else $('chatCallout').classList.toggle('hidden',panelOpen||chatSeeded);
+}
 function chatMsg(html,me){
   var b=$('chatBody');
   b.appendChild(el('div','chat-msg '+(me?'me':'bot'),html));
   b.scrollTop=b.scrollHeight;
 }
 function chatQuick(){
-  var b=$('chatBody');
+  var b=$('chatBody');var QA=chatQA();
   var old=b.querySelector('.chat-quick');if(old)old.remove();
-  var q=el('div','chat-quick',Object.keys(CHAT_QA).map(function(k){return '<button type="button">'+esc(k)+'</button>';}).join(''));
+  var q=el('div','chat-quick',Object.keys(QA).map(function(k){return '<button type="button">'+esc(k)+'</button>';}).join(''));
   q.querySelectorAll('button').forEach(function(btn){
     btn.onclick=function(){
       q.remove();
       chatMsg(esc(btn.textContent),true);
-      setTimeout(function(){chatMsg(CHAT_QA[btn.textContent]);chatQuick();},600);
+      setTimeout(function(){chatMsg(chatQA()[btn.textContent]);chatQuick();},600);
     };
   });
   b.appendChild(q);b.scrollTop=b.scrollHeight;
@@ -2693,8 +2879,9 @@ function openModal(count,next){
   modalNext=next;
   $('modalBody').textContent=count+(count===1?' field isn’t':' fields aren’t')+' complete. You can move on now, but you or a teammate will need to complete '+(count===1?'it':'them')+' before submitting.';
   $('modalOverlay').classList.remove('hidden');
+  updateChatVisibility();
 }
-function closeModal(){$('modalOverlay').classList.add('hidden');modalNext=null;}
+function closeModal(){$('modalOverlay').classList.add('hidden');modalNext=null;updateChatVisibility();}
 
 /* ============================ continue ============================ */
 function continueFrom(id){
@@ -2715,12 +2902,13 @@ function continueFrom(id){
 
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
-  ['logoAuth','logoVerify','logoSide','logoSetup','logoInv'].forEach(function(id){$(id).innerHTML=LOGO;});
+  ['logoAuth','logoMfa','logoSide','logoSetup','logoInv'].forEach(function(id){$(id).innerHTML=LOGO;});
   fillSelect($('f-entityType'),ENTITIES);
   fillSelect($('f-industry'),INDUSTRIES);
   fillSelect($('f-rbRelType'),RELTYPES);
   fillSelect($('f-rbCountry'),COUNTRIES);
   fillSelect($('d-province'),PROVINCES);
+  fillSelect($('collabRole'),COLLAB_ROLES);
   bindFields();bindSliders();hydrateFields();
 
   /* operating / trade name checkbox */
@@ -2772,8 +2960,8 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!ok)return;
     if(em.value.trim().toLowerCase()!==(S.email||'').toLowerCase()){S=freshState();}
     S.email=em.value.trim();S.firstName=fn.value.trim();S.lastName=ln.value.trim();S.verified=false;
-    save();show('verify');
-    $('codeRow').querySelector('input').focus();
+    S.mfaMethod='';S.mfaEnabled=false;mfaSent=false;
+    save();show('mfa');
   };
   $('btnSignin').onclick=function(){
     var em=$('si-email'),pw=$('si-pass'),ok=true;
@@ -2786,31 +2974,32 @@ document.addEventListener('DOMContentLoaded',function(){
       else if(S.submitted){S.approved=true;persist();show('approved');}
       else show('app');
     }else{
-      S=freshState();S.email=em.value.trim();save();show('verify');
-      $('codeRow').querySelector('input').focus();
+      S=freshState();S.email=em.value.trim();S.verified=true;S.page='welcome';save();show('app');
     }
   };
 
-  /* verify */
-  var codeInputs=Array.prototype.slice.call($('codeRow').querySelectorAll('input'));
-  codeInputs.forEach(function(inp,i){
-    inp.addEventListener('input',function(){
-      inp.value=inp.value.replace(/\D/g,'').slice(0,1);
-      if(inp.value&&i<5)codeInputs[i+1].focus();
-      $('btnVerify').disabled=!codeInputs.every(function(c){return c.value;});
-    });
-    inp.addEventListener('keydown',function(e){
-      if(e.key==='Backspace'&&!inp.value&&i>0)codeInputs[i-1].focus();
-    });
-  });
-  $('btnVerify').onclick=function(){
-    S.verified=true;S.page='welcome';save();show('app');
-    codeInputs.forEach(function(c){c.value='';});$('btnVerify').disabled=true;
-  };
-  $('resend').onclick=function(e){e.preventDefault();this.textContent='Code sent';var t=this;setTimeout(function(){t.textContent='Resend code';},2500);};
+  /* MFA setup (optional) — skip proceeds without two-step verification */
+  $('mfaSkip').onclick=function(e){e.preventDefault();mfaFinish();};
 
   /* welcome + continue buttons */
   $('btnStart').onclick=function(){showPage('business');};
+
+  /* collaborators (welcome) */
+  $('btnAddCollab').onclick=openCollabModal;
+  $('collabCancel').onclick=closeCollabModal;
+  $('collabOverlay').onclick=function(e){if(e.target===$('collabOverlay'))closeCollabModal();};
+  $('collabEmail').addEventListener('input',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');});
+  $('collabRole').addEventListener('change',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');});
+  $('collabAdd').onclick=function(){
+    var em=$('collabEmail'),role=$('collabRole'),ok=true;
+    if(!em.value||em.value.indexOf('@')<1){em.closest('.field').classList.add('invalid');ok=false;}
+    if(!role.value){role.closest('.field').classList.add('invalid');ok=false;}
+    if(!ok)return;
+    var emV=em.value.trim(),ex=collabByEmail(emV);
+    /* collaborators added here can view the entire application (full access) */
+    if(ex){ex.role=role.value;ex.access='full';}else S.collaborators.push({email:emV,role:role.value,access:'full'});
+    persist();renderCollabList();closeCollabModal();
+  };
   document.querySelectorAll('[data-cont]').forEach(function(b){
     b.onclick=function(){continueFrom(b.dataset.cont);};
   });
@@ -2830,14 +3019,14 @@ document.addEventListener('DOMContentLoaded',function(){
   /* invitee preview exit */
   $('invExit').onclick=function(e){e.preventDefault();exitInvitee();};
 
-  /* chat (waiting room) */
+  /* chat (global) */
   $('chatFab').onclick=function(){
     var p=$('chatPanel');
     p.classList.toggle('hidden');
-    $('chatCallout').classList.toggle('hidden',!p.classList.contains('hidden'));
+    $('chatCallout').classList.add('hidden');
     if(!p.classList.contains('hidden')&&!chatSeeded){
       chatSeeded=true;
-      chatMsg('Hi'+(S.firstName?' '+esc(S.firstName):'')+' &#128075; Your application is in review. How can we help while you wait?');
+      chatMsg('Hi'+(S.firstName?' '+esc(S.firstName):'')+' &#128075; '+(S.submitted?'Your application is in review. How can we help while you wait?':'I can help with your application. What would you like to know?'));
       chatQuick();
     }
   };
@@ -2851,18 +3040,11 @@ document.addEventListener('DOMContentLoaded',function(){
     save();
     if(S.page==='review')renderReview();
   });
-  $('f-notOwner').addEventListener('change',function(e){S.f.notOwner=e.target.checked;save();});
 
-  /* submit */
-  $('f-certify').addEventListener('change',function(e){
-    S.f.certify=e.target.checked;
-    if(e.target.checked)$('certifyWrap').classList.remove('invalid');
-    persist();
-  });
+  /* submit — only a verified key contact with managerial authority can submit */
   $('btnSubmit').onclick=function(){
     S.attempted['review']=true;
-    if(allMissing().length){paintGaps();return;}
-    if(!S.f.certify){$('certifyWrap').classList.add('invalid');return;}
+    if(allMissing().length||!submitAuthorized()){paintGaps();return;}
     S.submitted=true;
     S.submittedAt=Date.now();
     S.ref='LP-'+String(Date.now()).slice(-6);
@@ -2890,7 +3072,8 @@ document.addEventListener('DOMContentLoaded',function(){
   };
 
   /* individuals */
-  $('btnAddInd').onclick=function(){openDrawer(-1);};
+  $('btnAddInd').onclick=function(){openDrawer(-1,'add');};
+  $('btnInviteFill').onclick=function(){openDrawer(-1,'invite');};
   $('drClose').onclick=closeDrawer;
   $('drCancel').onclick=closeDrawer;
   $('drawerOverlay').onclick=closeDrawer;
@@ -2908,22 +3091,6 @@ document.addEventListener('DOMContentLoaded',function(){
   });
   $('d-dob').addEventListener('change',checkDobAge);
   $('d-dob').addEventListener('input',checkDobAge);
-  $('d-inviteFill').addEventListener('change',syncInviteFill);
-  $('d-inviteEmail').addEventListener('input',function(){
-    var w=this.closest('.field');
-    w.classList.toggle('filled',!!this.value);
-    if(this.value)w.classList.remove('invalid');
-  });
-  $('btnInviteIdv').onclick=function(){
-    var cands=idvInviteCandidates();
-    if(!cands.length)return;
-    cands.forEach(function(p){p.idvInvited=true;});
-    save();renderIndividuals();
-    var note=$('idvInviteNote');
-    note.textContent='Verification request'+(cands.length>1?'s':'')+' sent to '+cands.map(function(p){return indName(p);}).join(', ')+'. You can track their status above.';
-    note.classList.remove('hidden');
-    setTimeout(function(){note.classList.add('hidden');},6000);
-  };
   document.querySelectorAll('.rolecard').forEach(function(rc){
     rc.onclick=function(){
       var r=rc.dataset.role;
@@ -2944,7 +3111,7 @@ document.addEventListener('DOMContentLoaded',function(){
     inp.addEventListener('change',function(){inp.closest('.field').classList.toggle('filled',!!inp.value);});
   });
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){closeDrawer();closeModal();$('cofillPanel').classList.add('hidden');}
+    if(e.key==='Escape'){closeDrawer();closeModal();closeCollabModal();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
   });
 
   /* modal */
@@ -2971,7 +3138,7 @@ document.addEventListener('DOMContentLoaded',function(){
   else if(S.approved)show('approved');
   else if(S.submitted)show('setup');
   else if(S.verified&&S.view==='app')show('app');
-  else if(S.view==='verify'&&S.email)show('verify');
+  else if(S.view==='mfa'&&S.email)show('mfa');
   else show('auth');
 });
 </script>
