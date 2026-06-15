@@ -477,9 +477,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .chatfab{position:fixed;right:24px;bottom:24px;width:54px;height:54px;border-radius:50%;background:var(--brand-500);border:none;box-shadow:0 8px 24px rgba(0,41,26,.35);display:flex;align-items:center;justify-content:center;color:#fff;z-index:95;transition:background .12s}
 .chatfab:hover{background:var(--brand-600)}
 /* handwritten "Questions?" callout pointing at the chat button */
-.chat-callout{position:fixed;right:92px;bottom:34px;z-index:94;pointer-events:none;display:flex;align-items:flex-start;gap:6px;color:var(--gray-700)}
-.chat-callout .cc-text{font-family:'Bradley Hand','Segoe Print','Comic Sans MS',cursive;font-size:16.5px;line-height:1.3;transform:rotate(-4deg);white-space:nowrap}
-.chat-callout svg{margin-top:10px}
+/* anchor the callout at the chat fab's center (right:51px, bottom:51px = 24px offset + 27px half of 54px),
+   so the arrow tip lands on the 0,0 center of the round chat button */
+.chat-callout{position:fixed;right:51px;bottom:51px;width:0;height:0;z-index:94;pointer-events:none;color:var(--gray-700)}
+.chat-callout .cc-text{position:absolute;right:24px;bottom:36px;font-family:'Bradley Hand','Segoe Print','Comic Sans MS',cursive;font-size:16.5px;line-height:1.3;transform:rotate(-4deg);white-space:nowrap}
+.chat-callout .cc-arrow{position:absolute;right:1px;bottom:0;display:block}
 /* green confetti */
 .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:120;overflow:hidden}
 .confetti-wrap span{position:absolute;top:-16px;display:block;opacity:0;animation:confetti-fall linear forwards}
@@ -559,6 +561,108 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* per-contact "send verification request" */
 .ind-card .kc-send{height:34px;font-size:12.5px;padding:0 12px;width:auto;white-space:nowrap}
 
+/* ---------- settings menu (sidebar + topbar) ---------- */
+.userbox{position:relative}
+.settings-trigger{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:8px 10px;border-radius:8px;color:var(--gray-600);font-size:12.5px;text-align:left}
+.settings-trigger:hover{background:var(--gray-100);color:var(--gray-900)}
+.settings-trigger .chev{flex:0 0 auto;transition:transform .16s}
+.settings-trigger.open .chev{transform:rotate(180deg)}
+.settings-trigger .em{word-break:break-all;flex:1;min-width:0}
+.topbar .settings-trigger{width:auto;font-size:13px}
+.settings-pop{position:fixed;width:240px;background:#fff;border:1px solid var(--gray-200);border-radius:12px;box-shadow:var(--shadow-overlay);z-index:97;padding:6px;overflow:visible}
+.settings-row{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;border-radius:8px;font-size:13.5px;color:var(--gray-700);background:none;border:none;text-align:left;cursor:pointer;position:relative}
+.settings-row:hover,.settings-row.open{background:var(--gray-50)}
+.settings-row .ic{flex:0 0 16px;display:inline-flex;align-items:center;color:var(--gray-500)}
+.settings-row .lbl{flex:1}
+.settings-row .arrow{color:var(--gray-400);display:inline-flex}
+.settings-row .val{font-size:12px;color:var(--gray-500);margin-right:2px}
+.settings-sep{height:1px;background:var(--gray-100);margin:5px 8px}
+.settings-sub{position:absolute;left:calc(100% + 8px);top:-6px;width:188px;background:#fff;border:1px solid var(--gray-200);border-radius:12px;box-shadow:var(--shadow-overlay);padding:6px;z-index:98}
+.settings-pop.flip-left .settings-sub{left:auto;right:calc(100% + 8px)}
+.settings-opt{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;border-radius:8px;font-size:13.5px;color:var(--gray-700);background:none;border:none;text-align:left;cursor:pointer}
+.settings-opt:hover{background:var(--gray-50)}
+.settings-opt .ck{margin-left:auto;color:var(--brand-500);display:none}
+.settings-opt.on{color:var(--brand-700);font-weight:600}
+.settings-opt.on .ck{display:inline-flex}
+
+/* ---------- permissions modal ---------- */
+#permOverlay{position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:96;display:flex;align-items:center;justify-content:center;padding:20px}
+.perm-modal{background:#fff;border-radius:16px;box-shadow:var(--shadow-overlay);width:100%;max-width:540px;max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+.perm-modal .pm-head{padding:26px 28px 16px;border-bottom:1px solid var(--gray-100);position:relative}
+.perm-modal .pm-head h3{font-size:21px;font-weight:600;letter-spacing:-.2px;margin-bottom:4px}
+.perm-modal .pm-head p{font-size:13.5px;color:var(--gray-600);line-height:1.55;max-width:430px}
+.perm-modal .pm-x{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--gray-500);padding:7px;border-radius:8px}
+.perm-modal .pm-x:hover{background:var(--gray-100);color:var(--gray-900)}
+.perm-modal .pm-body{padding:16px 28px 24px;overflow-y:auto}
+.perm-group-h{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gray-500);margin:8px 2px 10px}
+.perm-group-h:not(:first-child){margin-top:22px}
+.perm-row{display:flex;align-items:center;gap:12px;border:1px solid var(--gray-200);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.perm-row .pr-av{flex:0 0 36px;height:36px;border-radius:50%;background:var(--brand-25);color:var(--brand-700);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.perm-row .pr-who{flex:1;min-width:0}
+.perm-row .pr-nm{font-weight:600;font-size:14px}
+.perm-row .pr-em{font-size:12.5px;color:var(--gray-500);word-break:break-all}
+.perm-row .pr-access{font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--brand-25);color:var(--brand-700);white-space:nowrap}
+.perm-row .pr-access.lim{background:var(--gray-100);color:var(--gray-600)}
+.perm-row .pr-access.you{background:var(--success-50);color:var(--success-800)}
+.perm-row .pr-remove{background:none;border:none;color:var(--gray-400);padding:6px;border-radius:7px}
+.perm-row .pr-remove:hover{background:var(--error-50);color:var(--error-600)}
+.perm-empty{border:1px dashed var(--gray-300);border-radius:12px;padding:18px;text-align:center;color:var(--gray-500);font-size:13.5px;background:var(--gray-25)}
+
+/* ---------- waitroom task sections ---------- */
+.wr-section-h{font-size:14px;font-weight:700;letter-spacing:.01em;color:var(--gray-800);margin:34px 0 3px;display:flex;align-items:center;gap:9px}
+.wr-section-h:first-child{margin-top:6px}
+.wr-section-h .wr-count{font-size:12px;font-weight:600;color:var(--gray-500)}
+.wr-section-sub{font-size:13px;color:var(--gray-500);margin-bottom:14px;line-height:1.5}
+.wr-empty{display:flex;align-items:center;gap:11px;border:1px dashed var(--gray-300);border-radius:12px;padding:18px 20px;color:var(--gray-500);font-size:14px;background:var(--gray-25)}
+.wr-proto{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:var(--warn-50);color:var(--warn-700);border-radius:999px;padding:3px 9px}
+.wr-proto-btn{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.wr-mand-item{border:1px solid var(--warn-200);background:var(--warn-25);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.wr-mand-item .wmt{font-size:14.5px;font-weight:600;color:var(--warn-800)}
+.wr-mand-item .wmd{font-size:12.5px;color:var(--gray-600);margin:2px 0 12px;line-height:1.5}
+
+/* ---------- payment (paid plan) ---------- */
+.pay-card{border:1px solid var(--gray-200);border-radius:14px;padding:20px 22px;margin-top:18px;background:var(--gray-25);text-align:left}
+.pay-card h4{font-size:14.5px;font-weight:600;margin-bottom:3px}
+.pay-card .pay-sub{font-size:13px;color:var(--gray-600);margin-bottom:14px;line-height:1.5}
+
+/* ---------- dark theme ---------- */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --gray-25:#0e1116; --gray-50:#161b22; --gray-100:#1f242c; --gray-200:#2b313b; --gray-300:#3a414e;
+  --gray-400:#6b7585; --gray-500:#8c97a7; --gray-600:#abb4c2; --gray-700:#c9d1db; --gray-800:#e4e9f0; --gray-900:#f3f6fa;
+  --brand-25:#13362833; --brand-50:#143a2b; --brand-700:#7fd3b1;
+  --success-25:#0f2419; --success-50:#11301f; --success-100:#1c4a30; --success-700:#5fd79c; --success-800:#7ee5b0;
+  --warn-25:#241c0d; --warn-50:#2b210f; --warn-100:#3b2e13; --warn-200:#4d3c19; --warn-700:#f7bc5a; --warn-800:#f9cd80;
+  --error-25:#2a1117; --error-50:#311420; --error-100:#45192b; --error-200:#5a2238; --error-600:#fb6f8e; --error-700:#fd8aa3;
+  --blue-25:#0e1f30; --blue-50:#102538; --blue-200:#1f456b; --blue-600:#5aa9ff; --blue-700:#7cbcff;
+  --shadow-overlay:0 0 0 1px rgba(255,255,255,.05),0 12px 18px -4px rgba(0,0,0,.55),0 4px 8px -2px rgba(0,0,0,.45);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.45);
+}
+[data-theme="dark"] body{background:var(--gray-25);color:var(--gray-900)}
+[data-theme="dark"] .logo img{filter:brightness(0) invert(1)}
+[data-theme="dark"] .auth-card,[data-theme="dark"] .sub-card,[data-theme="dark"] .reg-panel,[data-theme="dark"] .ind-card,
+[data-theme="dark"] #drawer,[data-theme="dark"] .rolecard,[data-theme="dark"] .modal,[data-theme="dark"] .perm-modal,
+[data-theme="dark"] .rev-card,[data-theme="dark"] .signcard,[data-theme="dark"] .tcard,[data-theme="dark"] .topbar,
+[data-theme="dark"] .setup-item,[data-theme="dark"] .plancard,[data-theme="dark"] .chatpanel,[data-theme="dark"] .chat-msg.bot,
+[data-theme="dark"] .chat-foot,[data-theme="dark"] .cofill-panel,[data-theme="dark"] .collab-row,[data-theme="dark"] .mfa-card,
+[data-theme="dark"] .acc-req,[data-theme="dark"] .settings-pop,[data-theme="dark"] .settings-sub,[data-theme="dark"] .perm-row,
+[data-theme="dark"] .fixedbox{background:var(--gray-50)}
+[data-theme="dark"] .field input,[data-theme="dark"] .field select,[data-theme="dark"] .qfield input,
+[data-theme="dark"] .qfield select,[data-theme="dark"] .qfield textarea,[data-theme="dark"] .chip,[data-theme="dark"] .upload,
+[data-theme="dark"] .filechip,[data-theme="dark"] .msel-btn,[data-theme="dark"] .msel-panel,[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] .code-row input,[data-theme="dark"] .cp-send-row input,[data-theme="dark"] .chat-foot input,
+[data-theme="dark"] .billtoggle,[data-theme="dark"] .invited{background:var(--gray-100);color:var(--gray-900)}
+[data-theme="dark"] .consent .box,[data-theme="dark"] .rolecard .cb,[data-theme="dark"] .msel-row .box,
+[data-theme="dark"] .cp-box{background:var(--gray-100)}
+[data-theme="dark"] .sliderq input[type=range]{background:var(--gray-200)}
+[data-theme="dark"] .sliderq input[type=range]::-webkit-slider-thumb{background:var(--gray-100)}
+[data-theme="dark"] .plancard .pop{background:var(--brand-500)}
+[data-theme="dark"] .plancard.on .pop{background:var(--brand-400)}
+[data-theme="dark"] .nav-item.active,[data-theme="dark"] .chip.on,[data-theme="dark"] .rolecard.on,
+[data-theme="dark"] .plancard.on,[data-theme="dark"] .mfa-card.on{background:var(--brand-50)}
+[data-theme="dark"] a{color:var(--brand-300)}
+[data-theme="dark"] .btn-primary[disabled]{background:var(--gray-200);color:var(--gray-500)}
+
 @media (max-width:1020px){
   .tcard{display:none}
 }
@@ -569,6 +673,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   .slider-pair{grid-template-columns:1fr}
 }
 </style>
+<script>
+/* set the saved appearance before first paint to avoid a light-mode flash */
+(function(){try{var s=JSON.parse(localStorage.getItem('loop-onboarding-app-v8')||'{}');var a=(s.settings&&s.settings.appearance)||'system';var dark=a==='dark'||(a==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',dark?'dark':'light');}catch(e){}})();
+</script>
 </head>
 <body>
 
@@ -614,7 +722,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   <div class="auth-card">
     <div class="auth-logo"><span class="logo" id="logoMfa"></span></div>
     <h1>Add a second step</h1>
-    <p class="auth-sub">Two-step verification protects your account at sign-in. It's optional &mdash; set it up now, or skip and add it anytime from settings.</p>
+    <p class="auth-sub">Two-step verification protects your account at sign-in. It's optional. Set it up now, or skip and add it anytime from settings.</p>
     <div id="mfaBody"></div>
     <p class="auth-foot" style="text-align:left;margin-top:18px"><a href="#" id="mfaSkip">Skip for now and continue without two-step verification &#8594;</a></p>
   </div>
@@ -630,8 +738,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <button class="cofill-side" id="cofillSideBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Invite to co-fill</span><span class="cnt hidden" id="cofillCnt"></span></button>
     <div class="save-pill" id="savePill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span id="saveTxt">All changes saved</span></div>
     <div class="userbox">
-      <div class="em" id="userEmail"></div>
-      <button id="signOut"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button>
+      <button class="settings-trigger" id="settingsTrigger" aria-label="Settings">
+        <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span>
+        <span class="em" id="userEmail"></span>
+      </button>
     </div>
   </aside>
 
@@ -737,7 +847,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
           <div class="fsec">
             <h2>Related persons</h2>
-            <p class="why">Add <u>every</u> person who is a director, a signing officer, an owner of 25% or more, or who controls the business day to day.<span class="tip" tabindex="0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="tipbox">If applicable, you'll verify your own identity with a live camera check right in this application. Everyone else gets an email link to verify on their own device after you submit.</span></span></p>
+            <p class="why">Add <u>every</u> person who is a director, a signing officer, or an owner of 25% or more.<span class="tip" tabindex="0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="tipbox">If applicable, you'll verify your own identity with a live camera check right in this application. Everyone else gets an email link to verify on their own device after you submit.</span></span></p>
 
             <div id="indList" style="display:flex;flex-direction:column;gap:12px;margin-top:18px"></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
@@ -748,7 +858,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <label class="consent" id="consentWrap">
               <input type="checkbox" id="f-consent">
               <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>I confirm that all directors, owners of 25% or more, signing officers, and control persons have been added above. <span class="req-mark">(required)</span></span>
+              <span>I confirm that all directors, owners of 25% or more, and signing officers have been added above. <span class="req-mark">(required)</span></span>
             </label>
           </div>
 
@@ -807,7 +917,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
               <div class="msel" id="useMsel"></div>
             </div>
             <div class="chips-wrap" id="incomeWrap">
-              <div class="chips-label">What type of income does your organization mostly earn?</div>
+              <div class="chips-label">What type of income does your organization mostly earn? <span class="req-mark">(required)</span></div>
               <div class="chips" id="incomeSeg"></div>
               <p class="fhelp" style="margin-top:10px"><strong>Active</strong> income comes from selling products or services. <strong>Passive</strong> income comes from investments, rent, royalties, or holding assets.</p>
             </div>
@@ -894,8 +1004,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   <div class="topbar">
     <span class="logo" id="logoSetup"></span>
     <div class="sp"></div>
-    <span class="em" id="setupEmail"></span>
-    <button id="setupSignOut"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button>
+    <button class="settings-trigger" id="setupSettingsTrigger" aria-label="Settings">
+      <span class="em" id="setupEmail"></span>
+      <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
   </div>
   <div class="setup-wrap">
     <div class="setup-main">
@@ -944,6 +1056,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <p class="lead">Every plan has 0% FX fees on card purchases, free wire transfers, and no account minimums. You can change plans anytime.</p>
     <div id="planToggleFinal" style="margin-top:22px"></div>
     <div id="planCards"></div>
+    <div id="planPayment"></div>
     <p class="plan-note">Billing starts only after your account is active.</p>
     <button class="btn btn-primary" id="btnPlanGo" disabled style="margin-top:18px">Continue to your account</button>
     <p class="fhelp" style="margin-top:10px;text-align:center">The account dashboard is out of scope for this prototype.</p>
@@ -974,7 +1087,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 </div>
 <div class="chat-callout hidden" id="chatCallout" aria-hidden="true">
   <span class="cc-text">Questions? We have answers.</span>
-  <svg width="44" height="42" viewBox="0 0 44 42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 C 16 2.5, 31 8, 37 27 C 37.5 28.5, 38 30, 38.3 31.5"/><path d="M30.5 26.5 L 38.3 31.5 L 40 22.5"/></svg>
+  <svg class="cc-arrow" width="50" height="46" viewBox="0 0 50 46" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6 C 22 2, 43 13, 47 41"/><path d="M38 39 L 47 43 L 46 32"/></svg>
 </div>
 <button class="chatfab hidden" id="chatFab" aria-label="Chat with Loop support"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg></button>
 
@@ -1017,9 +1130,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <p class="desc">Select all that apply.</p>
       <div class="roles-wrap" id="rolesWrap">
         <div class="rolecard" data-role="Director"><div><div class="rt">Director</div><div class="rd">Elected or appointed to oversee the management and direction of the business.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
-        <div class="rolecard" data-role="Signing officer"><div><div class="rt">Signing officer</div><div class="rd">Authorized to sign documents, contracts, and financial agreements on behalf of the business.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+        <div class="rolecard" data-role="Signing officer"><div><div class="rt">Signing officer</div><div class="rd">Authorized to sign documents and financial agreements on behalf of the business, or who exercises significant control over it day to day.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
         <div class="rolecard" data-role="Beneficial owner"><div><div class="rt">Beneficial owner</div><div class="rd">Owns 25% or more of the business, directly or indirectly.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
-        <div class="rolecard" data-role="Control person"><div><div class="rt">Control person</div><div class="rd">Exercises significant control over the business day to day.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
       </div>
       <div class="field hidden" id="ownPctWrap" style="margin-top:4px"><input id="d-ownPct" inputmode="numeric" maxlength="3"><label for="d-ownPct">Ownership percentage (required)</label><span class="err-dot">!</span></div>
     </div>
@@ -1093,6 +1205,21 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
 </aside>
 
+<!-- ================= SETTINGS MENU (shared, sidebar + waitroom) ================= -->
+<div id="settingsMenu" class="settings-pop hidden"></div>
+
+<!-- ================= PERMISSIONS MODAL ================= -->
+<div id="permOverlay" class="hidden">
+  <div class="perm-modal">
+    <div class="pm-head">
+      <h3>People with access</h3>
+      <p>Everyone who can see or help with this application. Remove anyone who no longer needs access.</p>
+      <button class="pm-x" id="permClose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="pm-body" id="permBody"></div>
+  </div>
+</div>
+
 <!-- ================= MODAL ================= -->
 <div id="modalOverlay" class="hidden">
   <div class="modal">
@@ -1143,7 +1270,7 @@ var YESNO = ['Yes','No'];
 var ROLES_TEAM = ['Admin','Finance manager','Bookkeeper','Card member'];
 var COLLAB_ROLES = ['Key contact (director, owner, officer)','Company secretary','Finance team member','Bookkeeper or accountant','Legal counsel','Assistant','Other teammate'];
 /* roles that count as managerial authority for submitting the application */
-var MGMT_ROLES = ['Director','Signing officer','Control person'];
+var MGMT_ROLES = ['Director','Signing officer'];
 var DEPMETHODS = ['Interac e-Transfer','Instant bank connection (Flinks)','EFT deposit'];
 var SLIDERS = {outValue:FLOWVALS,outCount:FLOWCOUNTS,inValue:FLOWVALS,inCount:FLOWCOUNTS};
 /* plans per bankonloop.com/pricing */
@@ -1227,10 +1354,19 @@ var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 
 /* ============================ state ============================ */
 function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',countryInc:'Canada',phone:'',website:'',entityId:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',outValue:'',outCount:'',inValue:'',inCount:'',regions:[],docs:[],docScreenFor:'',certify:false};}
-function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],plan:'',billing:'monthly',accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{}};}
-function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,planFinal:'',ref:null,submittedAt:null,signName:''};}
+function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],plan:'',billing:'monthly',accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{},mandatoryDocs:[]};}
+function freshSettings(){return {appearance:'system',lang:'en'};}
+function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,planFinal:'',payDone:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
+/* Signing officer and control person were merged into a single "Signing officer" role */
+function migrateRoles(s){
+  (s.f&&s.f.individuals||[]).forEach(function(p){
+    if(!p.roles)return;
+    p.roles=p.roles.map(function(r){return r==='Control person'?'Signing officer':r;})
+      .filter(function(r,i,a){return a.indexOf(r)===i;});
+  });
+}
 var S = load();
-function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);s.f=Object.assign(freshFields(),s.f||{});s.setup=Object.assign(freshSetup(),s.setup||{});s.visited=s.visited||{};s.collaborators=s.collaborators||[];return s;}}catch(e){}return freshState();}
+function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);s.f=Object.assign(freshFields(),s.f||{});s.setup=Object.assign(freshSetup(),s.setup||{});s.visited=s.visited||{};s.collaborators=s.collaborators||[];s.settings=Object.assign(freshSettings(),s.settings||{});migrateRoles(s);return s;}}catch(e){}return freshState();}
 var pillT=null;
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){/* storage unavailable (e.g., private browsing) — keep working in memory */}}
 function save(){
@@ -1239,6 +1375,143 @@ function save(){
   if(pill){pill.classList.add('flash');txt.textContent='Saved just now';clearTimeout(pillT);
     pillT=setTimeout(function(){pill.classList.remove('flash');txt.textContent='All changes saved';},1600);}
   paintProgress();paintNav();
+}
+
+/* ============================ settings: appearance, language, permissions ============================ */
+var SVGI={
+  monitor:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+  globe:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  users:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  logout:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+  chevR:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+  check:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  trash:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>'
+};
+var APPEARANCE_LABELS={light:'Light',dark:'Dark',system:'System'};
+var LANG_LABELS={en:'English',fr:'Français'};
+function resolvedTheme(){
+  var a=(S.settings||{}).appearance||'system';
+  if(a==='dark')return 'dark';
+  if(a==='light')return 'light';
+  return (window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+}
+function applyTheme(){document.documentElement.setAttribute('data-theme',resolvedTheme());}
+function applyLang(){document.documentElement.setAttribute('lang',(S.settings||{}).lang==='fr'?'fr':'en');}
+function applySettings(){applyTheme();applyLang();}
+function setAppearance(v){S.settings.appearance=v;persist();applyTheme();renderSettingsMenu('appearance');}
+function setLanguage(v){S.settings.lang=v;persist();applyLang();renderSettingsMenu('language');}
+
+var settingsAnchor=null;
+function settingsOpt(group,val,label){
+  var cur=group==='appearance'?S.settings.appearance:S.settings.lang;
+  return '<button class="settings-opt'+(cur===val?' on':'')+'" data-set="'+group+'" data-val="'+esc(val)+'"><span>'+esc(label)+'</span><span class="ck">'+SVGI.check+'</span></button>';
+}
+function settingsMenuHTML(showPerm){
+  var apL=APPEARANCE_LABELS[S.settings.appearance]||'System';
+  var lgL=LANG_LABELS[S.settings.lang]||'English';
+  return ''+
+    '<div class="settings-row has-sub" data-sub="appearance"><span class="ic">'+SVGI.monitor+'</span><span class="lbl">Appearance</span><span class="val">'+apL+'</span><span class="arrow">'+SVGI.chevR+'</span>'+
+      '<div class="settings-sub hidden" data-submenu="appearance">'+settingsOpt('appearance','system','System')+settingsOpt('appearance','light','Light')+settingsOpt('appearance','dark','Dark')+'</div></div>'+
+    '<div class="settings-row has-sub" data-sub="language"><span class="ic">'+SVGI.globe+'</span><span class="lbl">Language</span><span class="val">'+lgL+'</span><span class="arrow">'+SVGI.chevR+'</span>'+
+      '<div class="settings-sub hidden" data-submenu="language">'+settingsOpt('language','en','English')+settingsOpt('language','fr','Français')+'</div></div>'+
+    (showPerm?'<div class="settings-row" data-act="permissions"><span class="ic">'+SVGI.users+'</span><span class="lbl">Permissions</span></div>':'')+
+    '<div class="settings-sep"></div>'+
+    '<div class="settings-row" data-act="signout"><span class="ic">'+SVGI.logout+'</span><span class="lbl">Sign out</span></div>';
+}
+/* re-render the open menu, optionally re-expanding a submenu (after a value change) */
+function renderSettingsMenu(keepSub){
+  var menu=$('settingsMenu');
+  if(menu.classList.contains('hidden')||!settingsAnchor)return;
+  var showPerm=settingsAnchor.id==='settingsTrigger';
+  menu.innerHTML=settingsMenuHTML(showPerm);
+  wireSettingsMenu();
+  if(keepSub){var s=menu.querySelector('[data-submenu="'+keepSub+'"]');if(s){s.classList.remove('hidden');s.closest('.settings-row').classList.add('open');}}
+}
+function wireSettingsMenu(){
+  var menu=$('settingsMenu');
+  menu.onclick=function(e){e.stopPropagation();};
+  menu.querySelectorAll('.settings-row[data-sub]').forEach(function(row){
+    row.onclick=function(e){
+      if(e.target.closest('.settings-sub'))return;
+      var sub=row.querySelector('.settings-sub'),isHidden=sub.classList.contains('hidden');
+      menu.querySelectorAll('.settings-sub').forEach(function(s){s.classList.add('hidden');});
+      menu.querySelectorAll('.settings-row').forEach(function(r){r.classList.remove('open');});
+      if(isHidden){sub.classList.remove('hidden');row.classList.add('open');}
+    };
+  });
+  menu.querySelectorAll('.settings-opt').forEach(function(b){
+    b.onclick=function(e){e.stopPropagation();if(b.dataset.set==='appearance')setAppearance(b.dataset.val);else setLanguage(b.dataset.val);};
+  });
+  var perm=menu.querySelector('[data-act="permissions"]');if(perm)perm.onclick=function(){closeSettingsMenu();openPermissions();};
+  var so=menu.querySelector('[data-act="signout"]');if(so)so.onclick=function(){closeSettingsMenu();doSignOut();};
+}
+function openSettingsMenu(trigger){
+  var menu=$('settingsMenu');
+  if(settingsAnchor===trigger&&!menu.classList.contains('hidden')){closeSettingsMenu();return;}
+  closeSettingsMenu();
+  settingsAnchor=trigger;
+  var topbar=trigger.id==='setupSettingsTrigger';
+  menu.classList.toggle('flip-left',topbar);
+  menu.innerHTML=settingsMenuHTML(trigger.id==='settingsTrigger');
+  menu.classList.remove('hidden');
+  var r=trigger.getBoundingClientRect(),W=240;
+  menu.style.top=menu.style.bottom=menu.style.left=menu.style.right='';
+  if(topbar){menu.style.top=(r.bottom+8)+'px';menu.style.left=Math.max(8,r.right-W)+'px';}
+  else{menu.style.left=Math.max(8,r.left)+'px';menu.style.bottom=(window.innerHeight-r.top+8)+'px';}
+  trigger.classList.add('open');
+  wireSettingsMenu();
+}
+function closeSettingsMenu(){
+  $('settingsMenu').classList.add('hidden');
+  document.querySelectorAll('.settings-trigger.open').forEach(function(t){t.classList.remove('open');});
+  settingsAnchor=null;
+}
+
+/* permissions modal: everyone who can see or help with the application */
+function permRow(name,email,badge,badgeCls,onRemove){
+  var av=((name||email||'?').trim()||'?').slice(0,1).toUpperCase();
+  var row=el('div','perm-row',
+    '<div class="pr-av">'+esc(av)+'</div>'+
+    '<div class="pr-who"><div class="pr-nm">'+esc(name||cofillName(email))+'</div>'+(email?'<div class="pr-em">'+esc(email)+'</div>':'')+'</div>'+
+    '<span class="pr-access '+(badgeCls||'')+'">'+esc(badge)+'</span>'+
+    (onRemove?'<button class="pr-remove" aria-label="Remove">'+SVGI.trash+'</button>':''));
+  if(onRemove)row.querySelector('.pr-remove').onclick=onRemove;
+  return row;
+}
+function renderPermissions(){
+  var body=$('permBody');body.innerHTML='';
+  var meName=((S.firstName||'')+' '+(S.lastName||'')).trim()||S.email;
+  body.appendChild(el('div','perm-group-h','You'));
+  body.appendChild(permRow(meName,S.email,'Owner','you',null));
+
+  body.appendChild(el('div','perm-group-h','Collaborators'));
+  var collabs=S.collaborators||[];
+  if(collabs.length){
+    collabs.forEach(function(c,i){
+      body.appendChild(permRow(cofillName(c.email),c.email,c.access==='limited'?'Limited access':'Full access',c.access==='limited'?'lim':'',function(){
+        S.collaborators.splice(i,1);persist();renderPermissions();renderCollabList();
+        if(!$('cofillPanel').classList.contains('hidden'))renderCofillPanel();
+      }));
+    });
+  }else body.appendChild(el('div','perm-empty','No collaborators yet. Invite a teammate from the “Invite to co-fill” panel.'));
+
+  if((S.f.cofill||[]).length){
+    body.appendChild(el('div','perm-group-h','Pending co-fill invites'));
+    S.f.cofill.forEach(function(c){
+      body.appendChild(permRow(cofillName(c.email),c.email,c.keys.length+' question'+(c.keys.length>1?'s':''),'lim',function(){
+        revokeCofill(c.id);renderPermissions();
+      }));
+    });
+  }
+}
+function openPermissions(){renderPermissions();$('permOverlay').classList.remove('hidden');updateChatVisibility();}
+function closePermissions(){$('permOverlay').classList.add('hidden');updateChatVisibility();}
+function doSignOut(){
+  S.view='auth';persist();
+  ['si-email','si-pass','su-fn','su-ln','su-email','su-pass'].forEach(function(id){$(id).value='';});
+  document.querySelectorAll('.auth-card .field').forEach(function(f){f.classList.remove('filled','invalid');});
+  $('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');
+  show('auth');
 }
 
 /* ============================ helpers ============================ */
@@ -1329,6 +1602,7 @@ function requiredTotal(){
 /* ============================ views ============================ */
 function show(view){
   S.view=view;persist();
+  closeSettingsMenu();
   ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
   if(view==='auth'){$('view-auth').classList.remove('hidden');}
@@ -1555,7 +1829,7 @@ function renderSeg(boxId,wrapId,key,options){
   var box=$(boxId);box.innerHTML='';
   options.forEach(function(u){
     var on=S.f[key]===u;
-    var c=el('label','chip'+(on?' on':''),'<input type="radio"'+(on?' checked':'')+'><span>'+esc(u)+'</span>');
+    var c=el('label','chip'+(on?' on':''),'<input type="radio" name="seg-'+esc(key)+'"'+(on?' checked':'')+'><span>'+esc(u)+'</span>');
     c.querySelector('input').addEventListener('change',function(){
       S.f[key]=u;
       $(wrapId).classList.remove('invalid');
@@ -1802,6 +2076,14 @@ function startDocScreen(){
 }
 
 /* ============================ individuals ============================ */
+/* the "all key people are added" confirmation goes stale whenever the related-persons
+   list changes, so clear it and make the applicant re-confirm */
+function personsChanged(){
+  if(S.f.consent){
+    S.f.consent=false;
+    var c=$('f-consent');if(c)c.checked=false;
+  }
+}
 function renderIndividuals(){
   var list=$('indList');list.innerHTML='';
   if(!S.f.individuals.length){
@@ -1838,7 +2120,7 @@ function renderIndividuals(){
       '<button class="icobtn" data-act="edit" aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>'+
       '<button class="icobtn" data-act="del" aria-label="Remove"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>');
     card.querySelector('[data-act="edit"]').onclick=function(){openDrawer(i);};
-    card.querySelector('[data-act="del"]').onclick=function(){S.f.individuals.splice(i,1);save();renderIndividuals();};
+    card.querySelector('[data-act="del"]').onclick=function(){S.f.individuals.splice(i,1);personsChanged();save();renderIndividuals();};
     var sb=card.querySelector('[data-act="send"]');if(sb)sb.onclick=function(){sendIdvRequest(i);};
     list.appendChild(card);
   });
@@ -1922,10 +2204,13 @@ function startCam(){
   camT=setTimeout(function(){drIdv=true;renderIdv();},2600);
 }
 function checkDobAge(){
-  var a=ageOf($('d-dob').value);
+  var val=$('d-dob').value;
+  var a=ageOf(val);
   var bad=a!==null&&a<18;
   $('dobErr').classList.toggle('hidden',!bad);
-  $('d-dob').closest('.field').classList.toggle('invalid',bad);
+  /* only manage the under-18 state here; when empty, leave the required-empty
+     invalid styling (set by the save loop) in place so DOB turns red like other fields */
+  if(val)$('d-dob').closest('.field').classList.toggle('invalid',bad);
   return !bad;
 }
 function syncIsMe(){
@@ -1991,7 +2276,7 @@ function saveDrawer(){
     if(!ok2){drError('Add their full name, role, and email to send the invitation.',firstBad2);return;}
     var inv={invitedFill:true,roles:drRoles.slice(),ownPct:$('d-ownPct').value,firstName:$('d-firstName').value.trim(),lastName:$('d-lastName').value.trim(),email:$('d-email').value.trim(),isMe:false,idv:false};
     if(editIdx>=0)S.f.individuals[editIdx]=inv;else S.f.individuals.push(inv);
-    save();closeDrawer();renderIndividuals();
+    personsChanged();save();closeDrawer();renderIndividuals();
     return;
   }
   var ok=true,firstBad=null;
@@ -2029,7 +2314,7 @@ function saveDrawer(){
     p.idvInvited=!!old.idvInvited;
     S.f.individuals[editIdx]=p;
   }else S.f.individuals.push(p);
-  save();closeDrawer();renderIndividuals();
+  personsChanged();save();closeDrawer();renderIndividuals();
 }
 
 /* ============================ invite to co-fill (sidebar, multi-select) ============================ */
@@ -2087,8 +2372,7 @@ function renderCofillPanel(){
     });
   }
   var n=Object.keys(cfSel).filter(function(k){return cfSel[k];}).length;
-  var curPg=COFILL_STRUCT.filter(function(p){return p.page===S.page;})[0];
-  var hereNote=curPg?'<p class="note" style="margin-top:6px;color:var(--brand-700);font-weight:600">You&rsquo;re on &ldquo;'+esc(curPg.title)+'&rdquo; &mdash; its questions are highlighted below.</p>':'';
+  var hereNote='';
   var collabChips='';
   if((S.collaborators||[]).length){
     collabChips='<div class="cp-collabs"><span class="lbl">Assign to a collaborator</span>'+
@@ -2099,8 +2383,8 @@ function renderCofillPanel(){
   }
   var showAccess=cofillEmailIsNew();
   var accessBlock='<div class="cp-access'+(showAccess?'':' hidden')+'" id="cpAccess">'+
-    '<div class="ttl">New teammate &mdash; what can they access?</div>'+
-    '<label class="opt'+(cfAccess==='full'?' on':'')+'" data-cpacc="full"><span class="ar"></span><span><b>Full access</b><span class="ad">Can view the entire application. Usually for key contacts like the CEO.</span></span></label>'+
+    '<div class="ttl">New teammate: what can they access?</div>'+
+    '<label class="opt'+(cfAccess==='full'?' on':'')+'" data-cpacc="full"><span class="ar"></span><span><b>Full access</b><span class="ad">Can edit the entire application.</span></span></label>'+
     '<label class="opt'+(cfAccess==='limited'?' on':'')+'" data-cpacc="limited"><span class="ar"></span><span><b>Limited access</b><span class="ad">Only sees the fields you assign. For people you don&rsquo;t want to reveal full company information to.</span></span></label>'+
     '</div>';
   panel.innerHTML=
@@ -2285,7 +2569,7 @@ function renderReview(){
   }else{
     pCard.appendChild(el('div','rev-row','<div class="rl">Key contacts</div>'+reqLink('contacts','individuals')));
   }
-  pCard.appendChild(el('div','rev-row','<div class="rl">All directors, owners, signing officers, and control persons added</div>'+(S.f.consent?'<div class="rv">Confirmed</div>':reqLink('contacts','consent'))));
+  pCard.appendChild(el('div','rev-row','<div class="rl">All directors, owners, and signing officers added</div>'+(S.f.consent?'<div class="rv">Confirmed</div>':reqLink('contacts','consent'))));
   pCard.appendChild(el('div','rev-row','<div class="rl">Business entities controlling 25% or more</div>'+(S.f.relBiz?'<div class="rv">'+esc(S.f.relBiz==='Yes'?('Yes'+(S.f.rbName?': '+S.f.rbName:'')):'No')+'</div>':reqLink('contacts','relBiz'))));
   if(S.f.relBiz==='Yes'){
     K_RELBIZ.forEach(function(k){
@@ -2335,7 +2619,7 @@ function paintGaps(){
   var gate=$('submitGate');
   if(gate){
     if(!auth){
-      gate.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 15px;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Only a key contact with managerial authority can submit. Add yourself as a key contact with a director, signing officer, or control person role, and complete the live identity check, to enable submission.</span>';
+      gate.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 15px;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Only a key contact with managerial authority can submit. Add yourself as a key contact with a director or signing officer role, and complete the live identity check, to enable submission.</span>';
       gate.classList.remove('hidden');
     }else gate.classList.add('hidden');
   }
@@ -2353,6 +2637,8 @@ function paintGaps(){
 function setupDone(){
   return [S.setup.depositDone,!!S.setup.plan,S.setup.tfaEnabled];
 }
+/* the "enable MFA" optional task only applies if they didn't set it up at sign-up */
+function optionalApplicable(){return {deposit:true,plan:true,mfa:!S.mfaEnabled};}
 function renderTimeline(){
   var t=$('timelineBody');
   t.innerHTML=
@@ -2373,9 +2659,35 @@ function setupHead(i,title,done,meta){
 function skipLink(i){return '<div style="margin-top:14px"><button class="btn-link" data-skip="'+i+'" style="padding:4px 0;font-size:13.5px;color:var(--gray-500)">Skip for now</button></div>';}
 function renderSetup(){
   var d=setupDone();
-  $('setupCount').textContent=d.filter(Boolean).length+' of 3 complete';
+  var appl=optionalApplicable();
+  var applKeys=['deposit','plan','mfa'].filter(function(k){return appl[k];});
+  var doneCount=(d[0]?1:0)+(d[1]?1:0)+(appl.mfa&&d[2]?1:0);
+  $('setupCount').textContent='Optional setup: '+doneCount+' of '+applKeys.length+' complete';
   var open=S.setup.open;
   var list=$('setupList');list.innerHTML='';
+
+  /* ---- Mandatory tasks ---- */
+  var md=S.setup.mandatoryDocs||[];
+  var mdPending=md.filter(function(x){return !x.file;}).length;
+  list.appendChild(el('div','wr-section-h','<span>Mandatory tasks</span>'+(mdPending?'<span class="wr-count">'+mdPending+' pending</span>':'')));
+  list.appendChild(el('div','wr-section-sub','Anything our review team needs from you before approval shows up here.'));
+  if(!md.length){
+    list.appendChild(el('div','wr-empty','<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 17px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>You have no pending tasks at the moment.</span>'));
+  }else{
+    md.forEach(function(doc,di){
+      list.appendChild(el('div','wr-mand-item','<div class="wmt">'+esc(doc.name)+'</div><div class="wmd">'+esc(doc.desc||'')+'</div><div id="mandUp-'+di+'"></div>'));
+      uploadBox('mandUp-'+di,function(){return doc.file;},function(v){doc.file=v;persist();renderSetup();},{small:true,label:doc.file?'Replace file':'Drag and drop, or click to upload',hint:'PDF, JPEG, or PNG, up to 10 MB'});
+    });
+  }
+  var protoMand=el('div','wr-proto-btn');
+  protoMand.innerHTML='<span class="wr-proto">Prototype</span>'+(md.length
+    ?'<button class="btn-link" id="mandClear" style="font-size:13px;padding:4px 0">Clear simulated request</button>'
+    :'<button class="btn-link" id="mandSim" style="font-size:13px;padding:4px 0">Simulate a document request</button>');
+  list.appendChild(protoMand);
+
+  /* ---- Optional tasks ---- */
+  list.appendChild(el('div','wr-section-h','<span>Optional tasks</span>'));
+  list.appendChild(el('div','wr-section-sub','Set these up now so everything is ready the moment you are approved.'));
 
   /* 1 — deposit */
   var it1=el('div','setup-item',setupHead(0,'Make your first deposit',d[0],d[0]?'Deposit on its way':''));
@@ -2449,7 +2761,8 @@ function renderSetup(){
   }
   list.appendChild(it3);
 
-  /* 3 — 2FA */
+  /* 3 — 2FA (only shown if they didn't enable it at sign-up) */
+  if(appl.mfa){
   var it4=el('div','setup-item',setupHead(2,'Enable two-factor authentication',d[2],d[2]?'On':''));
   if(open===2){
     var b4=el('div','setup-body');
@@ -2468,6 +2781,7 @@ function renderSetup(){
     it4.appendChild(b4);
   }
   list.appendChild(it4);
+  }
 
   /* key contacts — IDV status */
   list.appendChild(el('div','setup-count','Key contacts: identity verification'));
@@ -2510,10 +2824,19 @@ function renderSetup(){
     list.appendChild(arBox);
   }
 
+  /* prototype: jump straight to the approval flow */
+  var sim=el('div','wr-proto-btn');
+  sim.style.cssText='margin-top:36px;padding-top:22px;border-top:1px solid var(--gray-200)';
+  sim.innerHTML='<span class="wr-proto">Prototype</span><button class="btn btn-secondary btn-sm" id="simApprove" style="width:auto">Simulate approval <span>&#8594;</span></button>';
+  list.appendChild(sim);
+
   /* wiring */
   list.querySelectorAll('[data-toggle]').forEach(function(h){
     h.onclick=function(){S.setup.open=+h.dataset.toggle===S.setup.open?-1:+h.dataset.toggle;persist();renderSetup();};
   });
+  var sa=$('simApprove');if(sa)sa.onclick=function(){S.approved=true;persist();show('approved');};
+  var ms=$('mandSim');if(ms)ms.onclick=function(){S.setup.mandatoryDocs=[{id:'m1',name:'Recent business bank statement',desc:'Our reviewer needs a statement from the last 90 days showing the business name and account number.',file:null}];persist();renderSetup();};
+  var mc=$('mandClear');if(mc)mc.onclick=function(){S.setup.mandatoryDocs=[];persist();renderSetup();};
   var amt=$('etAmount');if(amt)amt.addEventListener('input',function(){S.setup.etAmount=amt.value.replace(/[^0-9.]/g,'');persist();});
   list.querySelectorAll('input[data-depm]').forEach(function(r){
     r.addEventListener('change',function(){S.setup.depMethod=r.dataset.depm;persist();renderSetup();});
@@ -2598,6 +2921,42 @@ function renderLive(){
 }
 
 /* ============================ plan selection (after approval) ============================ */
+function planByName(n){return PLANS.filter(function(p){return p.name===n;})[0];}
+function planIsPaid(n){var p=planByName(n);return !!(p&&p.monthly!=='$0/mo');}
+function renderPlanPayment(){
+  var box=$('planPayment');if(!box)return;
+  if(!S.planFinal||!planIsPaid(S.planFinal)){box.innerHTML='';return;}
+  var p=planByName(S.planFinal);
+  box.innerHTML='<div class="pay-card"><h4>Payment method</h4>'+
+    '<p class="pay-sub">'+esc(S.planFinal)+' is '+planPrice(p)+'. Add a card to confirm. You will not be charged until your account is active.</p>'+
+    '<div class="fgrid">'+
+      '<div class="field"><input id="payCard" inputmode="numeric" autocomplete="cc-number" placeholder="1234 1234 1234 1234"><label for="payCard">Card number (required)</label><span class="err-dot">!</span></div>'+
+      '<div class="row">'+
+        '<div class="field"><input id="payExp" placeholder="MM / YY" maxlength="7"><label for="payExp">Expiry (required)</label><span class="err-dot">!</span></div>'+
+        '<div class="field"><input id="payCvc" inputmode="numeric" maxlength="4" placeholder="123"><label for="payCvc">CVC (required)</label><span class="err-dot">!</span></div>'+
+      '</div>'+
+    '</div></div>';
+  ['payCard','payExp','payCvc'].forEach(function(id){
+    var inp=$(id);
+    inp.addEventListener('input',function(){
+      if(id==='payCard')inp.value=inp.value.replace(/\D/g,'').slice(0,16).replace(/(.{4})(?=.)/g,'$1 ');
+      if(id==='payExp'){var v=inp.value.replace(/\D/g,'').slice(0,4);inp.value=v.length>2?v.slice(0,2)+' / '+v.slice(2):v;}
+      if(id==='payCvc')inp.value=inp.value.replace(/\D/g,'');
+      inp.closest('.field').classList.toggle('filled',!!inp.value);
+      if(inp.value)inp.closest('.field').classList.remove('invalid');
+    });
+  });
+}
+function validatePayment(){
+  var ok=true;
+  ['payCard','payExp','payCvc'].forEach(function(id){
+    var inp=$(id);if(!inp)return;
+    var bad=!inp.value.trim();
+    inp.closest('.field').classList.toggle('invalid',bad);
+    if(bad)ok=false;
+  });
+  return ok;
+}
 function renderPlanPage(){
   var box=$('planCards');box.innerHTML='';
   var tog=$('planToggleFinal');tog.innerHTML=billToggleHTML('billToggleFinal');
@@ -2611,7 +2970,9 @@ function renderPlanPage(){
     pc.onclick=function(){S.planFinal=p.name;persist();renderPlanPage();};
     box.appendChild(pc);
   });
+  renderPlanPayment();
   $('btnPlanGo').disabled=!S.planFinal;
+  $('btnPlanGo').textContent=(S.planFinal&&planIsPaid(S.planFinal))?'Confirm and pay':'Continue to your account';
 }
 
 /* ============================ invitee preview (key contact experience) ============================ */
@@ -2814,7 +3175,7 @@ var CHAT_QA_APP={
   'How long does this take?':'Most businesses finish in about 15 minutes, and progress saves automatically. After you submit, our team reviews within <strong>3&ndash;6 business days</strong>.',
   'Who counts as a key contact?':'Anyone who is a director, a signing officer, an owner of 25% or more, or who controls the business day to day. You verify your own identity here; everyone else gets an emailed link.',
   'Can a teammate help me fill this in?':'Yes. Use <strong>Invite to co-fill</strong> in the left panel to hand specific questions to a teammate, or add a collaborator who can view the whole application. You can revoke access anytime.',
-  'Talk to a human':'Happy to help — someone from our team will reply right here, usually within a few minutes. You can also email <a href="mailto:support@bankonloop.com">support@bankonloop.com</a>.'
+  'Talk to a human':'Happy to help. Someone from our team will reply right here, usually within a few minutes. You can also email <a href="mailto:support@bankonloop.com">support@bankonloop.com</a>.'
 };
 function chatQA(){return S.submitted?CHAT_QA:CHAT_QA_APP;}
 function updateChatVisibility(){
@@ -2823,12 +3184,14 @@ function updateChatVisibility(){
   var v=S.view;
   var allowed=appOpen||v==='setup'||v==='approved'||v==='plan'||v==='live';
   /* tuck the bot away while a modal/drawer covers the screen so it doesn't overlap */
-  var overlay=!$('drawer').classList.contains('hidden')||!$('modalOverlay').classList.contains('hidden')||!$('collabOverlay').classList.contains('hidden');
+  var overlay=!$('drawer').classList.contains('hidden')||!$('modalOverlay').classList.contains('hidden')||!$('collabOverlay').classList.contains('hidden')||!$('permOverlay').classList.contains('hidden');
   var visible=allowed&&!overlay;
   fab.classList.toggle('hidden',!visible);
   var panelOpen=!$('chatPanel').classList.contains('hidden');
+  /* the "Questions? We have answers." callout only appears on the intro (welcome) page and in the waitroom */
+  var calloutAllowed=(appOpen&&S.page==='welcome')||v==='setup';
   if(!visible){$('chatPanel').classList.add('hidden');$('chatCallout').classList.add('hidden');}
-  else $('chatCallout').classList.toggle('hidden',panelOpen||chatSeeded);
+  else $('chatCallout').classList.toggle('hidden',!calloutAllowed||panelOpen||chatSeeded);
 }
 function chatMsg(html,me){
   var b=$('chatBody');
@@ -2929,6 +3292,8 @@ document.addEventListener('DOMContentLoaded',function(){
     });
     var cp=$('cofillPanel');
     if(!cp.classList.contains('hidden')&&!cp.contains(e.target)&&!e.target.closest('#cofillSideBtn'))cp.classList.add('hidden');
+    var sm=$('settingsMenu');
+    if(!sm.classList.contains('hidden')&&!sm.contains(e.target)&&!e.target.closest('.settings-trigger'))closeSettingsMenu();
   });
 
   /* invite to co-fill (sidebar) */
@@ -3065,10 +3430,11 @@ document.addEventListener('DOMContentLoaded',function(){
     S.activated=true;S.signedAt=Date.now();persist();show('plan');
   };
 
-  /* plan selection */
+  /* plan selection (confirm, and collect payment for paid plans) */
   $('btnPlanGo').onclick=function(){
     if(!S.planFinal)return;
-    persist();show('live');
+    if(planIsPaid(S.planFinal)&&!validatePayment())return;
+    S.payDone=true;persist();show('live');
   };
 
   /* individuals */
@@ -3111,25 +3477,29 @@ document.addEventListener('DOMContentLoaded',function(){
     inp.addEventListener('change',function(){inp.closest('.field').classList.toggle('filled',!!inp.value);});
   });
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){closeDrawer();closeModal();closeCollabModal();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
+    if(e.key==='Escape'){closeDrawer();closeModal();closeCollabModal();closePermissions();closeSettingsMenu();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
   });
 
   /* modal */
   $('modalBack').onclick=closeModal;
   $('modalGo').onclick=function(){var n=modalNext;closeModal();if(n)n();};
 
-  /* sign out */
-  function signOut(){S.view='auth';persist();
-    ['si-email','si-pass','su-fn','su-ln','su-email','su-pass'].forEach(function(id){$(id).value='';});
-    document.querySelectorAll('.auth-card .field').forEach(function(f){f.classList.remove('filled','invalid');});
-    $('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');
-    show('auth');
+  /* sign out (sidebar + waitroom sign-out moved into the settings menu) */
+  $('apSignOut').onclick=doSignOut;
+  $('planSignOut').onclick=doSignOut;
+  $('liveSignOut').onclick=doSignOut;
+
+  /* settings menu (sidebar + waitroom) */
+  applySettings();
+  if(window.matchMedia){
+    var mq=window.matchMedia('(prefers-color-scheme: dark)');
+    var onMq=function(){if((S.settings||{}).appearance==='system')applyTheme();};
+    if(mq.addEventListener)mq.addEventListener('change',onMq);else if(mq.addListener)mq.addListener(onMq);
   }
-  $('signOut').onclick=signOut;
-  $('setupSignOut').onclick=signOut;
-  $('apSignOut').onclick=signOut;
-  $('planSignOut').onclick=signOut;
-  $('liveSignOut').onclick=signOut;
+  $('settingsTrigger').onclick=function(e){e.stopPropagation();openSettingsMenu($('settingsTrigger'));};
+  $('setupSettingsTrigger').onclick=function(e){e.stopPropagation();openSettingsMenu($('setupSettingsTrigger'));};
+  $('permClose').onclick=closePermissions;
+  $('permOverlay').onclick=function(e){if(e.target===$('permOverlay'))closePermissions();};
 
   /* restore */
   if(S.view==='auth')show('auth');
