@@ -51,6 +51,26 @@ input,select,textarea{font-family:inherit}
 .pw-hint{font-size:12.5px;color:var(--gray-500);margin:-8px 0 0 2px}
 .pw-hint.ok{color:var(--success-700)}
 
+/* split-screen auth (sign in / sign up / MFA): form left, hero image right */
+.auth-shell{display:flex;min-height:100vh}
+.auth-pane{flex:1 1 50%;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:96px 48px 56px}
+.auth-brand{position:absolute;top:30px;left:40px}
+.auth-brand .logo img{height:30px}
+.auth-inner{width:100%;max-width:400px}
+.auth-inner h1{font-size:27px;font-weight:500;letter-spacing:-.4px;margin-bottom:6px}
+.auth-media{flex:1 1 50%;min-width:0;background:#011710 url('loop-hero-background.png') center/cover no-repeat}
+.btn.btn-google{width:100%;background:#fff;color:var(--gray-800);border:1px solid var(--gray-300)}
+.btn.btn-google:hover{background:var(--gray-50);border-color:var(--gray-400)}
+.btn-google svg{flex:0 0 18px}
+.or-divider.or-auth{margin:20px 0}
+/* simplified MFA option cards */
+.mfa-card.mfa-card-sm{align-items:center;gap:13px;padding:15px 16px}
+.mfa-card.mfa-card-sm .mic{flex:0 0 20px;width:20px;height:20px;background:none;border-radius:0;color:var(--gray-500)}
+.mfa-card.mfa-card-sm.on .mic{background:none;color:var(--brand-600)}
+.mfa-card.mfa-card-sm .mt{font-size:14.5px}
+[data-theme="dark"] .btn.btn-google{background:var(--gray-100);color:var(--gray-900);border-color:var(--gray-300)}
+@media (max-width:860px){.auth-media{display:none}.auth-pane{flex:1 1 100%;padding:88px 24px 48px}}
+
 /* verify code */
 .code-row{display:flex;gap:10px;justify-content:center;margin:26px 0 6px}
 .code-row input{width:52px;height:60px;text-align:center;font-size:24px;font-weight:600;border:1px solid var(--gray-300);border-radius:10px;color:var(--gray-900)}
@@ -476,12 +496,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* chat (Intercom-style messenger) */
 .chatfab{position:fixed;right:24px;bottom:24px;width:54px;height:54px;border-radius:50%;background:var(--brand-500);border:none;box-shadow:0 8px 24px rgba(0,41,26,.35);display:flex;align-items:center;justify-content:center;color:#fff;z-index:95;transition:background .12s}
 .chatfab:hover{background:var(--brand-600)}
-/* handwritten "Questions?" callout pointing at the chat button */
-/* anchor the callout at the chat fab's center (right:51px, bottom:51px = 24px offset + 27px half of 54px),
-   so the arrow tip lands on the 0,0 center of the round chat button */
-.chat-callout{position:fixed;right:51px;bottom:51px;width:0;height:0;z-index:94;pointer-events:none;color:var(--gray-700)}
-.chat-callout .cc-text{position:absolute;right:24px;bottom:36px;font-family:'Bradley Hand','Segoe Print','Comic Sans MS',cursive;font-size:16.5px;line-height:1.3;transform:rotate(-4deg);white-space:nowrap}
-.chat-callout .cc-arrow{position:absolute;right:1px;bottom:0;display:block}
 /* green confetti */
 .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:120;overflow:hidden}
 .confetti-wrap span{position:absolute;top:-16px;display:block;opacity:0;animation:confetti-fall linear forwards}
@@ -701,49 +715,60 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 <div id="progressLine" class="hidden"><div id="progressFill"></div></div>
 
 <!-- ================= AUTH ================= -->
-<div id="view-auth" class="auth-wrap hidden">
-  <div class="auth-card">
-    <div class="auth-logo"><span class="logo" id="logoAuth"></span></div>
+<div id="view-auth" class="auth-shell hidden">
+  <div class="auth-pane">
+    <div class="auth-brand"><span class="logo" id="logoAuth"></span></div>
+    <div class="auth-inner">
 
-    <div id="authSignup">
-      <h1>Open a business account</h1>
-      <p class="auth-sub">Create your account to start the application. Your progress saves as you go.</p>
-      <div class="fgrid">
-        <div class="row">
-          <div class="field"><input id="su-fn" autocomplete="given-name"><label for="su-fn">Legal first name</label><span class="err-dot">!</span></div>
-          <div class="field"><input id="su-ln" autocomplete="family-name"><label for="su-ln">Legal last name</label><span class="err-dot">!</span></div>
+      <div id="authSignup">
+        <h1>Open a business account</h1>
+        <p class="auth-sub">Create your account to start the application. Your progress saves as you go.</p>
+        <button class="btn btn-google" id="googleSignup" type="button"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg> Continue with Google</button>
+        <div class="or-divider or-auth">OR</div>
+        <div class="fgrid">
+          <div class="row">
+            <div class="field"><input id="su-fn" autocomplete="given-name"><label for="su-fn">Legal first name</label><span class="err-dot">!</span></div>
+            <div class="field"><input id="su-ln" autocomplete="family-name"><label for="su-ln">Legal last name</label><span class="err-dot">!</span></div>
+          </div>
+          <div class="field"><input id="su-email" type="email" autocomplete="email"><label for="su-email">Work email</label><span class="err-dot">!</span></div>
+          <div class="field"><input id="su-pass" type="password" autocomplete="new-password"><label for="su-pass">Password</label><span class="err-dot">!</span></div>
+          <p class="pw-hint" id="pwHint">At least 8 characters</p>
+          <button class="btn btn-primary" id="btnSignup" disabled>Create account</button>
         </div>
-        <div class="field"><input id="su-email" type="email" autocomplete="email"><label for="su-email">Work email</label><span class="err-dot">!</span></div>
-        <div class="field"><input id="su-pass" type="password" autocomplete="new-password"><label for="su-pass">Password</label><span class="err-dot">!</span></div>
-        <p class="pw-hint" id="pwHint">At least 8 characters</p>
-        <button class="btn btn-primary" id="btnSignup">Create account</button>
+        <p class="auth-foot">Already started an application? <a href="#" id="toSignin">Sign in</a></p>
+        <p class="auth-legal">By creating an account, you agree to Loop's <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Privacy Policy</a>.</p>
       </div>
-      <p class="auth-foot">Already started an application? <a href="#" id="toSignin">Sign in</a></p>
-      <p class="auth-legal">By creating an account, you agree to Loop's <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Privacy Policy</a>.</p>
-    </div>
 
-    <div id="authSignin" class="hidden">
-      <h1>Sign in</h1>
-      <p class="auth-sub">Pick up where you left off.</p>
-      <div class="fgrid">
-        <div class="field"><input id="si-email" type="email" autocomplete="email"><label for="si-email">Work email</label><span class="err-dot">!</span></div>
-        <div class="field"><input id="si-pass" type="password" autocomplete="current-password"><label for="si-pass">Password</label><span class="err-dot">!</span></div>
-        <button class="btn btn-primary" id="btnSignin">Sign in</button>
+      <div id="authSignin" class="hidden">
+        <h1>Sign in</h1>
+        <p class="auth-sub">Pick up where you left off.</p>
+        <button class="btn btn-google" id="googleSignin" type="button"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg> Continue with Google</button>
+        <div class="or-divider or-auth">OR</div>
+        <div class="fgrid">
+          <div class="field"><input id="si-email" type="email" autocomplete="email"><label for="si-email">Work email</label><span class="err-dot">!</span></div>
+          <div class="field"><input id="si-pass" type="password" autocomplete="current-password"><label for="si-pass">Password</label><span class="err-dot">!</span></div>
+          <button class="btn btn-primary" id="btnSignin" disabled>Sign in</button>
+        </div>
+        <p class="auth-foot">New to Loop? <a href="#" id="toSignup">Create an account</a></p>
       </div>
-      <p class="auth-foot">New to Loop? <a href="#" id="toSignup">Create an account</a></p>
+
     </div>
   </div>
+  <div class="auth-media"></div>
 </div>
 
 <!-- ================= MFA SETUP (optional) ================= -->
-<div id="view-mfa" class="auth-wrap hidden">
-  <div class="auth-card">
-    <div class="auth-logo"><span class="logo" id="logoMfa"></span></div>
-    <h1>Add a second step</h1>
-    <p class="auth-sub">Two-step verification protects your account at sign-in. It's optional. Set it up now, or skip and add it anytime from settings.</p>
-    <div id="mfaBody"></div>
-    <p class="auth-foot" style="text-align:left;margin-top:18px"><a href="#" id="mfaSkip">Skip for now and continue without two-step verification &#8594;</a></p>
+<div id="view-mfa" class="auth-shell hidden">
+  <div class="auth-pane">
+    <div class="auth-brand"><span class="logo" id="logoMfa"></span></div>
+    <div class="auth-inner">
+      <h1>Add a second step</h1>
+      <p class="auth-sub">Two-step verification protects your account at sign-in.</p>
+      <div id="mfaBody"></div>
+      <p class="auth-foot" style="text-align:left;margin-top:18px"><a href="#" id="mfaSkip">Skip for now and continue without two-step verification &#8594;</a></p>
+    </div>
   </div>
+  <div class="auth-media"></div>
 </div>
 
 <!-- ================= APP SHELL ================= -->
@@ -1057,7 +1082,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <div class="sub-check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
     <h1 id="apTitle">You're approved</h1>
     <p class="lead" id="apLead">One signature left. Sign your agreements to activate the account.</p>
-    <p class="cert" style="margin-top:22px">As an authorized signing officer of <strong id="apBiz">the business</strong>, I have read and agree to the agreements below on its behalf.</p>
+    <p class="cert" style="margin:24px 0 28px">As an authorized signing officer of <strong id="apBiz">the business</strong>, I have read and agree to the agreements below on its behalf.</p>
     <div class="field"><input id="ap-sign" autocomplete="name"><label for="ap-sign">Your full legal name (required)</label><span class="err-dot">!</span></div>
     <p class="smallprint">By activating the account, you acknowledge that you have read and agree to the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Deposit Account Agreement&nbsp;&#8599;</a>, the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">ACH Payment Terms&nbsp;&#8599;</a>, and the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Tax Form&nbsp;&#8599;</a>. Your consent is recorded with a timestamp, and signed copies are emailed to <span id="apEmail"></span>.</p>
     <button class="btn btn-primary" id="btnActivate" disabled style="margin-top:6px">Sign and activate</button>
@@ -1100,10 +1125,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <input id="chatInput" placeholder="Send us a message&hellip;">
     <button id="chatSend" aria-label="Send"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
   </div>
-</div>
-<div class="chat-callout hidden" id="chatCallout" aria-hidden="true">
-  <span class="cc-text">Questions? We have answers.</span>
-  <svg class="cc-arrow" width="50" height="46" viewBox="0 0 50 46" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6 C 22 2, 43 13, 47 41"/><path d="M38 39 L 47 43 L 46 32"/></svg>
 </div>
 <button class="chatfab hidden" id="chatFab" aria-label="Chat with Loop support"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg></button>
 
@@ -1539,9 +1560,18 @@ function closePermissions(){$('permOverlay').classList.add('hidden');updateChatV
 function doSignOut(){
   S.view='auth';persist();
   ['si-email','si-pass','su-fn','su-ln','su-email','su-pass'].forEach(function(id){$(id).value='';});
-  document.querySelectorAll('.auth-card .field').forEach(function(f){f.classList.remove('filled','invalid');});
+  document.querySelectorAll('#view-auth .field').forEach(function(f){f.classList.remove('filled','invalid');});
   $('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');
   show('auth');
+}
+/* reset application state but keep the appearance/language preference */
+function freshKeepSettings(){var st=S.settings;var ns=freshState();ns.settings=st;return ns;}
+/* keep Create account / Sign in greyed out until their fields are valid */
+function syncAuthButtons(){
+  var b1=$('btnSignup');
+  if(b1)b1.disabled=!($('su-fn').value.trim()&&$('su-ln').value.trim()&&$('su-email').value.indexOf('@')>0&&$('su-pass').value.length>=8);
+  var b2=$('btnSignin');
+  if(b2)b2.disabled=!($('si-email').value.indexOf('@')>0&&$('si-pass').value.trim());
 }
 
 /* ============================ helpers ============================ */
@@ -1635,7 +1665,7 @@ function show(view){
   closeSettingsMenu();
   ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
-  if(view==='auth'){$('view-auth').classList.remove('hidden');}
+  if(view==='auth'){$('view-auth').classList.remove('hidden');syncAuthButtons();}
   else if(view==='mfa'){$('view-mfa').classList.remove('hidden');renderMfa();}
   else if(view==='setup'){
     $('view-setup').classList.remove('hidden');
@@ -3130,12 +3160,12 @@ function renderMfa(){
   var PHONEICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
   var MAILICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>';
   var cards=[
-    ['passkey','Passkey','Face ID, a fingerprint, or a security key. The most phishing-resistant option.',KEYICON],
-    ['sms','Text message','We text a 6-digit code to your phone each time you sign in.',PHONEICON],
-    ['email','Email code','We email a 6-digit code to '+esc(S.email)+' each time you sign in.',MAILICON]
+    ['passkey','Passkey',KEYICON],
+    ['sms','Text message',PHONEICON],
+    ['email','Email code',MAILICON]
   ];
   body.innerHTML=cards.map(function(c){
-    return '<div class="mfa-card'+(S.mfaMethod===c[0]?' on':'')+'" data-mfa="'+c[0]+'"><span class="mic">'+c[3]+'</span><div style="flex:1"><div class="mt">'+c[1]+'</div><div class="md">'+c[2]+'</div></div></div>';
+    return '<div class="mfa-card mfa-card-sm'+(S.mfaMethod===c[0]?' on':'')+'" data-mfa="'+c[0]+'"><span class="mic">'+c[2]+'</span><div class="mt">'+c[1]+'</div></div>';
   }).join('')+'<div id="mfaSetup"></div>';
   body.querySelectorAll('[data-mfa]').forEach(function(card){
     card.onclick=function(){S.mfaMethod=card.dataset.mfa;mfaSent=false;persist();renderMfa();};
@@ -3217,11 +3247,7 @@ function updateChatVisibility(){
   var overlay=!$('drawer').classList.contains('hidden')||!$('modalOverlay').classList.contains('hidden')||!$('collabOverlay').classList.contains('hidden')||!$('permOverlay').classList.contains('hidden');
   var visible=allowed&&!overlay;
   fab.classList.toggle('hidden',!visible);
-  var panelOpen=!$('chatPanel').classList.contains('hidden');
-  /* the "Questions? We have answers." callout only appears on the intro (welcome) page and in the waitroom */
-  var calloutAllowed=(appOpen&&S.page==='welcome')||v==='setup';
-  if(!visible){$('chatPanel').classList.add('hidden');$('chatCallout').classList.add('hidden');}
-  else $('chatCallout').classList.toggle('hidden',!calloutAllowed||panelOpen||chatSeeded);
+  if(!visible)$('chatPanel').classList.add('hidden');
 }
 function chatMsg(html,me){
   var b=$('chatBody');
@@ -3336,16 +3362,20 @@ document.addEventListener('DOMContentLoaded',function(){
   updateCofillBadge();
 
   /* auth */
-  $('toSignin').onclick=function(e){e.preventDefault();$('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');};
-  $('toSignup').onclick=function(e){e.preventDefault();$('authSignin').classList.add('hidden');$('authSignup').classList.remove('hidden');};
+  $('toSignin').onclick=function(e){e.preventDefault();$('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');syncAuthButtons();};
+  $('toSignup').onclick=function(e){e.preventDefault();$('authSignin').classList.add('hidden');$('authSignup').classList.remove('hidden');syncAuthButtons();};
   ['su-fn','su-ln','su-email','su-pass','si-email','si-pass'].forEach(function(id){
     var inp=$(id);
     inp.addEventListener('input',function(){
       inp.closest('.field').classList.toggle('filled',!!inp.value);
       inp.closest('.field').classList.remove('invalid');
       if(id==='su-pass'){$('pwHint').classList.toggle('ok',inp.value.length>=8);}
+      syncAuthButtons();
     });
   });
+  /* Continue with Google (simulated) */
+  $('googleSignup').onclick=function(){S=freshKeepSettings();S.email='you@gmail.com';S.firstName='Alex';S.lastName='Morgan';S.verified=false;S.mfaMethod='';S.mfaEnabled=false;mfaSent=false;save();show('mfa');};
+  $('googleSignin').onclick=function(){S=freshKeepSettings();S.email='you@gmail.com';S.verified=true;S.page='welcome';save();show('app');};
   $('btnSignup').onclick=function(){
     var fn=$('su-fn'),ln=$('su-ln'),em=$('su-email'),pw=$('su-pass'),ok=true;
     if(!fn.value){fn.closest('.field').classList.add('invalid');ok=false;}
@@ -3353,7 +3383,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!em.value||em.value.indexOf('@')<1){em.closest('.field').classList.add('invalid');ok=false;}
     if(pw.value.length<8){pw.closest('.field').classList.add('invalid');ok=false;}
     if(!ok)return;
-    if(em.value.trim().toLowerCase()!==(S.email||'').toLowerCase()){S=freshState();}
+    if(em.value.trim().toLowerCase()!==(S.email||'').toLowerCase()){S=freshKeepSettings();}
     S.email=em.value.trim();S.firstName=fn.value.trim();S.lastName=ln.value.trim();S.verified=false;
     S.mfaMethod='';S.mfaEnabled=false;mfaSent=false;
     save();show('mfa');
@@ -3369,7 +3399,7 @@ document.addEventListener('DOMContentLoaded',function(){
       else if(S.submitted){S.approved=true;persist();show('approved');}
       else show('app');
     }else{
-      S=freshState();S.email=em.value.trim();S.verified=true;S.page='welcome';save();show('app');
+      S=freshKeepSettings();S.email=em.value.trim();S.verified=true;S.page='welcome';save();show('app');
     }
   };
 
@@ -3418,7 +3448,6 @@ document.addEventListener('DOMContentLoaded',function(){
   $('chatFab').onclick=function(){
     var p=$('chatPanel');
     p.classList.toggle('hidden');
-    $('chatCallout').classList.add('hidden');
     if(!p.classList.contains('hidden')&&!chatSeeded){
       chatSeeded=true;
       chatMsg('Hi'+(S.firstName?' '+esc(S.firstName):'')+' &#128075; '+(S.submitted?'Your application is in review. How can we help while you wait?':'I can help with your application. What would you like to know?'));
