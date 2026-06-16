@@ -561,7 +561,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .cp-collab-chip:hover{background:var(--brand-25)}
 .cp-collab-chip.on{background:var(--brand-500);color:#fff;border-color:var(--brand-500)}
 .cp-access{margin-bottom:10px}
-.cp-access .ttl{font-size:12px;font-weight:700;color:var(--gray-700);margin-bottom:6px}
+.cp-access .ttl{font-size:12px;font-weight:700;color:var(--gray-700);margin:12px 0 12px}
 .cp-access .opt{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--gray-300);border-radius:9px;padding:9px 11px;margin-bottom:6px;cursor:pointer;font-size:12.5px;background:#fff}
 .cp-access .opt.on{border-color:var(--brand-500);background:var(--brand-25)}
 .cp-access .opt .ar{flex:0 0 16px;height:16px;border:1.6px solid var(--gray-300);border-radius:50%;margin-top:1px;display:flex;align-items:center;justify-content:center}
@@ -1194,6 +1194,21 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           <div class="field"><input id="d-phone" type="tel" inputmode="tel"><label for="d-phone">Phone number (required)</label><span class="err-dot">!</span></div>
         </div>
         <div class="field"><input id="d-occupation"><label for="d-occupation">Occupation (required)</label><span class="err-dot">!</span></div>
+      </div>
+    </div>
+
+    <div class="dr-sec" id="taxSec">
+      <h3>Tax details</h3>
+      <div class="chips-wrap" id="taxResWrap">
+        <div class="chips-label">Is this person a tax resident of the US or Canada? <span class="req-mark">(required)</span></div>
+        <div class="chips" id="taxResSeg">
+          <label class="chip" data-taxres="Yes"><span>Yes</span></label>
+          <label class="chip" data-taxres="No"><span>No</span></label>
+        </div>
+      </div>
+      <div class="fgrid" style="margin-top:20px">
+        <div class="field"><input id="d-sin" inputmode="numeric" maxlength="11"><label for="d-sin">Canadian Social Insurance Number (SIN) (required)</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-tin"><label for="d-tin">Tax identification number (TIN) (required)</label><span class="err-dot">!</span></div>
       </div>
     </div>
 
@@ -2192,8 +2207,8 @@ function sendIdvRequest(i){
 }
 
 /* drawer */
-var editIdx=-1, drMode='add', drRoles=[], drIdv=false, camT=null, qrT=null;
-var DK=['firstName','lastName','dob','email','phone','occupation','street','unit','city','province','postal'];
+var editIdx=-1, drMode='add', drRoles=[], drIdv=false, drTaxRes='', camT=null, qrT=null;
+var DK=['firstName','lastName','dob','email','phone','occupation','sin','tin','street','unit','city','province','postal'];
 function qrSvg(){
   /* deterministic fake QR */
   var cells='',seed=7;
@@ -2227,6 +2242,7 @@ function syncDrMode(){
      and the person completes + verifies it themselves from an emailed link */
   $('inviteHint').classList.toggle('hidden',!invite);
   $('addrSec').classList.toggle('hidden',invite);
+  $('taxSec').classList.toggle('hidden',invite);
   $('idvSec').classList.toggle('hidden',invite);
   $('isMeWrap').classList.toggle('hidden',invite);
   $('phoneRow').classList.toggle('hidden',invite);
@@ -2305,6 +2321,9 @@ function openDrawer(idx,mode){
   $('d-isMe').checked=!!(p&&p.isMe);
   document.querySelectorAll('.rolecard').forEach(function(rc){rc.classList.toggle('on',drRoles.indexOf(rc.dataset.role)>=0);});
   $('rolesWrap').classList.remove('invalid');
+  drTaxRes=p?(p.taxResident||''):'';
+  $('taxResWrap').classList.remove('invalid');
+  document.querySelectorAll('#taxResSeg .chip').forEach(function(c){c.classList.toggle('on',c.dataset.taxres===drTaxRes);});
   syncOwnPct();syncIsMe();syncDrMode();
   $('drawer').classList.remove('hidden');$('drawerOverlay').classList.remove('hidden');
   $('drawer').querySelector('.dr-body').scrollTop=0;
@@ -2353,6 +2372,7 @@ function saveDrawer(){
     return;
   }
   if(drRoles.indexOf('Beneficial owner')>=0&&!$('d-ownPct').value){$('d-ownPct').closest('.field').classList.add('invalid');ok=false;firstBad=firstBad||$('d-ownPct').closest('.field');}
+  if(!drTaxRes){$('taxResWrap').classList.add('invalid');ok=false;firstBad=firstBad||$('taxResWrap');}
   if(!ok){
     drError('Please complete the highlighted fields below.',firstBad);
     return;
@@ -2366,7 +2386,7 @@ function saveDrawer(){
     return;
   }
   var isMe=$('d-isMe').checked;
-  var p={roles:drRoles.slice(),ownPct:$('d-ownPct').value,isMe:isMe,idv:isMe?drIdv:false};
+  var p={roles:drRoles.slice(),ownPct:$('d-ownPct').value,isMe:isMe,idv:isMe?drIdv:false,taxResident:drTaxRes};
   DK.forEach(function(k){p[k]=$('d-'+k).value;});
   if(editIdx>=0){
     var old=S.f.individuals[editIdx];
@@ -2443,7 +2463,7 @@ function renderCofillPanel(){
   }
   var showAccess=cofillEmailIsNew();
   var accessBlock='<div class="cp-access'+(showAccess?'':' hidden')+'" id="cpAccess">'+
-    '<div class="ttl">New teammate: what can they access?</div>'+
+    '<div class="ttl">What can this teammate access?</div>'+
     '<label class="opt'+(cfAccess==='full'?' on':'')+'" data-cpacc="full"><span class="ar"></span><span><b>Full access</b><span class="ad">Can edit the entire application.</span></span></label>'+
     '<label class="opt'+(cfAccess==='limited'?' on':'')+'" data-cpacc="limited"><span class="ar"></span><span><b>Limited access</b><span class="ad">Only sees the fields you assign. For people you don&rsquo;t want to reveal full company information to.</span></span></label>'+
     '</div>';
@@ -3526,10 +3546,19 @@ document.addEventListener('DOMContentLoaded',function(){
       syncOwnPct();
     };
   });
+  /* tax residency Yes/No */
+  document.querySelectorAll('#taxResSeg .chip').forEach(function(c){
+    c.onclick=function(){
+      drTaxRes=c.dataset.taxres;
+      document.querySelectorAll('#taxResSeg .chip').forEach(function(x){x.classList.toggle('on',x===c);});
+      $('taxResWrap').classList.remove('invalid');
+    };
+  });
   DK.concat(['ownPct']).forEach(function(k){
     var inp=$('d-'+k);
     inp.addEventListener('input',function(){
       if(k==='postal')inp.value=inp.value.toUpperCase();
+      if(k==='sin'){var dd=inp.value.replace(/\D/g,'').slice(0,9);inp.value=dd.replace(/(\d{3})(?=\d)/g,'$1-');}
       inp.closest('.field').classList.toggle('filled',!!inp.value);
       if(inp.value&&k!=='dob')inp.closest('.field').classList.remove('invalid');
     });
