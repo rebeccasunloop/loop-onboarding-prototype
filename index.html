@@ -366,8 +366,13 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .tcard .tsupport strong{font-size:13px;color:var(--gray-900)}
 
 /* approved / live */
-.sub-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--gray-50);padding:40px 20px}
+.sub-wrap{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--gray-50);padding:40px 20px}
+.sub-brand{position:absolute;top:30px;left:40px}
+.sub-brand .logo img{height:30px}
 .sub-card{background:#fff;border:1px solid var(--gray-200);border-radius:20px;box-shadow:var(--shadow-sm);max-width:620px;width:100%;padding:52px 56px}
+.sub-card.sub-card-hover{transition:box-shadow .22s ease}
+.sub-card.sub-card-hover:hover{box-shadow:0 20px 44px -10px rgba(18,25,38,.24),0 8px 16px -6px rgba(18,25,38,.12)}
+[data-theme="dark"] .sub-card.sub-card-hover:hover{box-shadow:0 20px 48px -10px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.05)}
 .sub-check{width:60px;height:60px;border-radius:50%;background:var(--success-50);display:flex;align-items:center;justify-content:center;margin-bottom:24px}
 .sub-card h1{font-size:30px;font-weight:500;letter-spacing:-.5px;margin-bottom:8px}
 .sub-card .ref{font-size:13.5px;color:var(--gray-500);margin-bottom:8px}
@@ -1078,8 +1083,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 <!-- ================= APPROVED: SIGN AGREEMENTS ================= -->
 <div id="view-approved" class="sub-wrap hidden">
-  <div class="sub-card">
-    <div class="sub-check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+  <div class="sub-brand"><span class="logo" id="logoApproved"></span></div>
+  <div class="sub-card sub-card-hover">
     <h1 id="apTitle">You're approved</h1>
     <p class="lead" id="apLead">One signature left. Sign your agreements to activate the account.</p>
     <p class="cert" style="margin:24px 0 28px">As an authorized signing officer of <strong id="apBiz">the business</strong>, I have read and agree to the agreements below on its behalf.</p>
@@ -1092,6 +1097,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 <!-- ================= APPROVED: CHOOSE PLAN ================= -->
 <div id="view-plan" class="sub-wrap hidden">
+  <div class="sub-brand"><span class="logo" id="logoPlan"></span></div>
   <div class="sub-card">
     <h1>Choose your plan</h1>
     <p class="lead">Every plan has 0% FX fees on card purchases, free wire transfers, and no account minimums. You can change plans anytime.</p>
@@ -1107,6 +1113,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 <!-- ================= LIVE ================= -->
 <div id="view-live" class="sub-wrap hidden">
+  <div class="sub-brand"><span class="logo" id="logoLive"></span></div>
   <div class="sub-card">
     <div class="sub-check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
     <h1>You're live</h1>
@@ -3341,7 +3348,7 @@ function continueFrom(id){
 
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
-  ['logoAuth','logoMfa','logoSide','logoSetup','logoInv'].forEach(function(id){$(id).innerHTML=LOGO;});
+  ['logoAuth','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
   fillSelect($('f-entityType'),ENTITIES);
   fillSelect($('f-industry'),INDUSTRIES);
   fillSelect($('f-rbRelType'),RELTYPES);
