@@ -207,6 +207,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .btn-sm{height:44px;font-size:14.5px;padding:0 20px;width:auto}
 .continue-wrap{margin-top:56px;display:flex;gap:12px}
 .btn-back{width:auto;flex:0 0 auto;white-space:nowrap}
+.save-note{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--gray-500);margin-top:14px}
+.save-note svg{flex:0 0 14px;color:var(--success-600)}
 
 /* registry check */
 .reg-panel{border:1px solid var(--gray-200);border-radius:14px;background:#fff;box-shadow:var(--shadow-sm);padding:10px 24px;margin-top:30px}
@@ -424,8 +426,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* hover tooltip */
 .tip{position:relative;display:inline-flex;vertical-align:-3px;margin-left:6px;color:var(--gray-400);cursor:help}
 .tip:hover{color:var(--gray-600)}
-.tip .tipbox{display:none;position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);width:290px;background:var(--gray-800);color:#fff;font-size:12.5px;font-weight:400;line-height:1.55;border-radius:10px;padding:11px 13px;z-index:75}
-.tip .tipbox::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--gray-800)}
+/* opens below the icon and anchors to its right edge, extending left so the full
+   sentence stays on screen (the old centered/above box was clipped at page edges) */
+.tip .tipbox{display:none;position:absolute;top:calc(100% + 9px);right:-4px;left:auto;width:290px;max-width:min(290px,72vw);white-space:normal;background:var(--gray-800);color:#fff;font-size:12.5px;font-weight:400;line-height:1.55;border-radius:10px;padding:11px 13px;z-index:75}
+.tip .tipbox::after{content:"";position:absolute;bottom:100%;right:8px;border:6px solid transparent;border-bottom-color:var(--gray-800)}
 .tip:hover .tipbox,.tip:focus .tipbox{display:block}
 
 /* invite to co-fill (sidebar entry + multi-select panel) */
@@ -472,6 +476,23 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .cofill-lock .rv-btn{margin-left:auto;background:none;border:none;font-size:12px;font-weight:600;color:var(--blue-700);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .cofill-lock .rv-btn:hover{color:var(--error-600)}
 .cofill-locked-area{opacity:.45;pointer-events:none;user-select:none}
+
+/* required-field asterisk (replaces "(required)"/"(optional)" labels) */
+.req-star{color:var(--error-500);font-weight:600;margin-left:1px}
+.field label .req-star{margin-left:2px}
+.field.invalid label .req-star,.q.invalid .req-star,.chips-wrap.invalid .req-star{color:var(--error-600)}
+
+/* page header with per-page "Invite a collaborator" delegate button */
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.page-head-main{min-width:0}
+.page-delegate{flex:0 0 auto;white-space:nowrap;margin-top:8px}
+
+/* collaborator scope page picker (manage panel) */
+.cp-pagesel{margin:8px 0 2px}
+.cp-pagesel select{width:100%;height:42px;border:1px solid var(--gray-300);border-radius:9px;padding:0 12px;font-size:13.5px;background:#fff;color:var(--gray-900)}
+.cp-pagesel select:focus{outline:none;border-color:var(--blue-500)}
+.cp-empty{font-size:12.5px;color:var(--gray-500);padding:4px 8px 2px;line-height:1.5}
+.cp-access .opt .ad{line-height:1.45}
 
 /* OR divider (drawer invite section) */
 .or-divider{display:flex;align-items:center;gap:12px;color:var(--gray-400);font-size:11.5px;font-weight:700;letter-spacing:.07em;margin:24px 0 -6px}
@@ -782,8 +803,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <div class="step-meta" id="stepMeta">Getting started</div>
     <nav class="nav" id="nav"></nav>
     <div class="side-spacer"></div>
-    <button class="cofill-side" id="cofillSideBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Invite to co-fill</span><span class="cnt hidden" id="cofillCnt"></span></button>
-    <div class="save-pill" id="savePill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span id="saveTxt">All changes saved</span></div>
+    <button class="cofill-side" id="cofillSideBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Manage collaborator access</span><span class="cnt hidden" id="cofillCnt"></span></button>
+    <div class="save-pill" id="savePill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span id="saveTxt">Progress saved automatically</span></div>
     <div class="userbox">
       <button class="settings-trigger" id="settingsTrigger" aria-label="Settings">
         <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span>
@@ -807,7 +828,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="needcard">
           <h3>Have these ready</h3>
           <ul class="accepts">
-            <li>Tax ID (GST/HST number) and incorporation or registration details</li>
+            <li>CRA business number (tax ID) and incorporation or registration details</li>
             <li>Supporting business documents, in case our screening asks for them</li>
             <li>Your government photo ID for a quick live camera check</li>
             <li>Date of birth and home address for each owner and director</li>
@@ -816,51 +837,51 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="autosave-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#045B3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 16px;margin-top:2px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>Your application saves automatically each time you continue. Sign back in anytime to finish.</span></div>
         <div class="collab-card">
           <h3>Working on this with someone?</h3>
-          <p class="cc-sub">Invite a teammate to collaborate. They can view the application, and you can hand them specific questions to fill in. You can add or change collaborators anytime from the &ldquo;Invite to co-fill&rdquo; panel.</p>
+          <p class="cc-sub">Invite a collaborator to fill the whole application or just a single page. You can add or change who has access anytime from the &ldquo;Manage collaborator access&rdquo; panel in the sidebar.</p>
           <div id="collabList"></div>
-          <button class="btn btn-secondary btn-sm" id="btnAddCollab" style="width:auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button>
+          <button class="btn btn-secondary btn-sm" id="btnAddCollab" style="width:auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Invite a collaborator</button>
         </div>
         <div class="continue-wrap"><button class="btn btn-primary" id="btnStart">Start application</button></div>
       </div>
 
       <!-- PAGE 1: BUSINESS INFORMATION -->
       <div id="page-business" class="appage hidden">
-        <h1 class="page-h">Business information</h1>
-        <p class="page-sub">Tell us who the business is, what it does, and where it operates.</p>
+        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Business information</h1>
+        <p class="page-sub">Tell us who the business is, what it does, and where it operates.</p></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="business"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Invite a collaborator</button></div>
         <div class="pagebody">
 
           <div class="fsec">
             <h2>General overview</h2>
             <div class="fgrid" style="margin-top:18px">
-              <div class="field"><input data-k="legalName" id="f-legalName"><label for="f-legalName">Legal business name (required)</label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="legalName" id="f-legalName"><label for="f-legalName">Legal business name<span class="req-star">*</span></label><span class="err-dot">!</span></div>
               <label class="consent" style="margin:0;font-size:12.5px">
                 <input type="checkbox" id="f-hasTradeName">
                 <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
                 <span style="font-size:12.5px;color:var(--gray-500)">This business operates under a different name</span>
               </label>
-              <div class="field hidden" id="tradeNameWrap"><input data-k="operatingName" id="f-operatingName"><label for="f-operatingName">Operating or trade name (required)</label><span class="err-dot">!</span></div>
+              <div class="field hidden" id="tradeNameWrap"><input data-k="operatingName" id="f-operatingName"><label for="f-operatingName">Operating or trade name<span class="req-star">*</span></label><span class="err-dot">!</span></div>
               <div class="fixedbox"><span class="t">Country of incorporation</span><span class="v">&#127464;&#127462; Canada</span></div>
               <p class="fhelp">We only serve Canada-incorporated companies currently.</p>
-              <div class="field"><input data-k="phone" id="f-phone" type="tel" inputmode="tel"><label for="f-phone">Business phone number (required)</label><span class="err-dot">!</span></div>
-              <div class="field"><input data-k="website" id="f-website" type="url" autocapitalize="off"><label for="f-website">Business website (optional)</label><span class="err-dot">!</span></div>
-              <div class="field"><input data-k="entityId" id="f-entityId"><label for="f-entityId">Business entity ID / registration number (optional)</label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="phone" id="f-phone" type="tel" inputmode="tel"><label for="f-phone">Business phone number<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="website" id="f-website" type="url" autocapitalize="off"><label for="f-website">Business website</label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="entityId" id="f-entityId"><label for="f-entityId">Business entity ID / registration number</label><span class="err-dot">!</span></div>
               <p class="fhelp">For example: TN 11223344, 1000123467, or FMO430772</p>
-              <div class="field"><input data-k="taxId" id="f-taxId" inputmode="numeric" maxlength="9"><label for="f-taxId">Tax ID (GST/HST) (required)</label><span class="err-dot">!</span></div>
-              <p class="fhelp">9-digit business number, for example: 123456789</p>
-              <p class="fhelp warn hidden" id="taxIdWarn">This doesn't match the 9 digit business number format.</p>
+              <div class="field"><input data-k="taxId" id="f-taxId" inputmode="numeric" maxlength="9"><label for="f-taxId">CRA business number (tax ID)<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+              <p class="fhelp">9-digit CRA business number, for example: 123456782</p>
+              <p class="fhelp warn hidden" id="taxIdWarn">Enter a valid 9-digit CRA business number.</p>
             </div>
           </div>
 
           <div class="fsec">
             <h2>Business details</h2>
             <div class="fgrid" style="margin-top:18px">
-              <div class="field"><select data-k="entityType" id="f-entityType"></select><label for="f-entityType">Legal business structure (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+              <div class="field"><select data-k="entityType" id="f-entityType"></select><label for="f-entityType">Legal business structure<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
               <div class="row">
-                <div class="field"><select data-k="industry" id="f-industry"></select><label for="f-industry">Business industry (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
-                <div class="field"><select data-k="subIndustry" id="f-subIndustry"></select><label for="f-subIndustry">Sub-industry (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+                <div class="field"><select data-k="industry" id="f-industry"></select><label for="f-industry">Business industry<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+                <div class="field"><select data-k="subIndustry" id="f-subIndustry"></select><label for="f-subIndustry">Sub-industry<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
               </div>
               <div class="q" id="q-description" style="margin-top:6px">
-                <div class="q-label">Company description <span class="req-mark">(required)</span></div>
+                <div class="q-label">Company description<span class="req-star">*</span></div>
                 <div class="qfield"><textarea data-k="description" id="f-description" rows="3" placeholder="What does the business sell, and who are your customers?"></textarea></div>
               </div>
             </div>
@@ -870,31 +891,30 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <h2>Primary business address</h2>
             <p class="why">A physical address in Canada. We can't accept PO boxes or virtual offices.</p>
             <div class="fgrid" style="margin-top:18px">
-              <div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; Canada</span></div>
-              <p class="fhelp">Loop business accounts are available to Canadian businesses, so the primary business address must be in Canada.</p>
-              <div class="field"><input data-k="address1" id="f-address1"><label for="f-address1">Address line 1 (required)</label><span class="err-dot">!</span></div>
-              <div class="field"><input data-k="address2" id="f-address2"><label for="f-address2">Address line 2 (optional)</label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="address1" id="f-address1"><label for="f-address1">Address line 1<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="address2" id="f-address2"><label for="f-address2">Address line 2</label><span class="err-dot">!</span></div>
               <div class="row">
-                <div class="field" id="provStateSelWrap"><select data-k="provState" id="f-provState"></select><label for="f-provState">Province or territory (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
-                <div class="field"><input data-k="city" id="f-city"><label for="f-city">City (required)</label><span class="err-dot">!</span></div>
+                <div class="field" id="provStateSelWrap"><select data-k="provState" id="f-provState"></select><label for="f-provState">Province or territory<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+                <div class="field"><input data-k="city" id="f-city"><label for="f-city">City<span class="req-star">*</span></label><span class="err-dot">!</span></div>
               </div>
-              <div class="field"><input data-k="postal" id="f-postal" autocapitalize="characters" maxlength="10"><label for="f-postal">Postal code (required)</label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="postal" id="f-postal" autocapitalize="characters" maxlength="10"><label for="f-postal">Postal code<span class="req-star">*</span></label><span class="err-dot">!</span></div>
             </div>
           </div>
 
         </div>
         <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="business"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="business">Save and continue <span>&#8594;</span></button></div>
+        <p class="save-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Your progress saves automatically — leave and finish anytime.</p>
       </div>
 
       <!-- PAGE 2: BUSINESS CONTACTS -->
       <div id="page-contacts" class="appage hidden">
-        <h1 class="page-h">Business contacts</h1>
-        <p class="page-sub">We're required to verify the people and businesses behind the business.</p>
+        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Business contacts</h1>
+        <p class="page-sub">We're required to verify the people and businesses behind the business.</p></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="contacts"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Invite a collaborator</button></div>
         <div class="pagebody">
 
           <div class="fsec">
             <h2>Related persons</h2>
-            <p class="why">Add <u>every</u> person who is a director, a signing officer, or an owner of <span style="white-space:nowrap">25% or more.<span class="tip" tabindex="0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="tipbox">If applicable, you'll verify your own identity with a live camera check right in this application. Everyone else gets an email link to verify on their own device after you submit.</span></span></span></p>
+            <p class="why">Add <u>every</u> person who is a director, a signing officer, or an owner of 25% or more — <strong>including yourself</strong> if that's you. Add your own email and you can verify your identity right <span style="white-space:nowrap">here.<span class="tip" tabindex="0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="tipbox">You verify your own identity with a quick live camera check here. Everyone else gets a secure email link to verify on their own device after you submit.</span></span></span></p>
 
             <div id="indList" style="display:flex;flex-direction:column;gap:12px;margin-top:18px"></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
@@ -905,41 +925,41 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <label class="consent" id="consentWrap">
               <input type="checkbox" id="f-consent">
               <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span>I confirm that all directors, owners of 25% or more, and signing officers have been added above. <span class="req-mark">(required)</span></span>
+              <span>I confirm that all directors, owners of 25% or more, and signing officers have been added above. <span class="req-star">*</span></span>
             </label>
           </div>
 
           <div class="fsec">
             <h2>Related businesses</h2>
             <div class="chips-wrap" id="relBizWrap" style="margin-top:14px">
-              <div class="chips-label">Do any business entities control 25% or more of the shares in your company? <span class="req-mark">(required)</span></div>
+              <div class="chips-label">Do any business entities control 25% or more of the shares in your company? <span class="req-star">*</span></div>
               <div class="chips" id="relBizSeg"></div>
             </div>
             <div class="rbx-card hidden" id="relBizCard" style="margin-top:20px">
             <div class="rbx-head"><h4>Related business 1</h4><button class="icobtn" id="rbDel1" aria-label="Remove business"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>
             <div class="fgrid" id="relBizFields">
-              <div class="field"><input data-k="rbName" id="f-rbName"><label for="f-rbName">Business name (required)</label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="rbName" id="f-rbName"><label for="f-rbName">Business name<span class="req-star">*</span></label><span class="err-dot">!</span></div>
               <div class="row">
-                <div class="field"><input data-k="rbOwnPct" id="f-rbOwnPct" inputmode="numeric" maxlength="3"><label for="f-rbOwnPct">Ownership percent (required)</label><span class="err-dot">!</span></div>
-                <div class="field"><input data-k="rbShares" id="f-rbShares" inputmode="numeric"><label for="f-rbShares">Shares allocated (optional)</label><span class="err-dot">!</span></div>
+                <div class="field"><input data-k="rbOwnPct" id="f-rbOwnPct" inputmode="numeric" maxlength="3"><label for="f-rbOwnPct">Ownership percent<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+                <div class="field"><input data-k="rbShares" id="f-rbShares" inputmode="numeric"><label for="f-rbShares">Shares allocated</label><span class="err-dot">!</span></div>
               </div>
-              <div class="field"><select data-k="rbRelType" id="f-rbRelType"></select><label for="f-rbRelType">Relationship type (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+              <div class="field"><select data-k="rbRelType" id="f-rbRelType"></select><label for="f-rbRelType">Relationship type<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
               <p class="fhelp"><strong>Parent</strong>: owns a controlling stake in your company &middot; <strong>Holding company</strong>: exists mainly to hold shares or assets &middot; <strong>Affiliate</strong>: shares a common parent with your company &middot; <strong>Trust or investment fund</strong>: holds shares on behalf of beneficiaries or investors &middot; <strong>Other</strong>: any other controlling entity</p>
               <div class="row">
-                <div class="field"><input data-k="rbPhone" id="f-rbPhone" type="tel" inputmode="tel"><label for="f-rbPhone">Phone (optional)</label><span class="err-dot">!</span></div>
-                <div class="field"><input data-k="rbEmail" id="f-rbEmail" type="email" autocapitalize="off"><label for="f-rbEmail">Email (optional)</label><span class="err-dot">!</span></div>
+                <div class="field"><input data-k="rbPhone" id="f-rbPhone" type="tel" inputmode="tel"><label for="f-rbPhone">Phone</label><span class="err-dot">!</span></div>
+                <div class="field"><input data-k="rbEmail" id="f-rbEmail" type="email" autocapitalize="off"><label for="f-rbEmail">Email</label><span class="err-dot">!</span></div>
               </div>
               <div class="row">
-                <div class="field fixed"><input data-k="rbFormed" id="f-rbFormed" type="date"><label for="f-rbFormed">Formation date (optional)</label><span class="err-dot">!</span></div>
-                <div class="field"><input data-k="rbEntityId" id="f-rbEntityId"><label for="f-rbEntityId">Business entity ID (optional)</label><span class="err-dot">!</span></div>
+                <div class="field fixed"><input data-k="rbFormed" id="f-rbFormed" type="date"><label for="f-rbFormed">Formation date</label><span class="err-dot">!</span></div>
+                <div class="field"><input data-k="rbEntityId" id="f-rbEntityId"><label for="f-rbEntityId">Business entity ID</label><span class="err-dot">!</span></div>
               </div>
               <div class="row">
-                <div class="field"><input data-k="rbTaxId" id="f-rbTaxId"><label for="f-rbTaxId">Tax identification number (optional)</label><span class="err-dot">!</span></div>
-                <div class="field"><input data-k="rbAltName" id="f-rbAltName"><label for="f-rbAltName">Alternative name (optional)</label><span class="err-dot">!</span></div>
+                <div class="field"><input data-k="rbTaxId" id="f-rbTaxId"><label for="f-rbTaxId">Tax identification number</label><span class="err-dot">!</span></div>
+                <div class="field"><input data-k="rbAltName" id="f-rbAltName"><label for="f-rbAltName">Alternative name</label><span class="err-dot">!</span></div>
               </div>
-              <div class="field"><input data-k="rbWebsite" id="f-rbWebsite" type="url" autocapitalize="off"><label for="f-rbWebsite">Website (optional)</label><span class="err-dot">!</span></div>
-              <div class="field"><input data-k="rbAddress" id="f-rbAddress"><label for="f-rbAddress">Address: street, city, province, postal code (optional)</label><span class="err-dot">!</span></div>
-              <div class="field"><select data-k="rbCountry" id="f-rbCountry"></select><label for="f-rbCountry">Country (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="rbWebsite" id="f-rbWebsite" type="url" autocapitalize="off"><label for="f-rbWebsite">Website</label><span class="err-dot">!</span></div>
+              <div class="field"><input data-k="rbAddress" id="f-rbAddress"><label for="f-rbAddress">Address: street, city, province, postal code</label><span class="err-dot">!</span></div>
+              <div class="field"><select data-k="rbCountry" id="f-rbCountry"></select><label for="f-rbCountry">Country<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
             </div>
             </div>
             <div id="relBizExtraList"></div>
@@ -948,12 +968,13 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
         </div>
         <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="contacts"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="contacts">Save and continue <span>&#8594;</span></button></div>
+        <p class="save-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Your progress saves automatically — leave and finish anytime.</p>
       </div>
 
       <!-- PAGE 3: EXPECTED USAGE -->
       <div id="page-usage" class="appage hidden">
-        <h1 class="page-h">Expected usage</h1>
-        <p class="page-sub">A few details about how money will move through your Loop account. Estimates are all we need.</p>
+        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Expected usage</h1>
+        <p class="page-sub">A few details about how money will move through your Loop account. Estimates are all we need.</p></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="usage"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Invite a collaborator</button></div>
         <div class="pagebody">
 
           <div class="fsec">
@@ -964,7 +985,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
               <div class="msel" id="useMsel"></div>
             </div>
             <div class="chips-wrap" id="incomeWrap">
-              <div class="chips-label">What type of income does your organization mostly earn? <span class="req-mark">(required)</span></div>
+              <div class="chips-label">What type of income does your organization mostly earn? <span class="req-star">*</span></div>
               <div class="chips" id="incomeSeg"></div>
               <p class="fhelp" style="margin-top:10px"><strong>Active</strong> income comes from selling products or services. <strong>Passive</strong> income comes from investments, rent, royalties, or holding assets.</p>
             </div>
@@ -974,22 +995,22 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <h2>Payments</h2>
             <p class="why">Your estimates set the right limits on day one, so your first payments aren't held for review. Drag each slider, roughly is fine.</p>
             <div class="sliderq" data-slider="outValue" data-suffix=" per year, USD">
-              <div class="q-label">Estimated total <strong>value</strong> of annual <strong>outgoing</strong> payments in USD <span class="req-mark">(required)</span></div>
+              <div class="q-label">Estimated total <strong>value</strong> of annual <strong>outgoing</strong> payments in USD <span class="req-star">*</span></div>
               <input type="range" min="0" max="3" step="1" value="0" aria-label="Value of annual outgoing payments">
               <div class="slider-read"></div>
             </div>
             <div class="sliderq" data-slider="outCount" data-suffix=" payments per year">
-              <div class="q-label">Estimated total <strong>number</strong> of annual <strong>outgoing</strong> payments <span class="req-mark">(required)</span></div>
+              <div class="q-label">Estimated total <strong>number</strong> of annual <strong>outgoing</strong> payments <span class="req-star">*</span></div>
               <input type="range" min="0" max="3" step="1" value="0" aria-label="Number of annual outgoing payments">
               <div class="slider-read"></div>
             </div>
             <div class="sliderq" data-slider="inValue" data-suffix=" per year, USD">
-              <div class="q-label">Estimated total <strong>value</strong> of annual <strong>incoming</strong> payments in USD <span class="req-mark">(required)</span></div>
+              <div class="q-label">Estimated total <strong>value</strong> of annual <strong>incoming</strong> payments in USD <span class="req-star">*</span></div>
               <input type="range" min="0" max="3" step="1" value="0" aria-label="Value of annual incoming payments">
               <div class="slider-read"></div>
             </div>
             <div class="sliderq" data-slider="inCount" data-suffix=" payments per year">
-              <div class="q-label">Estimated total <strong>number</strong> of annual <strong>incoming</strong> payments <span class="req-mark">(required)</span></div>
+              <div class="q-label">Estimated total <strong>number</strong> of annual <strong>incoming</strong> payments <span class="req-star">*</span></div>
               <input type="range" min="0" max="3" step="1" value="0" aria-label="Number of annual incoming payments">
               <div class="slider-read"></div>
             </div>
@@ -1001,12 +1022,13 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
         </div>
         <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="usage"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="usage">Save and continue <span>&#8594;</span></button></div>
+        <p class="save-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Your progress saves automatically — leave and finish anytime.</p>
       </div>
 
       <!-- PAGE 4: DOCUMENTS -->
       <div id="page-documents" class="appage hidden">
-        <h1 class="page-h">Documents</h1>
-        <p class="page-sub">Our system screens your application and tells you exactly what to upload. No guesswork.</p>
+        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Documents</h1>
+        <p class="page-sub">Our system screens your application and tells you exactly what to upload. No guesswork.</p></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="documents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Invite a collaborator</button></div>
         <div class="pagebody">
           <div class="fsec">
             <h2>Application screening</h2>
@@ -1022,6 +1044,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           </div>
         </div>
         <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="documents"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="documents">Save and continue <span>&#8594;</span></button></div>
+        <p class="save-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Your progress saves automatically — leave and finish anytime.</p>
       </div>
 
       <!-- PAGE 5: REVIEW -->
@@ -1087,7 +1110,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <h1 id="apTitle">You're approved</h1>
     <p class="lead" id="apLead">One signature left. Sign your agreements to activate the account.</p>
     <p class="cert" style="margin:24px 0 28px">As an authorized signing officer of <strong id="apBiz">the business</strong>, I have read and agree to the agreements below on its behalf.</p>
-    <div class="field"><input id="ap-sign" autocomplete="name"><label for="ap-sign">Your full legal name (required)</label><span class="err-dot">!</span></div>
+    <div class="field"><input id="ap-sign" autocomplete="name"><label for="ap-sign">Your full legal name<span class="req-star">*</span></label><span class="err-dot">!</span></div>
     <p class="smallprint">By activating the account, you acknowledge that you have read and agree to the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Deposit Account Agreement&nbsp;&#8599;</a>, the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">ACH Payment Terms&nbsp;&#8599;</a>, and the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">Tax Form&nbsp;&#8599;</a>. Your consent is recorded with a timestamp, and signed copies are emailed to <span id="apEmail"></span>.</p>
     <button class="btn btn-primary" id="btnActivate" disabled style="margin-top:6px">Sign and activate</button>
     <div class="sub-out"><button id="apSignOut">Sign out</button></div>
@@ -1139,10 +1162,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   <div class="modal">
     <div class="m-body">
       <h3>Invite a collaborator</h3>
-      <p style="margin-bottom:18px">They'll get an email to view this application. You decide which questions they fill from the &ldquo;Invite to co-fill&rdquo; panel, and they can create a Loop login to suggest edits.</p>
+      <p style="margin-bottom:18px">They'll get an email to view this application. Choose whether they can fill the whole application or just one page, and they can create a Loop login to suggest edits.</p>
       <div class="fgrid">
-        <div class="field"><input id="collabEmail" type="email" autocapitalize="off"><label for="collabEmail">Teammate's email (required)</label><span class="err-dot">!</span></div>
-        <div class="field"><select id="collabRole"></select><label for="collabRole">Their role (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+        <div class="field"><input id="collabEmail" type="email" autocapitalize="off"><label for="collabEmail">Teammate's email<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+        <div class="field"><select id="collabRole"></select><label for="collabRole">Their role<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
       </div>
     </div>
     <div class="m-foot">
@@ -1176,45 +1199,42 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="rolecard" data-role="Signing officer"><div><div class="rt">Signing officer</div><div class="rd">Authorized to sign documents and financial agreements on behalf of the business, or who exercises significant control over it day to day.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
         <div class="rolecard" data-role="Beneficial owner"><div><div class="rt">Beneficial owner</div><div class="rd">Owns 25% or more of the business, directly or indirectly.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
       </div>
-      <div class="field hidden" id="ownPctWrap" style="margin-top:4px"><input id="d-ownPct" inputmode="numeric" maxlength="3"><label for="d-ownPct">Ownership percentage (required)</label><span class="err-dot">!</span></div>
+      <div class="field hidden" id="ownPctWrap" style="margin-top:4px"><input id="d-ownPct" inputmode="numeric" maxlength="3"><label for="d-ownPct">Ownership percentage<span class="req-star">*</span></label><span class="err-dot">!</span></div>
     </div>
 
     <div class="dr-sec">
       <h3>Personal details</h3>
-      <label class="consent" id="isMeWrap" style="margin:2px 0 16px">
-        <input type="checkbox" id="d-isMe">
-        <span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-        <span>This is me</span>
-      </label>
+      <input type="checkbox" id="d-isMe" style="display:none">
+      <div class="idv-ok hidden" id="selfNote" style="margin:2px 0 16px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>This is you — you'll verify your identity now with a quick live camera check.</div>
       <div class="fgrid">
         <div class="row">
-          <div class="field"><input id="d-firstName"><label for="d-firstName">First name (required)</label><span class="err-dot">!</span></div>
-          <div class="field"><input id="d-lastName"><label for="d-lastName">Last name (required)</label><span class="err-dot">!</span></div>
+          <div class="field"><input id="d-firstName"><label for="d-firstName">First name<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+          <div class="field"><input id="d-lastName"><label for="d-lastName">Last name<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         </div>
-        <div class="field fixed"><input id="d-dob" inputmode="numeric" placeholder="YYYY-MM-DD" maxlength="10" autocomplete="bday"><label for="d-dob">Date of birth (required)</label><span class="err-dot">!</span></div>
+        <div class="field fixed"><input id="d-dob" inputmode="numeric" placeholder="YYYY-MM-DD" maxlength="10" autocomplete="bday"><label for="d-dob">Date of birth<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         <p class="fhelp hidden" id="dobErr" style="color:var(--error-600);font-weight:600">This person is under 18. Key contacts must be at least 18 years old.</p>
-        <div class="field"><input id="d-email" type="email" autocapitalize="off"><label for="d-email">Email (required)</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-email" type="email" autocapitalize="off"><label for="d-email">Email<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         <p class="fhelp hidden" id="emailLockHint">Locked to your sign-in email.</p>
         <div class="row" id="phoneRow" style="grid-template-columns:130px 1fr">
           <div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div>
-          <div class="field"><input id="d-phone" type="tel" inputmode="tel"><label for="d-phone">Phone number (required)</label><span class="err-dot">!</span></div>
+          <div class="field"><input id="d-phone" type="tel" inputmode="tel"><label for="d-phone">Phone number<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         </div>
-        <div class="field"><input id="d-occupation"><label for="d-occupation">Occupation (required)</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-occupation"><label for="d-occupation">Occupation<span class="req-star">*</span></label><span class="err-dot">!</span></div>
       </div>
     </div>
 
     <div class="dr-sec" id="taxSec">
       <h3>Tax details</h3>
       <div class="chips-wrap" id="taxResWrap">
-        <div class="chips-label">Is this person a tax resident of the US or Canada? <span class="req-mark">(required)</span></div>
+        <div class="chips-label">Is this person a tax resident of the US or Canada? <span class="req-star">*</span></div>
         <div class="chips" id="taxResSeg">
           <label class="chip" data-taxres="Yes"><span>Yes</span></label>
           <label class="chip" data-taxres="No"><span>No</span></label>
         </div>
       </div>
       <div class="fgrid" style="margin-top:20px">
-        <div class="field"><input id="d-sin" inputmode="numeric" maxlength="11"><label for="d-sin">Canadian Social Insurance Number (SIN) (required)</label><span class="err-dot">!</span></div>
-        <div class="field"><input id="d-tin"><label for="d-tin">Tax identification number (TIN) (required)</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-sin" inputmode="numeric" maxlength="11"><label for="d-sin">Canadian Social Insurance Number (SIN)<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-tin"><label for="d-tin">Tax identification number (TIN)<span class="req-star">*</span></label><span class="err-dot">!</span></div>
       </div>
     </div>
 
@@ -1222,12 +1242,12 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <h3>Home address</h3>
       <p class="desc">A residential address. We can't accept PO boxes or mail forwarding.</p>
       <div class="fgrid">
-        <div class="field"><input id="d-street"><label for="d-street">Street address (required)</label><span class="err-dot">!</span></div>
-        <div class="field"><input id="d-unit"><label for="d-unit">Floor, suite, or unit (optional)</label><span class="err-dot">!</span></div>
-        <div class="field"><input id="d-city"><label for="d-city">City (required)</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-street"><label for="d-street">Street address<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-unit"><label for="d-unit">Floor, suite, or unit</label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-city"><label for="d-city">City<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         <div class="row">
-          <div class="field"><select id="d-province"></select><label for="d-province">Province or territory (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
-          <div class="field"><input id="d-postal" autocapitalize="characters" maxlength="7"><label for="d-postal">Postal code (required)</label><span class="err-dot">!</span></div>
+          <div class="field"><select id="d-province"></select><label for="d-province">Province or territory<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+          <div class="field"><input id="d-postal" autocapitalize="characters" maxlength="7"><label for="d-postal">Postal code<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         </div>
       </div>
     </div>
@@ -1359,7 +1379,7 @@ function wireBillToggle(root,rerender){
 
 var LABELS = {
   legalName:'Legal business name', operatingName:'Operating or trade name', countryInc:'Country of incorporation',
-  phone:'Business phone number', website:'Business website', entityId:'Business entity ID', taxId:'Tax ID (GST/HST)',
+  phone:'Business phone number', website:'Business website', entityId:'Business entity ID', taxId:'CRA business number (tax ID)',
   entityType:'Legal business structure', industry:'Business industry', subIndustry:'Sub-industry', description:'Company description',
   country:'Country', address1:'Address line 1', address2:'Address line 2', provState:'Province or state', city:'City', postal:'Postal code',
   intendedUse:'How you plan to use Loop', incomeType:'Type of income',
@@ -1406,7 +1426,7 @@ var COFILL_STRUCT = [
   ]}
 ];
 
-var K_BUSINESS = ['legalName','countryInc','phone','taxId','entityType','industry','subIndustry','description','country','address1','provState','city','postal'];
+var K_BUSINESS = ['legalName','countryInc','phone','taxId','entityType','industry','subIndustry','description','address1','provState','city','postal'];
 var K_USAGE = ['incomeType','outValue','outCount','inValue','inCount'];
 var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 
@@ -1437,7 +1457,7 @@ function save(){
   persist();
   var pill=document.getElementById('savePill'),txt=document.getElementById('saveTxt');
   if(pill){pill.classList.add('flash');txt.textContent='Saved just now';clearTimeout(pillT);
-    pillT=setTimeout(function(){pill.classList.remove('flash');txt.textContent='All changes saved';},1600);}
+    pillT=setTimeout(function(){pill.classList.remove('flash');txt.textContent='Progress saved automatically';},1600);}
   paintProgress();paintNav();
 }
 
@@ -1560,17 +1580,17 @@ function renderPermissions(){
   var collabs=S.collaborators||[];
   if(collabs.length){
     collabs.forEach(function(c,i){
-      body.appendChild(permRow(cofillName(c.email),c.email,c.access==='limited'?'Limited access':'Full access',c.access==='limited'?'lim':'',function(){
+      body.appendChild(permRow(cofillName(c.email),c.email,c.access==='limited'?'Page access':'Full access',c.access==='limited'?'lim':'',function(){
         S.collaborators.splice(i,1);persist();renderPermissions();renderCollabList();
         if(!$('cofillPanel').classList.contains('hidden'))renderCofillPanel();
       }));
     });
-  }else body.appendChild(el('div','perm-empty','No collaborators yet. Invite a teammate from the “Invite to co-fill” panel.'));
+  }else body.appendChild(el('div','perm-empty','No collaborators yet. Invite a collaborator from the “Manage collaborator access” panel.'));
 
   if((S.f.cofill||[]).length){
-    body.appendChild(el('div','perm-group-h','Pending co-fill invites'));
+    body.appendChild(el('div','perm-group-h','Pending invites'));
     S.f.cofill.forEach(function(c){
-      body.appendChild(permRow(cofillName(c.email),c.email,c.keys.length+' question'+(c.keys.length>1?'s':''),'lim',function(){
+      body.appendChild(permRow(cofillName(c.email),c.email,scopeLabel(c),'lim',function(){
         revokeCofill(c.id);renderPermissions();
       }));
     });
@@ -1600,6 +1620,8 @@ function $(id){return document.getElementById(id);}
 function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function fillSelect(sel,opts){sel.innerHTML='<option value=""></option>'+opts.map(function(o){return '<option value="'+esc(o)+'">'+esc(o)+'</option>';}).join('');}
+/* industry dropdown sorted A→Z, with "Other" pinned last */
+function sortedIndustries(){var a=INDUSTRIES.filter(function(x){return x!=='Other';}).sort(function(p,q){return p.localeCompare(q);});a.push('Other');return a;}
 function indName(p){
   var nm=((p.firstName||'')+' '+(p.lastName||'')).trim();
   if(p.invitedFill)return nm||cofillName(p.email);
@@ -1641,6 +1663,7 @@ function missingPage(id){
   if(id==='business'){
     K_BUSINESS.forEach(function(k){if(!f[k])m.push(k);});
     if(f.hasTradeName&&!f.operatingName)m.push('operatingName');
+    if(f.taxId&&!validBN(f.taxId)&&m.indexOf('taxId')<0)m.push('taxId');
   }else if(id==='contacts'){
     if(!f.individuals.length)m.push('individuals');
     f.individuals.forEach(function(p,i){if(p.isMe&&!p.idv)m.push('idv:'+i);});
@@ -1809,6 +1832,7 @@ function bindFields(){
     var set=function(){
       var v=inp.value;
       if(k==='postal')v=inp.value=v.toUpperCase();
+      if(k==='taxId')v=inp.value=v.replace(/\D/g,'').slice(0,9);
       S.f[k]=v;
       if(w){w.classList.toggle('filled',!!v);if(v)w.classList.remove('invalid');}
       var q=inp.closest('.q');
@@ -1831,9 +1855,24 @@ function hydrateFields(){
   $('f-consent').checked=!!S.f.consent;
   renderAllChips();renderDocs();syncRelBiz();renderRelBizExtra();syncSliders();syncTradeName();syncSubIndustry();syncProvState();renderMsel();syncTaxIdWarn();
 }
+/* CRA business number validation: 9 digits, starts 1/7/8, passes Luhn mod-10 */
+function luhnOk(s){
+  var sum=0,alt=false;
+  for(var i=s.length-1;i>=0;i--){
+    var d=+s.charAt(i);
+    if(alt){d*=2;if(d>9)d-=9;}
+    sum+=d;alt=!alt;
+  }
+  return sum%10===0;
+}
+function validBN(v){
+  if(!/^\d{9}$/.test(v))return false;
+  if('178'.indexOf(v.charAt(0))<0)return false;
+  return luhnOk(v);
+}
 function syncTaxIdWarn(){
   var v=S.f.taxId;
-  $('taxIdWarn').classList.toggle('hidden',!v||/^\d{9}$/.test(v));
+  $('taxIdWarn').classList.toggle('hidden',!v||validBN(v));
 }
 
 /* page-1 dynamic fields */
@@ -1968,12 +2007,12 @@ function renderRelBizExtra(){
     card.innerHTML=
       '<div class="rbx-head"><h4>Related business '+(i+2)+'</h4><button class="icobtn" data-rbxdel="'+i+'" aria-label="Remove business"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>'+
       '<div class="fgrid">'+
-        '<div class="field'+(b.name?' filled':'')+inv('name')+'"><input data-rbx="'+i+':name" value="'+esc(b.name||'')+'" id="rbx-'+i+'-name"><label for="rbx-'+i+'-name">Business name (required)</label><span class="err-dot">!</span></div>'+
+        '<div class="field'+(b.name?' filled':'')+inv('name')+'"><input data-rbx="'+i+':name" value="'+esc(b.name||'')+'" id="rbx-'+i+'-name"><label for="rbx-'+i+'-name">Business name<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
         '<div class="row">'+
-          '<div class="field'+(b.ownPct?' filled':'')+inv('ownPct')+'"><input data-rbx="'+i+':ownPct" inputmode="numeric" maxlength="3" value="'+esc(b.ownPct||'')+'" id="rbx-'+i+'-pct"><label for="rbx-'+i+'-pct">Ownership percent (required)</label><span class="err-dot">!</span></div>'+
-          '<div class="field'+(b.relType?' filled':'')+inv('relType')+'"><select data-rbx="'+i+':relType" id="rbx-'+i+'-type"></select><label for="rbx-'+i+'-type">Relationship type (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>'+
+          '<div class="field'+(b.ownPct?' filled':'')+inv('ownPct')+'"><input data-rbx="'+i+':ownPct" inputmode="numeric" maxlength="3" value="'+esc(b.ownPct||'')+'" id="rbx-'+i+'-pct"><label for="rbx-'+i+'-pct">Ownership percent<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
+          '<div class="field'+(b.relType?' filled':'')+inv('relType')+'"><select data-rbx="'+i+':relType" id="rbx-'+i+'-type"></select><label for="rbx-'+i+'-type">Relationship type<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>'+
         '</div>'+
-        '<div class="field'+(b.country?' filled':'')+inv('country')+'"><select data-rbx="'+i+':country" id="rbx-'+i+'-country"></select><label for="rbx-'+i+'-country">Country (required)</label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>'+
+        '<div class="field'+(b.country?' filled':'')+inv('country')+'"><select data-rbx="'+i+':country" id="rbx-'+i+'-country"></select><label for="rbx-'+i+'-country">Country<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>'+
       '</div>';
     var typeSel=card.querySelector('[data-rbx="'+i+':relType"]');fillSelect(typeSel,RELTYPES);typeSel.value=b.relType||'';
     var cSel=card.querySelector('[data-rbx="'+i+':country"]');fillSelect(cSel,COUNTRIES);cSel.value=b.country||'';
@@ -2094,7 +2133,7 @@ function renderDocs(){
   var req=docRequirements();
   uploadBox('upDocs',function(){return null;},function(v){if(v){S.f.docs.push(v);save();renderDocs();}},
     {invalid:S.attempted['documents']&&req.length>0&&!S.f.docs.length,
-     label:S.f.docs.length?'Add another document':(req.length?'Drag and drop, or click to upload (required)':'Drag and drop, or click to upload (optional)'),
+     label:S.f.docs.length?'Add another document':'Drag and drop, or click to upload',
      hint:'PDF, JPEG, or PNG, up to 10 MB each'});
 }
 
@@ -2113,7 +2152,7 @@ function renderDocScreenResult(animate){
     $('docUploadWhy').innerHTML='Upload the '+req.length+' item'+(req.length>1?'s':'')+' above and you’re done here.';
   }else{
     R.innerHTML='<div class="agent-banner"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 16px;margin-top:2px"><polyline points="20 6 9 17 4 12"/></svg><span><strong>No additional documents required.</strong> Your application answers cover everything we need.</span></div>';
-    $('docUploadTitle').textContent='Supporting documents (optional)';
+    $('docUploadTitle').textContent='Supporting documents';
     $('docUploadWhy').innerHTML='Nothing is required, but you can add anything you think strengthens the application.';
   }
   renderDocs();
@@ -2169,7 +2208,7 @@ function renderIndividuals(){
   var list=$('indList');list.innerHTML='';
   if(!S.f.individuals.length){
     var inv=!!S.attempted['contacts'];
-    var empty=el('div','ind-empty','No key contacts added'+(inv?' <span style="color:var(--error-600);font-weight:600">(required)</span>':' (required)'));
+    var empty=el('div','ind-empty',inv?'<span style="color:var(--error-600);font-weight:600">Add at least one key contact to continue</span>':'No key contacts added yet');
     if(inv){empty.style.borderColor='var(--error-600)';empty.style.background='var(--error-50)';}
     list.appendChild(empty);
   }
@@ -2184,14 +2223,19 @@ function renderIndividuals(){
       initials=((p.firstName||' ')[0]+(p.lastName||' ')[0]).toUpperCase();
       roles=rolesTxt+(p.isMe?' &middot; You':'');
       if(p.isMe){
-        pillHtml='<span class="pill '+(p.idv?'green':'amber')+'">'+(p.idv?'Identity verified':'Live IDV required')+'</span>';
+        if(p.idv){
+          pillHtml='<span class="pill green">Identity verified</span>';
+        }else{
+          pillHtml='<span class="pill amber">IDV required</span>';
+          sendBtn='<button class="btn btn-secondary kc-send" data-act="perform"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Perform IDV</button>';
+        }
       }else if(p.extIdv){
         pillHtml='<span class="pill green">Identity verified</span>';
       }else if(p.idvInvited){
         pillHtml='<span class="pill amber">Waiting to verify</span>';
       }else{
-        pillHtml='<span class="pill gray">Not yet invited to verify</span>';
-        sendBtn='<button class="btn btn-secondary kc-send" data-act="send"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Send verification request</button>';
+        pillHtml='<span class="pill gray">Not yet invited</span>';
+        sendBtn='<button class="btn btn-secondary kc-send" data-act="send"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Invite to perform IDV</button>';
       }
     }
     var card=el('div','ind-card',
@@ -2203,6 +2247,7 @@ function renderIndividuals(){
     card.querySelector('[data-act="edit"]').onclick=function(){openDrawer(i);};
     card.querySelector('[data-act="del"]').onclick=function(){S.f.individuals.splice(i,1);personsChanged();save();renderIndividuals();};
     var sb=card.querySelector('[data-act="send"]');if(sb)sb.onclick=function(){sendIdvRequest(i);};
+    var pb=card.querySelector('[data-act="perform"]');if(pb)pb.onclick=function(){openDrawer(i);setTimeout(function(){var s=$('idvSec');if(s)s.scrollIntoView({behavior:'smooth',block:'center'});},140);};
     list.appendChild(card);
   });
 }
@@ -2250,7 +2295,7 @@ function syncDrMode(){
   $('addrSec').classList.toggle('hidden',invite);
   $('taxSec').classList.toggle('hidden',invite);
   $('idvSec').classList.toggle('hidden',invite);
-  $('isMeWrap').classList.toggle('hidden',invite);
+  if(invite)$('selfNote').classList.add('hidden');
   $('phoneRow').classList.toggle('hidden',invite);
   $('d-dob').closest('.field').classList.toggle('hidden',invite);
   $('d-occupation').closest('.field').classList.toggle('hidden',invite);
@@ -2297,17 +2342,19 @@ function checkDobAge(){
 }
 function syncIsMe(){
   var on=$('d-isMe').checked;
-  var em=$('d-email');
   if(on){
     if(!$('d-firstName').value)$('d-firstName').value=S.firstName||'';
     if(!$('d-lastName').value)$('d-lastName').value=S.lastName||'';
-    em.value=S.email;em.readOnly=true;
-    ['d-firstName','d-lastName','d-email'].forEach(function(id){var f=$(id).closest('.field');f.classList.toggle('filled',!!$(id).value);f.classList.remove('invalid');});
-  }else{
-    em.readOnly=false;
+    ['d-firstName','d-lastName'].forEach(function(id){var f=$(id).closest('.field');f.classList.toggle('filled',!!$(id).value);f.classList.remove('invalid');});
   }
-  $('emailLockHint').classList.toggle('hidden',!on);
+  $('selfNote').classList.toggle('hidden',!on||drMode==='invite');
+  $('emailLockHint').classList.add('hidden');
   renderIdv();
+}
+/* the current user is auto-detected as a key contact when the email entered matches their sign-in email */
+function detectSelf(){
+  $('d-isMe').checked=!!S.email&&($('d-email').value||'').trim().toLowerCase()===(S.email||'').trim().toLowerCase();
+  syncIsMe();
 }
 function openDrawer(idx,mode){
   editIdx=idx;
@@ -2383,14 +2430,7 @@ function saveDrawer(){
     drError('Please complete the highlighted fields below.',firstBad);
     return;
   }
-  if($('d-isMe').checked&&!drIdv){
-    var st=$('camStatus');
-    st.classList.add('err');
-    st.textContent='Complete the live camera check to add yourself.';
-    $('camBox').style.borderColor='var(--error-600)';
-    drError('One step left: complete the live camera check in the Identity verification section.',$('idvSec'));
-    return;
-  }
+  /* self can be saved with IDV still pending — they can "Perform IDV" from the contact card */
   var isMe=$('d-isMe').checked;
   var p={roles:drRoles.slice(),ownPct:$('d-ownPct').value,isMe:isMe,idv:isMe?drIdv:false,taxResident:drTaxRes};
   DK.forEach(function(k){p[k]=$('d-'+k).value;});
@@ -2403,180 +2443,119 @@ function saveDrawer(){
   personsChanged();save();closeDrawer();renderIndividuals();
 }
 
-/* ============================ invite to co-fill (sidebar, multi-select) ============================ */
+/* ============================ collaborator access (full-application or per-page) ============================ */
 var CF_WAIT='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#697586" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 14px;margin-top:2px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-var CP_CHECK='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-var cfSel={},cfEmailVal='',cfAccess='';
+var COFILL_PAGES=[{page:'business',title:'Business information'},{page:'contacts',title:'Business contacts'},{page:'usage',title:'Expected usage'},{page:'documents',title:'Documents'}];
+function pageTitle(p){var m=COFILL_PAGES.filter(function(x){return x.page===p;})[0];return m?m.title:p;}
+var cfDraft={email:'',scope:'full',page:'business'};
 function collabByEmail(em){em=(em||'').trim().toLowerCase();return (S.collaborators||[]).filter(function(c){return (c.email||'').toLowerCase()===em;})[0]||null;}
-function cofillEmailIsNew(){var v=(cfEmailVal||'').trim();return v.indexOf('@')>0&&!collabByEmail(v);}
-function cofillTakenKeys(){
-  var m={};
-  S.f.cofill.forEach(function(c){(c.keys||[]).forEach(function(k){m[k]=c;});});
-  return m;
-}
-function cofillKeyAvailable(k){
-  if(k==='operatingName'&&!S.f.hasTradeName)return false;
-  return true;
-}
+/* the page-scoped delegation covering a page, if any */
+function pageDelegation(pageId){return (S.f.cofill||[]).filter(function(c){return c.scope==='page'&&c.page===pageId;})[0]||null;}
+function scopeLabel(c){return c.scope==='full'?'Full application access':('Page access · '+pageTitle(c.page));}
 function updateCofillBadge(){
   var b=$('cofillCnt');if(!b)return;
-  var n=S.f.cofill.length;
+  var n=(S.f.cofill||[]).length;
   b.textContent=n;
   b.classList.toggle('hidden',!n);
 }
+/* per-page header button hides itself once that page has been handed off */
+function updatePageDelegateBtn(pageId){
+  var pageEl=$('page-'+pageId);if(!pageEl)return;
+  var btn=pageEl.querySelector('.page-delegate');if(!btn)return;
+  btn.classList.toggle('hidden',!!pageDelegation(pageId));
+}
+function openCofillPanel(preset){
+  if(preset){if(preset.scope)cfDraft.scope=preset.scope;if(preset.page)cfDraft.page=preset.page;}
+  renderCofillPanel();
+  $('cofillPanel').classList.remove('hidden');
+}
 function renderCofillPanel(){
   var panel=$('cofillPanel');
-  /* re-render replaces the body — keep the user's scroll position */
   var prevBody=panel.querySelector('.cp-body');
   var keepScroll=prevBody?prevBody.scrollTop:0;
-  var taken=cofillTakenKeys();
-  var body='';
-  COFILL_STRUCT.forEach(function(pg){
-    var here=pg.page===S.page;
-    body+='<div class="cp-page'+(here?' here':'')+'">'+esc(pg.title)+(here?'<span class="here-tag">YOU\'RE HERE</span>':'')+'</div>';
-    pg.sections.forEach(function(sec){
-      var keys=sec.keys.filter(cofillKeyAvailable);
-      var free=keys.filter(function(k){return !taken[k];});
-      var selCount=free.filter(function(k){return cfSel[k];}).length;
-      var st=free.length&&selCount===free.length?'on':(selCount?'half':'');
-      body+='<div class="cp-sec '+st+'" data-cpsec="'+esc(pg.page)+'|'+esc(sec.t)+'"><span class="cp-box">'+(st==='on'?CP_CHECK:'')+'</span><span>'+esc(sec.t)+'</span></div>';
-      keys.forEach(function(k){
-        if(taken[k]){
-          body+='<div class="cp-q taken"><span class="cp-box"></span><span>'+labelFor(k)+'</span><span class="taken-note">waiting for '+esc(cofillName(taken[k].email))+'</span></div>';
-        }else{
-          var on=!!cfSel[k];
-          body+='<div class="cp-q'+(on?' on':'')+'" data-cpq="'+esc(k)+'"><span class="cp-box">'+(on?CP_CHECK:'')+'</span><span>'+labelFor(k)+'</span></div>';
-        }
-      });
+  var dels=S.f.cofill||[];
+  var listHtml='';
+  if(dels.length){
+    dels.forEach(function(c){
+      listHtml+='<div class="cofill-sent">'+CF_WAIT+'<div class="who"><b>'+esc(c.email)+'</b><span>'+esc(scopeLabel(c))+' &middot; waiting for them to fill</span></div><button type="button" data-cprevoke="'+esc(c.id)+'">Revoke</button></div>';
     });
-  });
-  var sent='';
-  if(S.f.cofill.length){
-    sent+='<div class="cp-page">Pending invites</div>';
-    S.f.cofill.forEach(function(c){
-      sent+='<div class="cofill-sent">'+CF_WAIT+'<div class="who"><b>'+esc(c.email)+'</b><span>'+c.keys.length+' question'+(c.keys.length>1?'s':'')+' &middot; waiting for them to fill</span></div><button type="button" data-cprevoke="'+esc(c.id)+'">Revoke</button></div>';
-    });
+  }else{
+    listHtml='<div class="cp-empty">No collaborators invited yet. Invite someone below to fill the whole application or a single page.</div>';
   }
-  var n=Object.keys(cfSel).filter(function(k){return cfSel[k];}).length;
-  var hereNote='';
-  var collabChips='';
-  if((S.collaborators||[]).length){
-    collabChips='<div class="cp-collabs"><span class="lbl">Assign to a collaborator</span>'+
-      S.collaborators.map(function(c){
-        var on=(cfEmailVal||'').trim().toLowerCase()===(c.email||'').toLowerCase();
-        return '<button type="button" class="cp-collab-chip'+(on?' on':'')+'" data-cpcollab="'+esc(c.email)+'">'+esc(cofillName(c.email))+'</button>';
-      }).join('')+'</div>';
-  }
-  var showAccess=cofillEmailIsNew();
-  var accessBlock='<div class="cp-access'+(showAccess?'':' hidden')+'" id="cpAccess">'+
-    '<div class="ttl">What can this teammate access?</div>'+
-    '<label class="opt'+(cfAccess==='full'?' on':'')+'" data-cpacc="full"><span class="ar"></span><span><b>Full access</b><span class="ad">Can edit the entire application.</span></span></label>'+
-    '<label class="opt'+(cfAccess==='limited'?' on':'')+'" data-cpacc="limited"><span class="ar"></span><span><b>Limited access</b><span class="ad">Only sees the fields you assign. For people you don&rsquo;t want to reveal full company information to.</span></span></label>'+
-    '</div>';
+  var scope=cfDraft.scope;
+  var pageSel=scope==='page'?('<div class="cp-pagesel"><select id="cpPage">'+COFILL_PAGES.map(function(p){return '<option value="'+p.page+'"'+(p.page===cfDraft.page?' selected':'')+'>'+esc(p.title)+'</option>';}).join('')+'</select></div>'):'';
   panel.innerHTML=
-    '<div class="cp-head"><h4>Invite to co-fill</h4>'+
-    '<p class="note">Hand any part of the application to your teammates. They get an email link scoped to exactly what you pick.</p>'+hereNote+
+    '<div class="cp-head"><h4>Manage collaborator access</h4>'+
+    '<p class="note">Invite a collaborator to fill the whole application or just one page. They get an email link scoped to what you choose.</p>'+
     '<button class="cp-x" type="button" id="cpClose" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
-    '<div class="cp-body">'+body+sent+'</div>'+
+    '<div class="cp-body">'+
+      '<div class="cp-page">People with access</div>'+listHtml+
+      '<div class="cp-page" style="margin-top:18px">Invite a collaborator</div>'+
+      '<div class="cp-access" id="cpScope">'+
+        '<label class="opt'+(scope==='full'?' on':'')+'" data-cpscope="full"><span class="ar"></span><span><b>Full application</b><span class="ad">Can view and fill the entire application.</span></span></label>'+
+        '<label class="opt'+(scope==='page'?' on':'')+'" data-cpscope="page"><span class="ar"></span><span><b>A specific page</b><span class="ad">They only see and fill the page you choose.</span></span></label>'+
+      '</div>'+pageSel+
+    '</div>'+
     '<div class="cp-foot">'+
-      '<div class="sel-count">'+(n?n+' question'+(n>1?'s':'')+' selected':'Select the questions a teammate should fill')+'</div>'+
-      collabChips+
-      '<div class="cp-send-row"><input id="cpEmail" type="email" placeholder="teammate@'+esc(S.email.split('@')[1]||'company.com')+'" value="'+esc(cfEmailVal)+'"><button type="button" id="cpSend">Send invite</button></div>'+
-      accessBlock+
+      '<div class="cp-send-row"><input id="cpEmail" type="email" placeholder="teammate@'+esc(S.email.split('@')[1]||'company.com')+'" value="'+esc(cfDraft.email)+'"><button type="button" id="cpSend">Send invite</button></div>'+
       '<div class="cofill-track"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 13px;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>For compliance, Loop records who filled and edited every field, whoever contributes.</span></div>'+
     '</div>';
   panel.querySelector('.cp-body').scrollTop=keepScroll;
-  /* clicks inside the panel re-render it (detaching e.target), which would fool the
-     document-level outside-click close — stop them at the panel root */
+  /* clicks inside the panel must not bubble to the document-level outside-click close */
   panel.onclick=function(e){e.stopPropagation();};
   $('cpClose').onclick=function(){panel.classList.add('hidden');};
-  panel.querySelectorAll('[data-cpq]').forEach(function(row){
-    row.onclick=function(){
-      var k=row.dataset.cpq;
-      cfSel[k]=!cfSel[k];
-      renderCofillPanel();
-    };
+  panel.querySelectorAll('[data-cpscope]').forEach(function(o){
+    o.onclick=function(){cfDraft.scope=o.dataset.cpscope;renderCofillPanel();};
   });
-  panel.querySelectorAll('[data-cpsec]').forEach(function(row){
-    row.onclick=function(){
-      var parts=row.dataset.cpsec.split('|');
-      var pg=COFILL_STRUCT.filter(function(p){return p.page===parts[0];})[0];
-      var sec=pg.sections.filter(function(s){return s.t===parts[1];})[0];
-      var free=sec.keys.filter(cofillKeyAvailable).filter(function(k){return !taken[k];});
-      var allOn=free.length&&free.every(function(k){return cfSel[k];});
-      free.forEach(function(k){cfSel[k]=!allOn;});
-      renderCofillPanel();
-    };
-  });
-  /* shortcut: pick an existing collaborator's email immediately */
-  panel.querySelectorAll('[data-cpcollab]').forEach(function(b){
-    b.onclick=function(){cfEmailVal=b.dataset.cpcollab;cfAccess='';renderCofillPanel();};
-  });
-  /* access level for a brand-new email */
-  panel.querySelectorAll('[data-cpacc]').forEach(function(o){
-    o.onclick=function(){cfAccess=o.dataset.cpacc;renderCofillPanel();};
-  });
+  var ps=$('cpPage');if(ps)ps.onchange=function(){cfDraft.page=ps.value;};
   var em=$('cpEmail');
-  em.addEventListener('input',function(){
-    cfEmailVal=em.value;
-    /* show the access question the moment they type a new (non-collaborator) email */
-    $('cpAccess').classList.toggle('hidden',!cofillEmailIsNew());
-  });
+  em.addEventListener('input',function(){cfDraft.email=em.value;});
   $('cpSend').onclick=function(){
-    var keys=Object.keys(cfSel).filter(function(k){return cfSel[k];});
-    if(!keys.length){panel.querySelector('.sel-count').style.color='var(--error-600)';return;}
     if(!em.value||em.value.indexOf('@')<1){em.style.borderColor='var(--error-600)';return;}
-    cfEmailVal=em.value;
-    var emV=em.value.trim(),existing=collabByEmail(emV);
-    /* a new email must be granted an access level before the invite can go out */
-    if(!existing&&!cfAccess){$('cpAccess').classList.remove('hidden');$('cpAccess').classList.add('invalid');$('cpAccess').scrollIntoView({block:'nearest'});return;}
-    if(!existing)S.collaborators.push({email:emV,role:'',access:cfAccess});
-    S.f.cofill.push({id:'cf'+Date.now(),email:emV,keys:keys});
-    cfSel={};cfEmailVal='';cfAccess='';
+    var emV=em.value.trim(),scopeV=cfDraft.scope,pageV=cfDraft.page;
+    var access=scopeV==='full'?'full':'limited';
+    var existing=collabByEmail(emV);
+    if(existing){if(access==='full')existing.access='full';}
+    else S.collaborators.push({email:emV,role:'',access:access});
+    var del={id:'cf'+Date.now(),email:emV,scope:scopeV};
+    if(scopeV==='page')del.page=pageV;
+    S.f.cofill.push(del);
+    cfDraft.email='';
     save();
     renderCofillPanel();
-    if($('page-'+S.page))applyCofillLocks(S.page);
-    updateCofillBadge();
+    if(scopeV==='page'&&$('page-'+pageV))applyCofillLocks(pageV);
+    if($('page-'+S.page))updatePageDelegateBtn(S.page);
+    updateCofillBadge();renderCollabList();
+    if(!$('permOverlay').classList.contains('hidden'))renderPermissions();
   };
   panel.querySelectorAll('[data-cprevoke]').forEach(function(b){
     b.onclick=function(){revokeCofill(b.dataset.cprevoke);};
   });
 }
 function revokeCofill(id){
-  S.f.cofill=S.f.cofill.filter(function(x){return x.id!==id;});
+  var removed=(S.f.cofill||[]).filter(function(x){return x.id===id;})[0];
+  S.f.cofill=(S.f.cofill||[]).filter(function(x){return x.id!==id;});
   save();
-  if($('page-'+S.page))applyCofillLocks(S.page);
-  updateCofillBadge();
+  if(removed&&removed.scope==='page'&&$('page-'+removed.page))applyCofillLocks(removed.page);
+  if($('page-'+S.page))updatePageDelegateBtn(S.page);
+  updateCofillBadge();renderCollabList();
   if(!$('cofillPanel').classList.contains('hidden'))renderCofillPanel();
+  if(!$('permOverlay').classList.contains('hidden'))renderPermissions();
 }
-function revokeCofillKey(id,k){
-  S.f.cofill.forEach(function(c){if(c.id===id)c.keys=c.keys.filter(function(x){return x!==k;});});
-  S.f.cofill=S.f.cofill.filter(function(c){return c.keys.length;});
-  save();
-  if($('page-'+S.page))applyCofillLocks(S.page);
-  updateCofillBadge();
-  if(!$('cofillPanel').classList.contains('hidden'))renderCofillPanel();
-}
+/* a page handed to a collaborator is locked for the owner until that person fills it */
 function applyCofillLocks(pageId){
   var pageEl=$('page-'+pageId);if(!pageEl)return;
   pageEl.querySelectorAll('.cofill-lock').forEach(function(b){b.remove();});
-  pageEl.querySelectorAll('.cofill-locked-area').forEach(function(a){a.classList.remove('cofill-locked-area');});
-  S.f.cofill.forEach(function(c){
-    (c.keys||[]).forEach(function(k){
-      if(keyPage(k)!==pageId)return;
-      var w;
-      if(k==='docs')w=$('docUploadSec');
-      else{
-        var t=gotoTarget(k);if(!t)return;
-        w=t.closest('.field')||t.closest('.q')||t.closest('.sliderq')||t.closest('.chips-wrap')||t;
-      }
-      if(!w)return;
-      var banner=el('div','cofill-lock','<span>Waiting for '+esc(cofillName(c.email))+' to fill</span><button class="rv-btn" type="button">Revoke</button>');
-      banner.querySelector('.rv-btn').onclick=function(){revokeCofillKey(c.id,k);};
-      w.parentNode.insertBefore(banner,w);
-      w.classList.add('cofill-locked-area');
-    });
-  });
+  var body=pageEl.querySelector('.pagebody');
+  if(body)body.classList.remove('cofill-locked-area');
+  var d=pageDelegation(pageId);
+  if(d&&body){
+    var banner=el('div','cofill-lock','<span>Waiting for '+esc(cofillName(d.email))+' to fill this page</span><button class="rv-btn" type="button">Revoke</button>');
+    banner.querySelector('.rv-btn').onclick=function(){revokeCofill(d.id);};
+    body.parentNode.insertBefore(banner,body);
+    body.classList.add('cofill-locked-area');
+  }
+  updatePageDelegateBtn(pageId);
 }
 
 /* ============================ review ============================ */
@@ -2634,7 +2613,7 @@ function kvCard(page,keys){
 function renderReview(){
   var R=$('reviewSections');R.innerHTML='';
 
-  var bizKeys=['legalName'].concat(S.f.hasTradeName?['operatingName']:[]).concat(['countryInc','phone','website','entityId','taxId','entityType','industry','subIndustry','description','country','address1','address2','provState','city','postal']);
+  var bizKeys=['legalName'].concat(S.f.hasTradeName?['operatingName']:[]).concat(['countryInc','phone','website','entityId','taxId','entityType','industry','subIndustry','description','address1','address2','provState','city','postal']);
   var bCard=kvCard('business',bizKeys);
   R.appendChild(revSection('Business information','business',missingPage('business'),bCard,'38px'));
 
@@ -2667,11 +2646,6 @@ function renderReview(){
       pCard.appendChild(el('div','rev-row','<div class="rl">Related business '+(i+2)+'</div>'+
         (complete?'<div class="rv">'+esc(b.name)+' &middot; '+esc(b.ownPct)+'% &middot; '+esc(b.relType)+' &middot; '+esc(b.country)+'</div>'
           :reqLink('contacts','rbx:'+i+':'+(b.name?(b.ownPct?(b.relType?'country':'relType'):'ownPct'):'name')))));
-    });
-  }
-  if(S.f.cofill.length){
-    S.f.cofill.forEach(function(c){
-      pCard.appendChild(el('div','rev-row','<div class="rl">Co-fill invitation</div><div class="rv" style="font-size:13px;color:var(--gray-600)">'+esc(cofillName(c.email))+' ('+esc(c.email)+'): '+c.keys.length+' question'+(c.keys.length>1?'s':'')+' &middot; pending</div>'));
     });
   }
   R.appendChild(revSection('Business contacts','contacts',missingPage('contacts'),pCard));
@@ -2798,11 +2772,11 @@ function renderSetup(){
             '<div class="dl">Reference (include in the message field)</div><div class="dv">'+esc(S.ref||'')+'</div>'+
           '</div>'+
           '<p class="fhelp" style="margin:0 0 14px">Autodeposit is enabled. The reference lets us match your transfer instantly.</p>'+
-          '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount <span class="req-mark">(optional)</span></div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
+          '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount</div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
           '<button class="btn btn-primary btn-sm" id="depDoneBtn">I’ve sent the e-Transfer</button>';
       }else if(S.setup.depMethod==='Instant bank connection (Flinks)'){
         body='<p class="desc" style="margin:14px 0">Connect your business account at another bank directly through <strong>Flinks</strong>. Your bank account is verified instantly (no statements, no micro-deposits) and we pull your first deposit into Loop the moment your account opens.</p>'+
-          '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount <span class="req-mark">(optional)</span></div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
+          '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount</div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
           '<button class="btn btn-primary btn-sm" id="flinksBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Connect bank with Flinks</button>'+
           '<p class="fhelp" style="margin-top:10px" id="flinksHint">You’ll sign in to your bank through Flinks’ secure window. (Simulated in this prototype.)</p>';
       }else{
@@ -2812,7 +2786,7 @@ function renderSetup(){
             '<div class="dl">Transit</div><div class="dv">45678</div>'+
             '<div class="dl">Account number</div><div class="dv">1234567 &middot; Reference '+esc(S.ref||'')+'</div>'+
           '</div>'+
-          '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount <span class="req-mark">(optional)</span></div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
+          '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount</div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
           '<button class="btn btn-primary btn-sm" id="depDoneBtn">I’ve set up the EFT deposit</button>';
       }
       b1.innerHTML=
@@ -3016,10 +2990,10 @@ function renderPlanPayment(){
   box.innerHTML='<div class="pay-card"><h4>Payment method</h4>'+
     '<p class="pay-sub">'+esc(S.planFinal)+' is '+planPrice(p)+'. Add a card to confirm. You will not be charged until your account is active.</p>'+
     '<div class="fgrid">'+
-      '<div class="field"><input id="payCard" inputmode="numeric" autocomplete="cc-number" maxlength="19"><label for="payCard">Card number (required)</label><span class="err-dot">!</span></div>'+
+      '<div class="field"><input id="payCard" inputmode="numeric" autocomplete="cc-number" maxlength="19"><label for="payCard">Card number<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
       '<div class="row">'+
-        '<div class="field"><input id="payExp" inputmode="numeric" maxlength="7"><label for="payExp">Expiry (MM / YY) (required)</label><span class="err-dot">!</span></div>'+
-        '<div class="field"><input id="payCvc" inputmode="numeric" maxlength="4"><label for="payCvc">CVC (required)</label><span class="err-dot">!</span></div>'+
+        '<div class="field"><input id="payExp" inputmode="numeric" maxlength="7"><label for="payExp">Expiry (MM / YY)<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
+        '<div class="field"><input id="payCvc" inputmode="numeric" maxlength="4"><label for="payCvc">CVC<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
       '</div>'+
     '</div></div>';
   ['payCard','payExp','payCvc'].forEach(function(id){
@@ -3232,7 +3206,7 @@ function renderCollabList(){
     var row=el('div','collab-row',
       '<div class="cr-av">'+esc((cofillName(c.email)||'?').slice(0,1).toUpperCase())+'</div>'+
       '<div class="cr-who"><div class="cr-em">'+esc(c.email)+'</div><div class="cr-role">'+esc(c.role||'Collaborator')+'</div></div>'+
-      '<span class="cr-access'+(c.access==='limited'?' lim':'')+'">'+(c.access==='limited'?'Limited access':'Full access')+'</span>'+
+      '<span class="cr-access'+(c.access==='limited'?' lim':'')+'">'+(c.access==='limited'?'Page access':'Full access')+'</span>'+
       '<button class="icobtn" data-collabdel="'+i+'" aria-label="Remove collaborator"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>');
     row.querySelector('[data-collabdel]').onclick=function(){
       S.collaborators.splice(i,1);persist();renderCollabList();
@@ -3260,7 +3234,7 @@ var CHAT_QA={
 var CHAT_QA_APP={
   'How long does this take?':'Most businesses finish in about 15 minutes, and progress saves automatically. After you submit, our team reviews within <strong>3&ndash;6 business days</strong>.',
   'Who counts as a key contact?':'Anyone who is a director, a signing officer, an owner of 25% or more, or who controls the business day to day. You verify your own identity here; everyone else gets an emailed link.',
-  'Can a teammate help me fill this in?':'Yes. Use <strong>Invite to co-fill</strong> in the left panel to hand specific questions to a teammate, or add a collaborator who can view the whole application. You can revoke access anytime.',
+  'Can a teammate help me fill this in?':'Yes. Use <strong>Manage collaborator access</strong> in the left panel to invite a collaborator to fill the whole application or just one page. You can revoke access anytime.',
   'Talk to a human':'Happy to help. Someone from our team will reply right here, usually within a few minutes. You can also email <a href="mailto:support@bankonloop.com">support@bankonloop.com</a>.'
 };
 function chatQA(){return S.submitted?CHAT_QA:CHAT_QA_APP;}
@@ -3349,7 +3323,7 @@ function continueFrom(id){
 document.addEventListener('DOMContentLoaded',function(){
   ['logoAuth','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
   fillSelect($('f-entityType'),ENTITIES);
-  fillSelect($('f-industry'),INDUSTRIES);
+  fillSelect($('f-industry'),sortedIndustries());
   fillSelect($('f-rbRelType'),RELTYPES);
   fillSelect($('f-rbCountry'),COUNTRIES);
   fillSelect($('d-province'),PROVINCES);
@@ -3378,13 +3352,17 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!sm.classList.contains('hidden')&&!sm.contains(e.target)&&!e.target.closest('.settings-trigger'))closeSettingsMenu();
   });
 
-  /* invite to co-fill (sidebar) */
+  /* manage collaborator access (sidebar) */
   $('cofillSideBtn').onclick=function(e){
     e.stopPropagation();
     var cp=$('cofillPanel');
-    if(cp.classList.contains('hidden')){renderCofillPanel();cp.classList.remove('hidden');}
+    if(cp.classList.contains('hidden'))openCofillPanel();
     else cp.classList.add('hidden');
   };
+  /* per-page "Invite a collaborator" header buttons → panel pre-scoped to that page */
+  document.querySelectorAll('[data-delegate]').forEach(function(b){
+    b.onclick=function(e){e.stopPropagation();openCofillPanel({scope:'page',page:b.dataset.delegate});};
+  });
   updateCofillBadge();
 
   /* auth */
@@ -3434,8 +3412,8 @@ document.addEventListener('DOMContentLoaded',function(){
   /* welcome + continue buttons */
   $('btnStart').onclick=function(){showPage('business');};
 
-  /* collaborators (welcome) */
-  $('btnAddCollab').onclick=openCollabModal;
+  /* collaborators (welcome) — opens the global manage-access panel */
+  $('btnAddCollab').onclick=function(){openCofillPanel();};
   $('collabCancel').onclick=closeCollabModal;
   $('collabOverlay').onclick=function(e){if(e.target===$('collabOverlay'))closeCollabModal();};
   $('collabEmail').addEventListener('input',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');});
@@ -3529,6 +3507,8 @@ document.addEventListener('DOMContentLoaded',function(){
   $('drawerOverlay').onclick=closeDrawer;
   $('drSave').onclick=saveDrawer;
   $('d-isMe').addEventListener('change',syncIsMe);
+  /* auto-detect "this is me" from the email entered */
+  $('d-email').addEventListener('input',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');detectSelf();});
   $('camStart').onclick=startCam;
   $('qrToggle').onclick=startQr;
   /* typed DOB: digits only, dashes inserted as you type (YYYY-MM-DD) */
