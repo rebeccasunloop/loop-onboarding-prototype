@@ -31,6 +31,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      # index-explore.html is the working prototype; the Pages root serves index.html.
+      # Regenerate index.html from it at build time so edits go live without a manual sync.
+      - name: Sync explore prototype to Pages root (index.html)
+        run: cp index-explore.html index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
