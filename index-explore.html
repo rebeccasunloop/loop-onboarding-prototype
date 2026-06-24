@@ -52,11 +52,16 @@ input,select,textarea{font-family:inherit}
 .pw-hint.ok{color:var(--success-700)}
 
 /* split-screen auth (sign in / sign up / MFA): form left, hero image right */
-.auth-shell{display:flex;min-height:100vh}
-.auth-pane{flex:1 1 50%;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:96px 48px 56px}
+/* lock the shell to exactly one screen so every auth step (sign in / sign up / MFA)
+   keeps the same 50/50 framing and full-height hero — the form side scrolls
+   internally instead of growing the page when its content is tall */
+.auth-shell{display:flex;height:100vh;height:100dvh;overflow:hidden}
+.auth-pane{flex:1 1 50%;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;padding:96px 48px 56px;overflow-y:auto}
 .auth-brand{position:absolute;top:30px;left:40px}
 .auth-brand .logo img{height:30px}
-.auth-inner{width:100%;max-width:400px}
+/* auto margins center the form when it fits, but let it scroll from the top
+   (under the pinned logo) without clipping when the window is short */
+.auth-inner{width:100%;max-width:400px;margin:auto 0}
 .auth-inner h1{font-size:27px;font-weight:500;letter-spacing:-.4px;margin-bottom:6px}
 .auth-media{flex:1 1 50%;min-width:0;background:#011710 url('loop-hero-background.png') center/cover no-repeat}
 #view-auth .auth-media,#view-mfa .auth-media{background-image:url('Gradient6.png');background-position:center}
@@ -70,7 +75,7 @@ input,select,textarea{font-family:inherit}
 .mfa-card.mfa-card-sm.on .mic{background:none;color:var(--brand-600)}
 .mfa-card.mfa-card-sm .mt{font-size:14.5px}
 [data-theme="dark"] .btn.btn-google{background:var(--gray-100);color:var(--gray-900);border-color:var(--gray-300)}
-@media (max-width:860px){.auth-media{display:none}.auth-pane{flex:1 1 100%;padding:88px 24px 48px}}
+@media (max-width:860px){.auth-shell{height:auto;min-height:100vh;min-height:100dvh;overflow:visible}.auth-media{display:none}.auth-pane{flex:1 1 100%;padding:88px 24px 48px;overflow-y:visible}}
 
 /* verify code */
 .code-row{display:flex;gap:10px;justify-content:center;margin:26px 0 6px}
@@ -106,6 +111,14 @@ input,select,textarea{font-family:inherit}
 .userbox .em{font-size:12.5px;color:var(--gray-600);word-break:break-all;margin-bottom:6px}
 .userbox button{background:none;border:none;font-size:13.5px;color:var(--gray-600);padding:0;display:flex;align-items:center;gap:7px}
 .userbox button:hover{color:var(--gray-900)}
+
+/* mobile top bar + off-canvas sidebar trigger (shown <=980px) */
+.app-topbar{display:none;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--gray-200);background:#fff;position:sticky;top:0;z-index:50}
+.app-topbar .logo img{height:24px}
+.app-topbar .sp{flex:1}
+.nav-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin:0 -6px;border:none;background:none;border-radius:9px;color:var(--gray-700)}
+.nav-toggle:hover{background:var(--gray-100)}
+.nav-backdrop{display:none;position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:80}
 
 main{margin-left:var(--rail);padding:72px 48px 120px;display:flex;justify-content:center}
 .col{width:100%;max-width:640px}
@@ -195,6 +208,12 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .filechip .fsub{font-size:12px;color:var(--success-700);font-weight:600}
 .filechip button{background:none;border:none;color:var(--gray-500);padding:4px}
 .filechip button:hover{color:var(--error-600)}
+/* business-info document autofill card (top of page) */
+.autofill-card{border:1px solid var(--gray-200);border-radius:14px;padding:18px 18px 20px;background:var(--gray-25)}
+.autofill-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.autofill-h{font-size:15.5px;font-weight:600;color:var(--gray-800)}
+.autofill-sub{font-size:13px;color:var(--gray-600);line-height:1.55;margin-bottom:14px;max-width:560px}
+.autofill-card .upload{display:block;width:100%;background:#fff}
 
 /* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:54px;padding:0 26px;border-radius:10px;font-size:15.5px;font-weight:600;border:none;transition:background .12s}
@@ -577,6 +596,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .welcome-collab h2{font-size:20px;font-weight:600;letter-spacing:-.2px;margin-bottom:6px}
 .welcome-collab .cc-sub{font-size:14.5px;color:var(--gray-600);line-height:1.55;max-width:560px;margin-bottom:16px}
 .welcome-collab #collabList:not(:empty){margin-bottom:14px}
+/* inline invite form, revealed by the welcome "Add a collaborator" button */
+.collab-invite{margin-top:14px;max-width:440px}
+.collab-invite .field{gap:6px}
+.collab-invite .fhelp{margin:8px 0 0 2px}
+.collab-invite-actions{display:flex;align-items:center;gap:6px;margin-top:14px}
 .collab-row{display:flex;align-items:center;gap:11px;border:1px solid var(--gray-200);border-radius:10px;padding:11px 14px;margin-bottom:8px;background:#fff;font-size:14px}
 .collab-row .cr-av{flex:0 0 32px;height:32px;border-radius:50%;background:var(--brand-25);color:var(--brand-700);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .collab-row .cr-who{flex:1;min-width:0}
@@ -707,7 +731,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 [data-theme="dark"] .logo img{filter:brightness(0) invert(1)}
 [data-theme="dark"] .auth-card,[data-theme="dark"] .sub-card,[data-theme="dark"] .reg-panel,[data-theme="dark"] .ind-card,
 [data-theme="dark"] #drawer,[data-theme="dark"] .rolecard,[data-theme="dark"] .modal,[data-theme="dark"] .perm-modal,
-[data-theme="dark"] .rev-card,[data-theme="dark"] .signcard,[data-theme="dark"] .tcard,[data-theme="dark"] .topbar,
+[data-theme="dark"] .rev-card,[data-theme="dark"] .signcard,[data-theme="dark"] .tcard,[data-theme="dark"] .topbar,[data-theme="dark"] .app-topbar,
 [data-theme="dark"] .setup-item,[data-theme="dark"] .plancard,[data-theme="dark"] .chatpanel,[data-theme="dark"] .chat-msg.bot,
 [data-theme="dark"] .chat-foot,[data-theme="dark"] .cofill-panel,[data-theme="dark"] .collab-row,[data-theme="dark"] .mfa-card,
 [data-theme="dark"] .acc-req,[data-theme="dark"] .settings-pop,[data-theme="dark"] .settings-sub,[data-theme="dark"] .perm-row,
@@ -732,10 +756,26 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   .tcard{display:none}
 }
 @media (max-width:980px){
-  .sidebar{display:none}
-  main{margin-left:0;padding:48px 22px 100px}
+  .app-topbar{display:flex}
+  /* sidebar becomes an off-canvas drawer, opened from the top bar */
+  .sidebar{width:286px;transform:translateX(-100%);transition:transform .26s ease;z-index:90}
+  body.nav-open .sidebar{transform:none;box-shadow:0 24px 60px rgba(18,25,38,.28)}
+  body.nav-open .nav-backdrop{display:block}
+  main{margin-left:0;padding:28px 22px 100px}
   #drawer{width:100vw;max-width:100vw;height:100vh;max-height:100vh;top:0;left:0;transform:none;border-radius:0}
   .slider-pair{grid-template-columns:1fr}
+  /* cofill panel uses --rail in its width on desktop; go full-width on mobile */
+  .cofill-panel{left:12px;right:12px;width:auto;max-width:none;bottom:12px;max-height:85vh}
+}
+@media (max-width:560px){
+  main{padding:24px 16px 96px}
+  .page-head{flex-direction:column;align-items:flex-start;gap:14px}
+  .page-delegate{margin-top:0}
+  .setup-wrap{padding:32px 18px 100px;gap:28px}
+  .sub-card{padding:34px 22px}
+  .auth-pane{padding:80px 20px 44px}
+  .invite-row{grid-template-columns:1fr;gap:8px}
+  .idv-grid{grid-template-columns:1fr}
 }
 </style>
 <script>
@@ -806,6 +846,12 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 <!-- ================= APP SHELL ================= -->
 <div id="app" class="app hidden">
+  <header class="app-topbar">
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <span class="logo" id="logoTop"></span>
+    <div class="sp"></div>
+  </header>
+  <div class="nav-backdrop" id="navBackdrop"></div>
   <aside class="sidebar">
     <span class="logo" id="logoSide"></span>
     <div class="step-meta" id="stepMeta">Getting started</div>
@@ -845,9 +891,21 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="autosave-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#045B3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 16px;margin-top:2px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>Your application saves automatically each time you continue. Sign back in anytime to finish.</span></div>
         <div class="welcome-collab">
           <h2>Working on this with someone?</h2>
-          <p class="cc-sub">Invite a collaborator to fill the whole application or just a single page. You can add or change who has access anytime from the sidebar.</p>
+          <p class="cc-sub">Invite a collaborator to fill the application with you. They'll get an email link to fill the whole application — you can scope access to a single page or change who has access anytime from the sidebar.</p>
           <div id="collabList"></div>
-          <button class="btn btn-secondary btn-sm" id="btnAddCollab" style="width:auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button>
+          <button class="btn btn-secondary btn-sm" id="btnAddCollab" style="width:auto" aria-expanded="false" aria-controls="collabInvite"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button>
+          <div class="collab-invite hidden" id="collabInvite">
+            <div class="field">
+              <input id="wcEmail" type="email" autocomplete="off" placeholder="teammate@company.com">
+              <label for="wcEmail">Collaborator's email</label>
+              <span class="err-dot">!</span>
+            </div>
+            <p class="fhelp">They'll be invited to fill the whole application. Change their access anytime from the sidebar.</p>
+            <div class="collab-invite-actions">
+              <button class="btn btn-primary btn-sm" id="wcSend" style="width:auto">Send invite</button>
+              <button class="btn-link" type="button" id="wcCancel" style="width:auto;text-decoration:none;color:var(--gray-600)">Cancel</button>
+            </div>
+          </div>
         </div>
         <div class="continue-wrap"><button class="btn btn-primary" id="btnStart">Start application</button></div>
       </div>
@@ -856,6 +914,21 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <div id="page-business" class="appage hidden">
         <div class="page-head"><div class="page-head-main"><h1 class="page-h">Business information</h1></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="business"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button></div>
         <div class="pagebody">
+
+          <div class="autofill-card" id="bizAutofill">
+            <div class="autofill-head">
+              <span class="wr-proto">Prototype</span>
+              <span class="autofill-h">Autofill from a document</span>
+            </div>
+            <p class="autofill-sub">Upload an incorporation certificate, business registration, or recent invoice and we'll read it to fill in the fields on this page. Review and edit everything before you continue.</p>
+            <label class="upload sm" id="bizDocUpload">
+              <input type="file" id="bizDocInput" accept=".pdf,.png,.jpg,.jpeg" hidden>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#697586" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div class="u1">Upload a business document</div>
+              <div class="u2">PDF, PNG, or JPG — incorporation, registration, or an invoice</div>
+            </label>
+            <div class="filechip hidden" id="bizDocChip"></div>
+          </div>
 
           <div class="fsec">
             <h2>General overview</h2>
@@ -892,9 +965,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
           <div class="fsec">
             <h2>Primary business address</h2>
-            <p class="why">A physical address in Canada. We can't accept PO boxes or virtual offices.</p>
+            <p class="why">A physical address in <strong>Canada</strong>. We can't accept PO boxes or virtual offices.</p>
             <div class="fgrid" style="margin-top:18px">
-              <div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; Canada</span></div>
               <div class="field"><input data-k="address1" id="f-address1"><label for="f-address1">Address line 1<span class="req-star">*</span></label><span class="err-dot">!</span></div>
               <div class="field"><input data-k="address2" id="f-address2"><label for="f-address2">Address line 2</label><span class="err-dot">!</span></div>
               <div class="row">
@@ -1063,6 +1135,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <p class="smallprint" style="margin:8px 0 0">Once approved, you'll sign the Deposit Account Agreement, ACH Payment Terms, and Tax Form to activate the account. After submission the application is locked for review and can't be edited.</p>
             <div id="gapsBox"></div>
           </div>
+        </div>
+
+        <div class="wr-proto-btn" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--gray-200)">
+          <span class="wr-proto">Prototype</span>
+          <button class="btn btn-secondary btn-sm" id="btnProtoWaitroom" type="button" style="width:auto">Skip to wait room <span>&#8594;</span></button>
         </div>
       </div>
 
@@ -1706,8 +1783,10 @@ function requiredTotal(){
 }
 
 /* ============================ views ============================ */
+function closeNav(){document.body.classList.remove('nav-open');var t=$('navToggle');if(t)t.setAttribute('aria-expanded','false');}
 function show(view){
   S.view=view;persist();
+  closeNav();
   closeSettingsMenu();
   ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
@@ -1746,10 +1825,11 @@ function show(view){
 
 function showPage(id){
   S.page=id;persist();
+  closeNav();
   document.querySelectorAll('.appage').forEach(function(p){p.classList.add('hidden');});
   var div=$('page-'+id);
   if(div)div.classList.remove('hidden');
-  if(id==='welcome'){$('stepMeta').textContent='Getting started';renderCollabList();}
+  if(id==='welcome'){$('stepMeta').textContent='Getting started';renderCollabList();var ci=$('collabInvite');if(ci){ci.classList.add('hidden');$('wcEmail').value='';$('btnAddCollab').setAttribute('aria-expanded','false');}}
   else{
     S.visited[id]=true;persist();
     $('stepMeta').textContent='Step '+(PAGE_ORDER.indexOf(id)+1)+' of '+PAGE_ORDER.length;
@@ -1899,6 +1979,34 @@ function syncProvState(){
   fillSelect(sel,PROVINCES);
   sel.value=S.f.provState;
   $('provStateSelWrap').classList.toggle('filled',!!S.f.provState);
+}
+
+/* prototype: "extract" business details from an uploaded document and fill this page */
+function autofillBusinessFromDoc(){
+  var demo={
+    legalName:'Northwind Robotics Inc.', hasTradeName:false, operatingName:'',
+    phone:'(416) 555-0142', website:'https://northwindrobotics.ca', taxId:'123456782',
+    entityType:'Corporation (federal)', industry:'Software and technology', subIndustry:'Hardware and devices',
+    description:'We design autonomous warehouse robots and the fleet-management software that runs them, sold to mid-market logistics and distribution companies across Canada and the US.',
+    address1:'200 King Street West, Suite 1400', address2:'', provState:'Ontario', city:'Toronto', postal:'M5H 3T4'
+  };
+  Object.keys(demo).forEach(function(k){S.f[k]=demo[k];});
+  hydrateFields();
+  save();
+  refreshInvalid('business');
+}
+function runBizAutofill(name){
+  var chip=$('bizDocChip');
+  $('bizDocUpload').classList.add('hidden');
+  chip.classList.remove('hidden');
+  chip.innerHTML='<span class="spinner"></span><div style="flex:1;min-width:0"><div class="fname">Reading '+esc(name)+'&hellip;</div><div class="fsub" style="color:var(--gray-500);font-weight:400">Extracting business details</div></div>';
+  setTimeout(function(){
+    autofillBusinessFromDoc();
+    chip.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#045B3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'+
+      '<div style="flex:1;min-width:0"><div class="fname">'+esc(name)+'</div><div class="fsub">Details extracted and filled below</div></div>'+
+      '<button type="button" id="bizDocClear" aria-label="Remove file"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>';
+    $('bizDocClear').onclick=function(){chip.classList.add('hidden');$('bizDocUpload').classList.remove('hidden');$('bizDocInput').value='';};
+  },1500);
 }
 
 /* sliders (Ramp style) */
@@ -2468,8 +2576,25 @@ function updatePageDelegateBtn(pageId){
   var btn=pageEl.querySelector('.page-delegate');if(!btn)return;
   btn.classList.toggle('hidden',!!pageDelegation(pageId));
 }
+/* shared invite logic used by both the sidebar panel and the welcome inline form */
+function sendCofillInvite(emV,scopeV,pageV){
+  var access=scopeV==='full'?'full':'limited';
+  var existing=collabByEmail(emV);
+  if(existing){if(access==='full')existing.access='full';}
+  else S.collaborators.push({email:emV,role:'',access:access});
+  var del={id:'cf'+Date.now(),email:emV,scope:scopeV};
+  if(scopeV==='page')del.page=pageV;
+  S.f.cofill.push(del);
+  save();
+  if(scopeV==='page'&&$('page-'+pageV))applyCofillLocks(pageV);
+  if($('page-'+S.page))updatePageDelegateBtn(S.page);
+  updateCofillBadge();renderCollabList();
+  if(!$('permOverlay').classList.contains('hidden'))renderPermissions();
+  return del;
+}
 function openCofillPanel(preset){
   if(preset){if(preset.scope)cfDraft.scope=preset.scope;if(preset.page)cfDraft.page=preset.page;}
+  closeNav();
   renderCofillPanel();
   $('cofillPanel').classList.remove('hidden');
 }
@@ -2516,21 +2641,9 @@ function renderCofillPanel(){
   em.addEventListener('input',function(){cfDraft.email=em.value;});
   $('cpSend').onclick=function(){
     if(!em.value||em.value.indexOf('@')<1){em.style.borderColor='var(--error-600)';return;}
-    var emV=em.value.trim(),scopeV=cfDraft.scope,pageV=cfDraft.page;
-    var access=scopeV==='full'?'full':'limited';
-    var existing=collabByEmail(emV);
-    if(existing){if(access==='full')existing.access='full';}
-    else S.collaborators.push({email:emV,role:'',access:access});
-    var del={id:'cf'+Date.now(),email:emV,scope:scopeV};
-    if(scopeV==='page')del.page=pageV;
-    S.f.cofill.push(del);
+    sendCofillInvite(em.value.trim(),cfDraft.scope,cfDraft.page);
     cfDraft.email='';
-    save();
     renderCofillPanel();
-    if(scopeV==='page'&&$('page-'+pageV))applyCofillLocks(pageV);
-    if($('page-'+S.page))updatePageDelegateBtn(S.page);
-    updateCofillBadge();renderCollabList();
-    if(!$('permOverlay').classList.contains('hidden'))renderPermissions();
   };
   panel.querySelectorAll('[data-cprevoke]').forEach(function(b){
     b.onclick=function(){revokeCofill(b.dataset.cprevoke);};
@@ -3224,6 +3337,7 @@ function renderCollabList(){
   });
 }
 function openCollabModal(){
+  closeNav();
   $('collabEmail').value='';$('collabEmail').closest('.field').classList.remove('filled','invalid');
   var sel=$('collabRole');sel.value='';sel.closest('.field').classList.remove('filled','invalid');
   $('collabOverlay').classList.remove('hidden');updateChatVisibility();
@@ -3329,7 +3443,7 @@ function continueFrom(id){
 
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
-  ['logoAuth','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
+  ['logoAuth','logoMfa','logoSide','logoTop','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
   fillSelect($('f-entityType'),ENTITIES);
   fillSelect($('f-industry'),sortedIndustries());
   fillSelect($('f-rbRelType'),RELTYPES);
@@ -3437,8 +3551,29 @@ document.addEventListener('DOMContentLoaded',function(){
   /* welcome + continue buttons */
   $('btnStart').onclick=function(){showPage('business');};
 
-  /* collaborators (welcome) — opens the global manage-access panel */
-  $('btnAddCollab').onclick=function(){openCofillPanel();};
+  /* business-info: autofill the page from an uploaded document (prototype) */
+  $('bizDocInput').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)runBizAutofill(f.name);});
+
+  /* collaborators (welcome) — reveal an inline email field below the button.
+     (the sidebar button still opens the global manage-access panel.) */
+  var wcInvite=$('collabInvite'),wcEmail=$('wcEmail');
+  function wcSetOpen(open){
+    wcInvite.classList.toggle('hidden',!open);
+    $('btnAddCollab').setAttribute('aria-expanded',open?'true':'false');
+    if(open){wcEmail.focus();}
+    else{wcEmail.value='';wcEmail.closest('.field').classList.remove('invalid');}
+  }
+  function wcDoSend(){
+    var v=wcEmail.value.trim();
+    if(!v||v.indexOf('@')<1){wcEmail.closest('.field').classList.add('invalid');wcEmail.focus();return;}
+    sendCofillInvite(v,'full');
+    wcSetOpen(false);
+  }
+  $('btnAddCollab').onclick=function(){wcSetOpen(wcInvite.classList.contains('hidden'));};
+  $('wcCancel').onclick=function(){wcSetOpen(false);};
+  $('wcSend').onclick=wcDoSend;
+  wcEmail.addEventListener('input',function(){wcEmail.closest('.field').classList.remove('invalid');});
+  wcEmail.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();wcDoSend();}});
   $('collabCancel').onclick=closeCollabModal;
   $('collabOverlay').onclick=function(e){if(e.target===$('collabOverlay'))closeCollabModal();};
   $('collabEmail').addEventListener('input',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');});
@@ -3503,6 +3638,15 @@ document.addEventListener('DOMContentLoaded',function(){
     S.setup=freshSetup();
     save();show('setup');
     dropConfetti();
+  };
+
+  /* prototype: bypass the application and jump straight to the wait room */
+  $('btnProtoWaitroom').onclick=function(){
+    S.submitted=true;
+    S.submittedAt=Date.now();
+    S.ref='LP-'+String(Date.now()).slice(-6);
+    S.setup=freshSetup();
+    save();show('setup');
   };
 
   /* approved signing */
@@ -3575,7 +3719,7 @@ document.addEventListener('DOMContentLoaded',function(){
     inp.addEventListener('change',function(){inp.closest('.field').classList.toggle('filled',!!inp.value);});
   });
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){closeDrawer();closeModal();closeCollabModal();closePermissions();closeSettingsMenu();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
+    if(e.key==='Escape'){closeNav();closeDrawer();closeModal();closeCollabModal();closePermissions();closeSettingsMenu();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
   });
 
   /* modal */
@@ -3596,6 +3740,10 @@ document.addEventListener('DOMContentLoaded',function(){
   }
   $('settingsTrigger').onclick=function(e){e.stopPropagation();openSettingsMenu($('settingsTrigger'));};
   $('setupSettingsTrigger').onclick=function(e){e.stopPropagation();openSettingsMenu($('setupSettingsTrigger'));};
+
+  /* mobile off-canvas sidebar (top-bar hamburger) */
+  $('navToggle').onclick=function(e){e.stopPropagation();var open=document.body.classList.toggle('nav-open');$('navToggle').setAttribute('aria-expanded',open?'true':'false');};
+  $('navBackdrop').onclick=closeNav;
   $('permClose').onclick=closePermissions;
   $('permOverlay').onclick=function(e){if(e.target===$('permOverlay'))closePermissions();};
 
