@@ -56,10 +56,21 @@ input,select,textarea{font-family:inherit}
 .auth-pane{flex:1 1 50%;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:96px 48px 56px}
 .auth-brand{position:absolute;top:30px;left:40px}
 .auth-brand .logo img{height:30px}
-.auth-inner{width:100%;max-width:400px}
+.auth-inner{width:100%;max-width:400px;position:relative}
 .auth-inner h1{font-size:27px;font-weight:500;letter-spacing:-.4px;margin-bottom:6px}
 .auth-media{flex:1 1 50%;min-width:0;background:#011710 url('loop-hero-background.png') center/cover no-repeat}
-#view-auth .auth-media,#view-mfa .auth-media{background-image:url('Gradient6.png');background-position:center}
+#view-auth .auth-media,#view-mfa .auth-media,#view-sms .auth-media{background-image:url('Gradient6.png');background-position:center}
+/* mandatory SMS verification */
+.sms-resend{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--gray-500);margin:18px 0 0}
+.sms-resend button{background:none;border:none;padding:0;font-size:13.5px;font-weight:600;color:var(--brand-600)}
+.sms-resend button:disabled{color:var(--gray-400);font-weight:400;cursor:default}
+.sms-status{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;margin-top:14px;min-height:20px}
+.sms-status.ok{color:var(--success-700)}
+.sms-status.err{color:var(--error-600)}
+.sms-status .spinner{width:15px;height:15px;border-width:2px}
+.sms-back,.back-link{display:inline-flex;align-items:center;gap:6px;margin-top:20px;background:none;border:none;padding:6px 0;font-size:13.5px;font-weight:600;color:var(--gray-500);transition:color .14s}
+.sms-back:hover,.back-link:hover{color:var(--gray-800)}
+.sms-back svg,.back-link svg{width:15px;height:15px}
 .btn.btn-google{width:100%;background:#fff;color:var(--gray-800);border:1px solid var(--gray-300)}
 .btn.btn-google:hover{background:var(--gray-50);border-color:var(--gray-400)}
 .btn-google svg{flex:0 0 18px}
@@ -78,6 +89,50 @@ input,select,textarea{font-family:inherit}
 .code-row input:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.14)}
 .code-row.sm input{width:42px;height:50px;font-size:19px}
 .code-row.sm{justify-content:flex-start;margin:16px 0 4px}
+
+/* combined phone field: country code (left) + divider + number, in one box */
+.phone-combo{position:relative;display:flex;align-items:stretch;height:54px;border:1px solid var(--gray-300);border-radius:10px;background:#fff;transition:border-color .12s,box-shadow .12s}
+.phone-combo:focus-within{border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.12)}
+.phone-field.invalid .phone-combo{border-color:var(--error-600)}
+.cc-trigger{display:flex;align-items:center;gap:6px;height:100%;padding:0 12px;background:none;border:none;border-radius:10px 0 0 10px;color:var(--gray-800);font-size:15px;white-space:nowrap}
+.cc-trigger:hover{background:var(--gray-50)}
+.cc-flag{font-size:18px;line-height:1;flex:0 0 auto}
+.cc-name{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.cc-dial{font-weight:500;color:var(--gray-500);flex:0 0 auto}
+.cc-caret{color:var(--gray-500);flex:0 0 14px;width:14px;height:14px}
+.phone-field .phone-combo>input{flex:1 1 auto;min-width:0;width:100%;height:100%;border:none;border-left:1px solid var(--gray-300);border-radius:0;background:none;box-shadow:none;padding:0 16px;font-size:15px;color:var(--gray-900);appearance:none}
+.phone-field .phone-combo>input:focus{outline:none;border-color:var(--gray-300);box-shadow:none}
+.phone-field.invalid .phone-combo>input{border-left-color:var(--gray-300)}
+.cc-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;display:flex;flex-direction:column;max-height:288px;background:#fff;border:1px solid var(--gray-200);border-radius:12px;box-shadow:var(--shadow-overlay);padding:8px}
+.cc-search-wrap{padding:0 2px 8px}
+.cc-search{width:100%;height:40px;border:1px solid var(--gray-300);border-radius:8px;padding:0 12px;font-size:14px;color:var(--gray-900)}
+.cc-search:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(4,91,63,.12)}
+.cc-list{flex:1 1 auto;overflow-y:auto}
+.cc-opt{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:none;background:none;text-align:left;border-radius:8px;font-size:14px;color:var(--gray-800)}
+.cc-opt:hover{background:var(--brand-25)}
+.cc-opt-flag{font-size:18px;flex:0 0 auto;line-height:1}
+.cc-opt-name{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-opt-dial{color:var(--gray-500);flex:0 0 auto}
+.cc-opt.sel{color:var(--brand-700);font-weight:600}
+.cc-opt.sel .cc-opt-dial{color:var(--brand-600)}
+.cc-empty{padding:14px 10px;font-size:13.5px;color:var(--gray-500);text-align:center}
+[data-theme="dark"] .phone-combo,[data-theme="dark"] .cc-menu,[data-theme="dark"] .cc-search{background:var(--gray-50)}
+
+/* compact the sign-up screen so the whole form (even with the referral code expanded) fits in the viewport without scrolling */
+#view-auth .auth-pane{padding:48px 44px 26px;justify-content:center}
+#view-auth .auth-inner h1{font-size:22px;margin-bottom:3px}
+#view-auth #authSignup h1{margin-bottom:22px}
+#view-auth .auth-sub{font-size:13px;line-height:1.4;margin-bottom:12px}
+#view-auth .fgrid{gap:10px}
+#view-auth .field{gap:4px}
+#view-auth .field label{font-size:13px}
+#view-auth .field>input,#view-auth .field>select{height:45px}
+#view-auth .phone-combo{height:45px}
+#view-auth .btn{height:45px;font-size:15px}
+#view-auth .pw-hint{font-size:12px;margin:-3px 0 0 2px}
+#view-auth .or-divider.or-auth{margin:12px 0}
+#view-auth .auth-foot{margin-top:11px}
+#view-auth .auth-legal{margin-top:8px;font-size:11.5px;line-height:1.4}
 
 /* ---------- logo ---------- */
 .logo{display:inline-flex;align-items:center;text-decoration:none}
@@ -571,6 +626,39 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .mfa-card .md{font-size:12.5px;color:var(--gray-500);margin-top:2px;line-height:1.5}
 .mfa-setup{border:1px solid var(--gray-200);background:var(--gray-25);border-radius:12px;padding:18px;margin:2px 0 14px}
 .mfa-ok{display:flex;align-items:center;gap:9px;border:1px solid var(--success-100);background:var(--success-25);border-radius:10px;padding:12px 14px;font-size:13.5px;font-weight:600;color:var(--success-800);margin-bottom:14px}
+/* authenticator-app setup: QR + secret key + numbered steps */
+.auth-qr{display:inline-block;line-height:0;background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:8px}
+.auth-secret{display:flex;flex-direction:column;gap:5px;min-width:0}
+.auth-secret .t{font-size:12px;color:var(--gray-500)}
+.auth-secret code{display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;letter-spacing:1.5px;color:var(--gray-800);background:var(--gray-100);border-radius:6px;padding:7px 9px;word-break:break-all}
+.auth-steps{margin:18px 0 16px;padding-left:20px;display:flex;flex-direction:column;gap:16px;font-size:14px;color:var(--gray-700)}
+.auth-steps>li{padding-left:4px;line-height:1.5}
+.auth-steps>li::marker{color:var(--gray-500);font-weight:700}
+.auth-apps{margin:6px 0 0;padding-left:18px;color:var(--gray-600);font-size:13.5px}
+.auth-apps li{padding:1.5px 0}
+.auth-2col{display:flex;align-items:stretch;gap:14px;margin-top:12px}
+.auth-2col .auth-qr{flex:0 0 auto}
+.auth-2col .auth-secret{flex:1 1 auto;justify-content:center}
+.or-vert{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--gray-400);font-size:11.5px;font-weight:700;letter-spacing:.07em}
+.or-vert::before,.or-vert::after{content:"";flex:1;width:1px;background:var(--gray-200)}
+.mfa-form{margin-top:2px;gap:10px}
+.mfa-form .field{gap:4px}
+.mfa-form .field>input{height:45px}
+.mfa-form .field label{font-size:13px}
+.mfa-form .btn{height:45px;font-size:15px}
+.field label .opt{color:var(--gray-400);font-weight:400}
+/* chevron on each chooser card → signals it opens a page */
+.mfa-card-sm .mfa-chev{margin-left:auto;flex:0 0 16px;width:16px;height:16px;color:var(--gray-400)}
+.mfa-card-sm:hover .mfa-chev{color:var(--gray-600)}
+/* the authenticator page is content-heavy — top-align so the title never scrolls off */
+.auth-pane.pane-top{justify-content:flex-start;padding-top:72px;padding-bottom:48px}
+/* pre-application back link sits above the header; on centered pages it floats so it
+   doesn't shift the vertical centering of the header + fields below it */
+.back-top{margin:0 0 16px}
+.auth-pane:not(.pane-top) .back-top{position:absolute;left:0;bottom:100%;margin:0 0 16px}
+/* the chooser centers on header + subheader + options; "Skip for now" floats below */
+.mfa-card-sm:last-of-type{margin-bottom:0}
+.auth-pane:not(.pane-top) .mfa-skip{position:absolute;left:0;top:100%;margin:18px 0 0}
 
 /* welcome: collaborators */
 .collab-card{border:1px solid var(--gray-200);background:var(--gray-25);border-radius:14px;padding:22px 24px;margin-top:14px}
@@ -759,13 +847,26 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
       <div id="authSignup">
         <h1>Open a business account</h1>
-        <p class="auth-sub">Create your account to start the application. Your progress saves as you go.</p>
         <div class="fgrid">
           <div class="row">
             <div class="field"><input id="su-fn" autocomplete="given-name"><label for="su-fn">Legal first name</label><span class="err-dot">!</span></div>
             <div class="field"><input id="su-ln" autocomplete="family-name"><label for="su-ln">Legal last name</label><span class="err-dot">!</span></div>
           </div>
           <div class="field"><input id="su-email" type="email" autocomplete="email"><label for="su-email">Work email</label><span class="err-dot">!</span></div>
+          <div class="field phone-field">
+            <label for="su-phone">Mobile number</label>
+            <div class="phone-combo" id="phoneCombo">
+              <button type="button" class="cc-trigger" id="ccTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Country calling code">
+                <span class="cc-flag" id="ccFlag">&#127464;&#127462;</span><span class="cc-name" id="ccName">Canada</span><span class="cc-dial" id="ccDial">+1</span>
+                <svg class="cc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <input id="su-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(416) 555-5555">
+              <div class="cc-menu hidden" id="ccMenu" role="listbox">
+                <div class="cc-search-wrap"><input type="text" id="ccSearch" class="cc-search" placeholder="Search country or code" autocomplete="off"></div>
+                <div class="cc-list" id="ccList"></div>
+              </div>
+            </div>
+          </div>
           <div class="field"><input id="su-pass" type="password" autocomplete="new-password"><label for="su-pass">Password</label><span class="err-dot">!</span></div>
           <p class="pw-hint" id="pwHint">At least 8 characters</p>
           <button type="button" class="btn-link" id="refToggle" style="padding:4px 0;font-size:13.5px;align-self:flex-start;text-decoration:none;color:var(--brand-600)">+ Add referral code</button>
@@ -793,16 +894,26 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   <div class="auth-media"></div>
 </div>
 
+<!-- ================= PHONE VERIFICATION (mandatory SMS) ================= -->
+<div id="view-sms" class="auth-shell hidden">
+  <div class="auth-pane">
+    <div class="auth-brand"><span class="logo" id="logoSms"></span></div>
+    <div class="auth-inner">
+      <button type="button" class="back-link back-top" id="smsBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
+      <h1>Verify your phone number</h1>
+      <p class="auth-sub">We texted a 6-digit code to <strong id="smsTo">your phone</strong>. Enter it below to keep going.</p>
+      <div id="smsBody"></div>
+    </div>
+  </div>
+  <div class="auth-media"></div>
+</div>
+
 <!-- ================= MFA SETUP (optional) ================= -->
 <div id="view-mfa" class="auth-shell hidden">
   <div class="auth-pane">
     <div class="auth-brand"><span class="logo" id="logoMfa"></span></div>
     <div class="auth-inner">
-      <h1>Add a second step</h1>
-      <p class="auth-sub">Two-step verification protects your account at sign-in.</p>
       <div id="mfaBody"></div>
-      <p class="auth-foot" style="text-align:left;margin-top:18px"><a href="#" id="mfaSkip">Skip for now</a></p>
-      <p id="mfaSkipErr" class="hidden" style="text-align:left;margin-top:8px;color:var(--error-600);font-weight:600;font-size:13px;line-height:1.5">Two-step verification keeps your account secure. Tap &ldquo;Skip anyway&rdquo; to continue without it.</p>
     </div>
   </div>
   <div class="auth-media"></div>
@@ -1445,7 +1556,7 @@ var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',phone:'',website:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',outValue:'',outCount:'',inValue:'',inCount:'',regions:[],docs:[],docScreenFor:'',certify:false};}
 function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],plan:'',billing:'monthly',accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{},mandatoryDocs:[]};}
 function freshSettings(){return {appearance:'system',lang:'en'};}
-function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,planFinal:'',payDone:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
+function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],acctPhone:'',acctPhoneDial:'+1',phoneVerified:false,mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,planFinal:'',payDone:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
 /* Signing officer and control person were merged into a single "Signing officer" role */
 function migrateRoles(s){
   (s.f&&s.f.individuals||[]).forEach(function(p){
@@ -1611,7 +1722,7 @@ function openPermissions(){renderPermissions();$('permOverlay').classList.remove
 function closePermissions(){$('permOverlay').classList.add('hidden');updateChatVisibility();}
 function doSignOut(){
   S.view='auth';persist();
-  ['si-email','si-pass','su-fn','su-ln','su-email','su-pass','su-ref'].forEach(function(id){$(id).value='';});
+  ['si-email','si-pass','su-fn','su-ln','su-email','su-phone','su-pass','su-ref'].forEach(function(id){$(id).value='';});
   document.querySelectorAll('#view-auth .field').forEach(function(f){f.classList.remove('filled','invalid');});
   if($('refWrap')){$('refWrap').classList.add('hidden');$('refToggle').classList.remove('hidden');}
   $('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');
@@ -1622,7 +1733,7 @@ function freshKeepSettings(){var st=S.settings;var ns=freshState();ns.settings=s
 /* keep Create Account / Sign in greyed out until their fields are valid */
 function syncAuthButtons(){
   var b1=$('btnSignup');
-  if(b1)b1.disabled=!($('su-fn').value.trim()&&$('su-ln').value.trim()&&$('su-email').value.indexOf('@')>0&&$('su-pass').value.length>=8);
+  if(b1)b1.disabled=!($('su-fn').value.trim()&&$('su-ln').value.trim()&&$('su-email').value.indexOf('@')>0&&$('su-phone').value.replace(/\D/g,'').length>=7&&$('su-pass').value.length>=8);
   var b2=$('btnSignin');
   if(b2)b2.disabled=!($('si-email').value.indexOf('@')>0&&$('si-pass').value.trim());
 }
@@ -1719,9 +1830,12 @@ function requiredTotal(){
 function show(view){
   S.view=view;persist();
   closeSettingsMenu();
-  ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
+  if(view!=='sms')stopSmsTimer();
+  if(view!=='mfa')stopMfaTimer();
+  ['view-auth','view-sms','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
   if(view==='auth'){$('view-auth').classList.remove('hidden');syncAuthButtons();}
+  else if(view==='sms'){$('view-sms').classList.remove('hidden');renderSms();}
   else if(view==='mfa'){$('view-mfa').classList.remove('hidden');renderMfa();}
   else if(view==='setup'){
     $('view-setup').classList.remove('hidden');
@@ -3159,62 +3273,284 @@ function renderInvStep(step){
   }
 }
 
+/* ============================ country calling-code picker (signup mobile field) ============================ */
+var COUNTRIES=[
+{n:'Afghanistan',c:'AF',d:'+93'},{n:'Albania',c:'AL',d:'+355'},{n:'Algeria',c:'DZ',d:'+213'},{n:'Andorra',c:'AD',d:'+376'},
+{n:'Angola',c:'AO',d:'+244'},{n:'Antigua and Barbuda',c:'AG',d:'+1'},{n:'Argentina',c:'AR',d:'+54'},{n:'Armenia',c:'AM',d:'+374'},
+{n:'Australia',c:'AU',d:'+61'},{n:'Austria',c:'AT',d:'+43'},{n:'Azerbaijan',c:'AZ',d:'+994'},{n:'Bahamas',c:'BS',d:'+1'},
+{n:'Bahrain',c:'BH',d:'+973'},{n:'Bangladesh',c:'BD',d:'+880'},{n:'Barbados',c:'BB',d:'+1'},{n:'Belarus',c:'BY',d:'+375'},
+{n:'Belgium',c:'BE',d:'+32'},{n:'Belize',c:'BZ',d:'+501'},{n:'Benin',c:'BJ',d:'+229'},{n:'Bhutan',c:'BT',d:'+975'},
+{n:'Bolivia',c:'BO',d:'+591'},{n:'Bosnia and Herzegovina',c:'BA',d:'+387'},{n:'Botswana',c:'BW',d:'+267'},{n:'Brazil',c:'BR',d:'+55'},
+{n:'Brunei',c:'BN',d:'+673'},{n:'Bulgaria',c:'BG',d:'+359'},{n:'Burkina Faso',c:'BF',d:'+226'},{n:'Burundi',c:'BI',d:'+257'},
+{n:'Cambodia',c:'KH',d:'+855'},{n:'Cameroon',c:'CM',d:'+237'},{n:'Canada',c:'CA',d:'+1'},{n:'Cape Verde',c:'CV',d:'+238'},
+{n:'Central African Republic',c:'CF',d:'+236'},{n:'Chad',c:'TD',d:'+235'},{n:'Chile',c:'CL',d:'+56'},{n:'China',c:'CN',d:'+86'},
+{n:'Colombia',c:'CO',d:'+57'},{n:'Comoros',c:'KM',d:'+269'},{n:'Congo (Brazzaville)',c:'CG',d:'+242'},{n:'Congo (Kinshasa)',c:'CD',d:'+243'},
+{n:'Costa Rica',c:'CR',d:'+506'},{n:'Côte d\'Ivoire',c:'CI',d:'+225'},{n:'Croatia',c:'HR',d:'+385'},{n:'Cuba',c:'CU',d:'+53'},
+{n:'Cyprus',c:'CY',d:'+357'},{n:'Czechia',c:'CZ',d:'+420'},{n:'Denmark',c:'DK',d:'+45'},{n:'Djibouti',c:'DJ',d:'+253'},
+{n:'Dominica',c:'DM',d:'+1'},{n:'Dominican Republic',c:'DO',d:'+1'},{n:'Ecuador',c:'EC',d:'+593'},{n:'Egypt',c:'EG',d:'+20'},
+{n:'El Salvador',c:'SV',d:'+503'},{n:'Equatorial Guinea',c:'GQ',d:'+240'},{n:'Eritrea',c:'ER',d:'+291'},{n:'Estonia',c:'EE',d:'+372'},
+{n:'Eswatini',c:'SZ',d:'+268'},{n:'Ethiopia',c:'ET',d:'+251'},{n:'Fiji',c:'FJ',d:'+679'},{n:'Finland',c:'FI',d:'+358'},
+{n:'France',c:'FR',d:'+33'},{n:'Gabon',c:'GA',d:'+241'},{n:'Gambia',c:'GM',d:'+220'},{n:'Georgia',c:'GE',d:'+995'},
+{n:'Germany',c:'DE',d:'+49'},{n:'Ghana',c:'GH',d:'+233'},{n:'Greece',c:'GR',d:'+30'},{n:'Grenada',c:'GD',d:'+1'},
+{n:'Guatemala',c:'GT',d:'+502'},{n:'Guinea',c:'GN',d:'+224'},{n:'Guinea-Bissau',c:'GW',d:'+245'},{n:'Guyana',c:'GY',d:'+592'},
+{n:'Haiti',c:'HT',d:'+509'},{n:'Honduras',c:'HN',d:'+504'},{n:'Hong Kong',c:'HK',d:'+852'},{n:'Hungary',c:'HU',d:'+36'},
+{n:'Iceland',c:'IS',d:'+354'},{n:'India',c:'IN',d:'+91'},{n:'Indonesia',c:'ID',d:'+62'},{n:'Iran',c:'IR',d:'+98'},
+{n:'Iraq',c:'IQ',d:'+964'},{n:'Ireland',c:'IE',d:'+353'},{n:'Israel',c:'IL',d:'+972'},{n:'Italy',c:'IT',d:'+39'},
+{n:'Jamaica',c:'JM',d:'+1'},{n:'Japan',c:'JP',d:'+81'},{n:'Jordan',c:'JO',d:'+962'},{n:'Kazakhstan',c:'KZ',d:'+7'},
+{n:'Kenya',c:'KE',d:'+254'},{n:'Kiribati',c:'KI',d:'+686'},{n:'Kuwait',c:'KW',d:'+965'},{n:'Kyrgyzstan',c:'KG',d:'+996'},
+{n:'Laos',c:'LA',d:'+856'},{n:'Latvia',c:'LV',d:'+371'},{n:'Lebanon',c:'LB',d:'+961'},{n:'Lesotho',c:'LS',d:'+266'},
+{n:'Liberia',c:'LR',d:'+231'},{n:'Libya',c:'LY',d:'+218'},{n:'Liechtenstein',c:'LI',d:'+423'},{n:'Lithuania',c:'LT',d:'+370'},
+{n:'Luxembourg',c:'LU',d:'+352'},{n:'Macau',c:'MO',d:'+853'},{n:'Madagascar',c:'MG',d:'+261'},{n:'Malawi',c:'MW',d:'+265'},
+{n:'Malaysia',c:'MY',d:'+60'},{n:'Maldives',c:'MV',d:'+960'},{n:'Mali',c:'ML',d:'+223'},{n:'Malta',c:'MT',d:'+356'},
+{n:'Marshall Islands',c:'MH',d:'+692'},{n:'Mauritania',c:'MR',d:'+222'},{n:'Mauritius',c:'MU',d:'+230'},{n:'Mexico',c:'MX',d:'+52'},
+{n:'Micronesia',c:'FM',d:'+691'},{n:'Moldova',c:'MD',d:'+373'},{n:'Monaco',c:'MC',d:'+377'},{n:'Mongolia',c:'MN',d:'+976'},
+{n:'Montenegro',c:'ME',d:'+382'},{n:'Morocco',c:'MA',d:'+212'},{n:'Mozambique',c:'MZ',d:'+258'},{n:'Myanmar',c:'MM',d:'+95'},
+{n:'Namibia',c:'NA',d:'+264'},{n:'Nauru',c:'NR',d:'+674'},{n:'Nepal',c:'NP',d:'+977'},{n:'Netherlands',c:'NL',d:'+31'},
+{n:'New Zealand',c:'NZ',d:'+64'},{n:'Nicaragua',c:'NI',d:'+505'},{n:'Niger',c:'NE',d:'+227'},{n:'Nigeria',c:'NG',d:'+234'},
+{n:'North Korea',c:'KP',d:'+850'},{n:'North Macedonia',c:'MK',d:'+389'},{n:'Norway',c:'NO',d:'+47'},{n:'Oman',c:'OM',d:'+968'},
+{n:'Pakistan',c:'PK',d:'+92'},{n:'Palau',c:'PW',d:'+680'},{n:'Palestine',c:'PS',d:'+970'},{n:'Panama',c:'PA',d:'+507'},
+{n:'Papua New Guinea',c:'PG',d:'+675'},{n:'Paraguay',c:'PY',d:'+595'},{n:'Peru',c:'PE',d:'+51'},{n:'Philippines',c:'PH',d:'+63'},
+{n:'Poland',c:'PL',d:'+48'},{n:'Portugal',c:'PT',d:'+351'},{n:'Qatar',c:'QA',d:'+974'},{n:'Romania',c:'RO',d:'+40'},
+{n:'Russia',c:'RU',d:'+7'},{n:'Rwanda',c:'RW',d:'+250'},{n:'Saint Kitts and Nevis',c:'KN',d:'+1'},{n:'Saint Lucia',c:'LC',d:'+1'},
+{n:'Saint Vincent and the Grenadines',c:'VC',d:'+1'},{n:'Samoa',c:'WS',d:'+685'},{n:'San Marino',c:'SM',d:'+378'},{n:'Sao Tome and Principe',c:'ST',d:'+239'},
+{n:'Saudi Arabia',c:'SA',d:'+966'},{n:'Senegal',c:'SN',d:'+221'},{n:'Serbia',c:'RS',d:'+381'},{n:'Seychelles',c:'SC',d:'+248'},
+{n:'Sierra Leone',c:'SL',d:'+232'},{n:'Singapore',c:'SG',d:'+65'},{n:'Slovakia',c:'SK',d:'+421'},{n:'Slovenia',c:'SI',d:'+386'},
+{n:'Solomon Islands',c:'SB',d:'+677'},{n:'Somalia',c:'SO',d:'+252'},{n:'South Africa',c:'ZA',d:'+27'},{n:'South Korea',c:'KR',d:'+82'},
+{n:'South Sudan',c:'SS',d:'+211'},{n:'Spain',c:'ES',d:'+34'},{n:'Sri Lanka',c:'LK',d:'+94'},{n:'Sudan',c:'SD',d:'+249'},
+{n:'Suriname',c:'SR',d:'+597'},{n:'Sweden',c:'SE',d:'+46'},{n:'Switzerland',c:'CH',d:'+41'},{n:'Syria',c:'SY',d:'+963'},
+{n:'Taiwan',c:'TW',d:'+886'},{n:'Tajikistan',c:'TJ',d:'+992'},{n:'Tanzania',c:'TZ',d:'+255'},{n:'Thailand',c:'TH',d:'+66'},
+{n:'Timor-Leste',c:'TL',d:'+670'},{n:'Togo',c:'TG',d:'+228'},{n:'Tonga',c:'TO',d:'+676'},{n:'Trinidad and Tobago',c:'TT',d:'+1'},
+{n:'Tunisia',c:'TN',d:'+216'},{n:'Turkey',c:'TR',d:'+90'},{n:'Turkmenistan',c:'TM',d:'+993'},{n:'Tuvalu',c:'TV',d:'+688'},
+{n:'Uganda',c:'UG',d:'+256'},{n:'Ukraine',c:'UA',d:'+380'},{n:'United Arab Emirates',c:'AE',d:'+971'},{n:'United Kingdom',c:'GB',d:'+44'},
+{n:'United States',c:'US',d:'+1'},{n:'Uruguay',c:'UY',d:'+598'},{n:'Uzbekistan',c:'UZ',d:'+998'},{n:'Vanuatu',c:'VU',d:'+678'},
+{n:'Vatican City',c:'VA',d:'+379'},{n:'Venezuela',c:'VE',d:'+58'},{n:'Vietnam',c:'VN',d:'+84'},{n:'Yemen',c:'YE',d:'+967'},
+{n:'Zambia',c:'ZM',d:'+260'},{n:'Zimbabwe',c:'ZW',d:'+263'}
+].sort(function(a,b){return a.n.localeCompare(b.n);});
+function flagOf(cc){return String(cc||'').toUpperCase().replace(/[A-Z]/g,function(ch){return String.fromCodePoint(127397+ch.charCodeAt(0));});}
+var ccOpen=false,ccSel=null;
+function buildCcList(filter){
+  var list=$('ccList');if(!list)return;
+  var q=(filter||'').trim().toLowerCase(),qd=q.replace(/^\+/,'');
+  var items=COUNTRIES.filter(function(o){
+    if(!q)return true;
+    return o.n.toLowerCase().indexOf(q)>=0||o.d.replace('+','').indexOf(qd)===0;
+  });
+  list.innerHTML=items.length?items.map(function(o){
+    return '<button type="button" class="cc-opt'+(ccSel&&ccSel.c===o.c?' sel':'')+'" data-c="'+o.c+'" data-d="'+esc(o.d)+'" role="option"><span class="cc-opt-flag">'+flagOf(o.c)+'</span><span class="cc-opt-name">'+esc(o.n)+'</span><span class="cc-opt-dial">'+esc(o.d)+'</span></button>';
+  }).join(''):'<div class="cc-empty">No matching country</div>';
+  list.querySelectorAll('.cc-opt').forEach(function(b){b.onclick=function(){selectCc(b.dataset.c,b.dataset.d);};});
+}
+function selectCc(c,d){
+  var o=COUNTRIES.filter(function(x){return x.c===c;})[0];
+  ccSel={c:c,d:d};
+  if($('ccFlag'))$('ccFlag').textContent=flagOf(c);
+  if($('ccName'))$('ccName').textContent=o?o.n:'';
+  if($('ccDial'))$('ccDial').textContent=d;
+  S.acctPhoneDial=d;
+  closeCc();
+  if($('su-phone'))$('su-phone').focus();
+}
+function openCc(){
+  ccOpen=true;$('ccMenu').classList.remove('hidden');$('ccTrigger').setAttribute('aria-expanded','true');
+  $('ccSearch').value='';buildCcList('');
+  var sel=$('ccList').querySelector('.cc-opt.sel');if(sel)sel.scrollIntoView({block:'center'});
+  setTimeout(function(){$('ccSearch').focus();},0);
+}
+function closeCc(){ccOpen=false;if($('ccMenu'))$('ccMenu').classList.add('hidden');if($('ccTrigger'))$('ccTrigger').setAttribute('aria-expanded','false');}
+function setupCountryPicker(){
+  var t=$('ccTrigger');if(!t)return;
+  var def=COUNTRIES.filter(function(o){return o.c==='CA';})[0]||{n:'Canada',c:'CA',d:'+1'};
+  ccSel={c:def.c,d:def.d};
+  $('ccFlag').textContent=flagOf(def.c);if($('ccName'))$('ccName').textContent=def.n;$('ccDial').textContent=def.d;
+  t.onclick=function(e){e.stopPropagation();ccOpen?closeCc():openCc();};
+  $('ccSearch').addEventListener('input',function(){buildCcList(this.value);});
+  $('ccSearch').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();var f=$('ccList').querySelector('.cc-opt');if(f)f.click();}});
+  $('ccMenu').addEventListener('click',function(e){e.stopPropagation();});
+  document.addEventListener('click',function(){if(ccOpen)closeCc();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ccOpen)closeCc();});
+}
+
+/* ============================ phone verification (mandatory SMS, before MFA) ============================ */
+var smsTimer=null,smsLeft=0,smsVerifying=false;
+var SMS_WAIT=30;
+function stopSmsTimer(){if(smsTimer){clearInterval(smsTimer);smsTimer=null;}}
+function fmtAcctPhone(v){
+  var dial=S.acctPhoneDial||'+1';
+  var d=String(v||'').replace(/\D/g,'');
+  if(dial==='+1'){
+    if(d.length===11&&d.charAt(0)==='1')d=d.slice(1);
+    if(d.length===10)return '+1 ('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6);
+  }
+  return d?(dial+' '+d):'your phone';
+}
+function setResend(label,disabled){var b=$('smsResendBtn');if(!b)return;b.textContent=label;b.disabled=disabled;}
+function fmtLeft(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);}
+function tickSms(){
+  var b=$('smsResendBtn');if(!b){stopSmsTimer();return;}
+  smsLeft--;
+  if(smsLeft>0){setResend('Resend in '+fmtLeft(smsLeft),true);}
+  else{setResend('Resend code',false);stopSmsTimer();}
+}
+function startSmsCountdown(){
+  stopSmsTimer();
+  smsLeft=SMS_WAIT;
+  setResend('Resend in '+fmtLeft(smsLeft),true);
+  smsTimer=setInterval(tickSms,1000);
+}
+function renderSms(){
+  smsVerifying=false;
+  $('smsTo').textContent=fmtAcctPhone(S.acctPhone);
+  var body=$('smsBody');if(!body)return;
+  var codeRow='<div class="code-row sm" id="smsCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>';
+  body.innerHTML=codeRow+
+    '<div class="sms-resend"><span>Didn&rsquo;t get a code?</span> <button type="button" id="smsResendBtn" disabled>Resend code</button></div>'+
+    '<div class="sms-status" id="smsStatus"></div>';
+  wireCodeRow($('smsCode'),function(ok){if(ok&&!smsVerifying)verifySmsCode();});
+  $('smsBack').onclick=function(){stopSmsTimer();show('auth');};
+  $('smsResendBtn').onclick=function(){
+    if(this.disabled)return;
+    $('smsCode').querySelectorAll('input').forEach(function(i){i.value='';i.disabled=false;});
+    $('smsCode').querySelector('input').focus();
+    var st=$('smsStatus');st.className='sms-status ok';st.textContent='A new code is on its way.';
+    smsVerifying=false;
+    startSmsCountdown();
+  };
+  startSmsCountdown();
+}
+/* auto-check the code the moment 6 digits are in — no button to press */
+function verifySmsCode(){
+  smsVerifying=true;
+  $('smsCode').querySelectorAll('input').forEach(function(i){i.disabled=true;});
+  var st=$('smsStatus');st.className='sms-status';st.innerHTML='<span class="spinner"></span> Verifying&hellip;';
+  setTimeout(function(){
+    /* prototype: any 6-digit code passes the check */
+    st.className='sms-status ok';
+    st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verified';
+    S.phoneVerified=true;persist();
+    setTimeout(function(){stopSmsTimer();show('mfa');},650);
+  },1000);
+}
+
 /* ============================ MFA setup (optional, after sign-up) ============================ */
 var mfaSent=false;
-function mfaFinish(){S.verified=true;S.page='welcome';save();show('app');}
+/* resend countdown for the email two-step setup (reuses SMS_WAIT/fmtLeft) */
+var mfaTimer=null,mfaLeft=0;
+function stopMfaTimer(){if(mfaTimer){clearInterval(mfaTimer);mfaTimer=null;}}
+function setMfaResend(label,disabled){var b=$('mfaResendBtn');if(!b)return;b.textContent=label;b.disabled=disabled;}
+function tickMfa(){var b=$('mfaResendBtn');if(!b){stopMfaTimer();return;}mfaLeft--;if(mfaLeft>0)setMfaResend('Resend in '+fmtLeft(mfaLeft),true);else{setMfaResend('Resend code',false);stopMfaTimer();}}
+function startMfaCountdown(){stopMfaTimer();mfaLeft=SMS_WAIT;setMfaResend('Resend in '+fmtLeft(mfaLeft),true);mfaTimer=setInterval(tickMfa,1000);}
+/* deterministic QR-code placeholder for authenticator-app setup */
+function qrSvg(seed){
+  var N=21,c=5,pad=6,size=N*c+pad*2,s=String(seed||'loop2fa');
+  function isFinder(i,j){return (i<7&&j<7)||(i>=N-7&&j<7)||(i<7&&j>=N-7);}
+  var r='',h=2166136261;
+  for(var i=0;i<N;i++)for(var j=0;j<N;j++){
+    if(isFinder(i,j))continue;
+    h=((h^(i*131+j*17+s.charCodeAt((i*j+j)%s.length)))*16777619)>>>0;
+    if((h&7)<3)r+='<rect x="'+(pad+i*c)+'" y="'+(pad+j*c)+'" width="'+c+'" height="'+c+'"/>';
+  }
+  function finder(ox,oy){var x=pad+ox*c,y=pad+oy*c;return '<rect x="'+x+'" y="'+y+'" width="'+(7*c)+'" height="'+(7*c)+'"/><rect x="'+(x+c)+'" y="'+(y+c)+'" width="'+(5*c)+'" height="'+(5*c)+'" fill="#fff"/><rect x="'+(x+2*c)+'" y="'+(y+2*c)+'" width="'+(3*c)+'" height="'+(3*c)+'"/>';}
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg" fill="#011710"><rect width="'+size+'" height="'+size+'" fill="#fff"/>'+r+finder(0,0)+finder(N-7,0)+finder(0,N-7)+'</svg>';
+}
+var MFA_SECRET='LOOP K4F2 9XQ7 ZM3T';
+function mfaFinish(){stopMfaTimer();S.verified=true;S.page='welcome';save();show('app');}
+var mfaVerifying=false;
+function backLink(){return '<button type="button" class="back-link back-top" id="mfaBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>';}
+function wireMfaBack(){var b=$('mfaBack');if(b)b.onclick=function(){stopMfaTimer();S.mfaMethod='';mfaSent=false;mfaVerifying=false;persist();renderMfa();};}
+/* router: the chooser and each method now live on their own page within view-mfa */
 function renderMfa(){
   var body=$('mfaBody');if(!body)return;
-  /* reset the skip-confirmation warning each time the step is shown */
-  var sk=$('mfaSkip'),ske=$('mfaSkipErr');
-  if(sk)sk.textContent='Skip for now';
-  if(ske)ske.classList.add('hidden');
-  if(S.mfaEnabled){
-    var m=S.mfaMethod,label=m==='passkey'?'a passkey':m==='sms'?('text codes to '+esc(S.mfaPhone||'your phone')):('email codes to '+esc(S.email));
-    body.innerHTML='<div class="mfa-ok"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Two-step verification is on using '+label+'.</div>'+
-      '<button class="btn btn-primary" id="mfaContinue">Continue to your application &#8594;</button>';
-    $('mfaContinue').onclick=mfaFinish;
-    return;
-  }
-  var KEYICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>';
-  var PHONEICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
-  var MAILICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>';
-  var cards=[
-    ['passkey','Passkey',KEYICON],
-    ['sms','Text message',PHONEICON],
-    ['email','Email code',MAILICON]
-  ];
-  body.innerHTML=cards.map(function(c){
-    return '<div class="mfa-card mfa-card-sm'+(S.mfaMethod===c[0]?' on':'')+'" data-mfa="'+c[0]+'"><span class="mic">'+c[2]+'</span><div class="mt">'+c[1]+'</div></div>';
-  }).join('')+'<div id="mfaSetup"></div>';
-  body.querySelectorAll('[data-mfa]').forEach(function(card){
-    card.onclick=function(){S.mfaMethod=card.dataset.mfa;mfaSent=false;persist();renderMfa();};
-  });
-  renderMfaSetup();
+  stopMfaTimer();
+  var pane=$('view-mfa').querySelector('.auth-pane');
+  if(pane)pane.classList.toggle('pane-top',!S.mfaEnabled&&S.mfaMethod==='authenticator');
+  if(S.mfaEnabled)renderMfaDone(body);
+  else if(S.mfaMethod==='passkey')renderMfaPasskey(body);
+  else if(S.mfaMethod==='authenticator')renderMfaAuth(body);
+  else if(S.mfaMethod==='email')renderMfaEmail(body);
+  else renderMfaChooser(body);
 }
-function renderMfaSetup(){
-  var box=$('mfaSetup');if(!box)return;
-  var m=S.mfaMethod;if(!m){box.innerHTML='';return;}
-  var codeRow='<div class="code-row sm" id="mfaCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>';
-  if(m==='passkey'){
-    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 12px">Your device will ask for Face ID, your fingerprint, or a security key.</p><button class="btn btn-primary btn-sm" id="mfaPasskey">Create a passkey</button></div>';
-    $('mfaPasskey').onclick=function(){
-      var b=$('mfaPasskey');b.disabled=true;b.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Waiting for your device&hellip;';
-      setTimeout(function(){S.mfaEnabled=true;persist();renderMfa();},1400);
-    };
-  }else if(m==='sms'&&!mfaSent){
-    box.innerHTML='<div class="mfa-setup"><div class="row" style="grid-template-columns:120px 1fr"><div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div><div class="field'+(S.mfaPhone?' filled':'')+'"><input id="mfaPhone" type="tel" inputmode="tel" value="'+esc(S.mfaPhone||'')+'"><label for="mfaPhone">Mobile number</label></div></div><button class="btn btn-primary btn-sm" id="mfaSend" style="margin-top:12px">Text me a code</button></div>';
-    var ph=$('mfaPhone');
-    ph.addEventListener('input',function(){S.mfaPhone=ph.value;ph.closest('.field').classList.toggle('filled',!!ph.value);ph.closest('.field').classList.remove('invalid');persist();});
-    $('mfaSend').onclick=function(){if(!ph.value){ph.closest('.field').classList.add('invalid');return;}mfaSent=true;renderMfaSetup();};
-  }else if(m==='email'&&!mfaSent){
-    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 12px">We&rsquo;ll email a 6-digit code to <strong>'+esc(S.email)+'</strong>.</p><button class="btn btn-primary btn-sm" id="mfaSend">Send code</button></div>';
-    $('mfaSend').onclick=function(){mfaSent=true;renderMfaSetup();};
-  }else{
-    var to=m==='sms'?esc(S.mfaPhone):esc(S.email);
-    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 8px">Enter the 6-digit code we sent to '+to+'.</p>'+codeRow+'<button class="btn btn-primary btn-sm" id="mfaVerify" disabled style="margin-top:12px">Verify and enable</button></div>';
-    wireCodeRow($('mfaCode'),function(ok){$('mfaVerify').disabled=!ok;});
-    $('mfaVerify').onclick=function(){S.mfaEnabled=true;persist();renderMfa();};
-  }
+function renderMfaDone(body){
+  var m=S.mfaMethod,label=m==='passkey'?'a passkey':m==='authenticator'?'an authenticator app':('email codes to '+esc(S.email));
+  body.innerHTML='<h1>You&rsquo;re all set</h1>'+
+    '<div class="mfa-ok" style="margin-top:18px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Two-step verification is on using '+label+'.</div>'+
+    '<button class="btn btn-primary" id="mfaContinue">Continue to your application &#8594;</button>';
+  $('mfaContinue').onclick=mfaFinish;
+}
+function renderMfaChooser(body){
+  var KEYICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>';
+  var MAILICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>';
+  var AUTHICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3"/><path d="M21 14v7h-7"/></svg>';
+  var CHEV='<svg class="mfa-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+  var cards=[['passkey','Continue with Passkey',KEYICON],['authenticator','Continue with Authenticator',AUTHICON],['email','Continue with Email',MAILICON]];
+  body.innerHTML='<h1>Add a second step</h1>'+
+    '<p class="auth-sub">Two-step verification protects your account at sign-in.</p>'+
+    cards.map(function(c){return '<div class="mfa-card mfa-card-sm" data-mfa="'+c[0]+'"><span class="mic">'+c[2]+'</span><div class="mt">'+c[1]+'</div>'+CHEV+'</div>';}).join('')+
+    '<p class="auth-foot mfa-skip" style="text-align:left"><a href="#" id="mfaSkip">Skip for now</a></p>';
+  body.querySelectorAll('[data-mfa]').forEach(function(card){card.onclick=function(){S.mfaMethod=card.dataset.mfa;mfaSent=false;mfaVerifying=false;persist();renderMfa();};});
+  $('mfaSkip').onclick=function(e){e.preventDefault();mfaFinish();};
+}
+function renderMfaPasskey(body){
+  body.innerHTML=backLink()+'<h1>Set up a passkey</h1>'+
+    '<p class="auth-sub">Use Face ID, your fingerprint, or a security key to sign in.</p>'+
+    '<button class="btn btn-primary" id="mfaPasskey">Create a passkey</button>'+
+    '<div class="sms-status" id="mfaStatus"></div>';
+  $('mfaPasskey').onclick=function(){
+    var b=$('mfaPasskey');b.disabled=true;b.innerHTML='<span class="spinner" style="width:15px;height:15px;border-width:2px"></span> Waiting for your device&hellip;';
+    setTimeout(function(){S.mfaEnabled=true;persist();renderMfa();},1400);
+  };
+  wireMfaBack();
+}
+function renderMfaEmail(body){
+  mfaVerifying=false;
+  body.innerHTML=backLink()+'<h1>Verify your email</h1>'+
+    '<p class="auth-sub">We emailed a 6-digit code to <strong>'+esc(S.email)+'</strong>. Enter it below to keep going.</p>'+
+    '<div class="code-row sm" id="mfaCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>'+
+    '<div class="sms-resend"><span>Didn&rsquo;t get the email?</span> <button type="button" id="mfaResendBtn" disabled>Resend code</button></div>'+
+    '<div class="sms-status" id="mfaStatus"></div>';
+  wireCodeRow($('mfaCode'),function(ok){if(ok&&!mfaVerifying)verifyMfaEmail();});
+  $('mfaResendBtn').onclick=function(){
+    if(this.disabled)return;
+    $('mfaCode').querySelectorAll('input').forEach(function(i){i.value='';i.disabled=false;});
+    $('mfaCode').querySelector('input').focus();
+    var st=$('mfaStatus');st.className='sms-status ok';st.textContent='A new code is on its way.';
+    mfaVerifying=false;startMfaCountdown();
+  };
+  wireMfaBack();
+  startMfaCountdown();
+}
+/* email code mirrors the phone screen: auto-check on the 6th digit, no button */
+function verifyMfaEmail(){
+  mfaVerifying=true;
+  $('mfaCode').querySelectorAll('input').forEach(function(i){i.disabled=true;});
+  var st=$('mfaStatus');st.className='sms-status';st.innerHTML='<span class="spinner"></span> Verifying&hellip;';
+  setTimeout(function(){
+    st.className='sms-status ok';st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verified';
+    stopMfaTimer();S.mfaEnabled=true;persist();
+    setTimeout(function(){renderMfa();},650);
+  },1000);
+}
+function renderMfaAuth(body){
+  body.innerHTML=backLink()+'<h1>Set up an authenticator app</h1>'+
+    '<ol class="auth-steps">'+
+      '<li>Install an authenticator app on your phone:'+
+        '<ul class="auth-apps"><li>Google Authenticator</li><li>Microsoft Authenticator</li><li>1Password or Authy</li></ul></li>'+
+      '<li>Use the app to scan this QR code, or enter the setup key:'+
+        '<div class="auth-2col">'+
+          '<span class="auth-qr">'+qrSvg(S.email)+'</span>'+
+          '<div class="or-vert">OR</div>'+
+          '<div class="auth-secret"><span class="t">Setup key</span><code>'+esc(MFA_SECRET)+'</code></div>'+
+        '</div></li>'+
+      '<li>Enter the 6-digit code your app shows.</li>'+
+    '</ol>'+
+    '<div class="fgrid mfa-form">'+
+      '<div class="field"><label for="mfaOtp">One-time code</label><input id="mfaOtp" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div>'+
+      '<div class="field"><label for="mfaDev">Device name <span class="opt">(optional)</span></label><input id="mfaDev" placeholder="e.g. My iPhone"></div>'+
+      '<button class="btn btn-primary" id="mfaVerify" disabled>Verify and enable</button>'+
+    '</div>';
+  var otp=$('mfaOtp');
+  otp.addEventListener('input',function(){otp.value=otp.value.replace(/\D/g,'').slice(0,6);$('mfaVerify').disabled=otp.value.length<6;});
+  $('mfaVerify').onclick=function(){if($('mfaOtp').value.length<6)return;S.mfaEnabled=true;persist();renderMfa();};
+  wireMfaBack();
 }
 
 /* ============================ collaborators (added at the start, view access) ============================ */
@@ -3340,7 +3676,7 @@ function continueFrom(id){
 
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
-  ['logoAuth','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
+  ['logoAuth','logoSms','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
   fillSelect($('f-entityType'),ENTITIES);
   fillSelect($('f-industry'),sortedIndustries());
   fillSelect($('f-rbRelType'),RELTYPES);
@@ -3387,7 +3723,7 @@ document.addEventListener('DOMContentLoaded',function(){
   /* auth */
   $('toSignin').onclick=function(e){e.preventDefault();$('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');syncAuthButtons();};
   $('toSignup').onclick=function(e){e.preventDefault();$('authSignin').classList.add('hidden');$('authSignup').classList.remove('hidden');syncAuthButtons();};
-  ['su-fn','su-ln','su-email','su-pass','si-email','si-pass'].forEach(function(id){
+  ['su-fn','su-ln','su-email','su-phone','su-pass','si-email','si-pass'].forEach(function(id){
     var inp=$(id);
     inp.addEventListener('input',function(){
       inp.closest('.field').classList.toggle('filled',!!inp.value);
@@ -3396,6 +3732,7 @@ document.addEventListener('DOMContentLoaded',function(){
       syncAuthButtons();
     });
   });
+  setupCountryPicker();
   /* referral code — hidden until the applicant chooses to add one */
   $('refToggle').onclick=function(){
     $('refToggle').classList.add('hidden');
@@ -3406,17 +3743,20 @@ document.addEventListener('DOMContentLoaded',function(){
   /* Continue with Google (simulated) — sign in only */
   $('googleSignin').onclick=function(){S=freshKeepSettings();S.email='you@gmail.com';S.verified=true;S.page='welcome';save();show('app');};
   $('btnSignup').onclick=function(){
-    var fn=$('su-fn'),ln=$('su-ln'),em=$('su-email'),pw=$('su-pass'),ref=$('su-ref').value.trim(),ok=true;
+    var fn=$('su-fn'),ln=$('su-ln'),em=$('su-email'),ph=$('su-phone'),pw=$('su-pass'),ref=$('su-ref').value.trim(),ok=true;
     if(!fn.value){fn.closest('.field').classList.add('invalid');ok=false;}
     if(!ln.value){ln.closest('.field').classList.add('invalid');ok=false;}
     if(!em.value||em.value.indexOf('@')<1){em.closest('.field').classList.add('invalid');ok=false;}
+    if(ph.value.replace(/\D/g,'').length<7){ph.closest('.field').classList.add('invalid');ok=false;}
     if(pw.value.length<8){pw.closest('.field').classList.add('invalid');ok=false;}
     if(!ok)return;
     if(em.value.trim().toLowerCase()!==(S.email||'').toLowerCase()){S=freshKeepSettings();}
     S.email=em.value.trim();S.firstName=fn.value.trim();S.lastName=ln.value.trim();S.verified=false;
     S.referralCode=ref;
+    S.acctPhone=ph.value.trim();S.acctPhoneDial=($('ccDial')?$('ccDial').textContent.trim():'+1')||'+1';S.phoneVerified=false;
     S.mfaMethod='';S.mfaEnabled=false;mfaSent=false;
-    save();show('mfa');
+    /* creating the account immediately fires the mandatory verification text */
+    save();show('sms');
   };
   $('btnSignin').onclick=function(){
     var em=$('si-email'),pw=$('si-pass'),ok=true;
@@ -3433,17 +3773,6 @@ document.addEventListener('DOMContentLoaded',function(){
     }
   };
 
-  /* MFA setup (optional) — skipping surfaces a warning first, then proceeds on confirm */
-  $('mfaSkip').onclick=function(e){
-    e.preventDefault();
-    var err=$('mfaSkipErr');
-    if(err&&err.classList.contains('hidden')){
-      err.classList.remove('hidden');
-      $('mfaSkip').textContent='Skip anyway';
-      return;
-    }
-    mfaFinish();
-  };
 
   /* welcome + continue buttons */
   $('btnStart').onclick=function(){showPage('business');};
@@ -3636,6 +3965,7 @@ document.addEventListener('DOMContentLoaded',function(){
   else if(S.approved)show('approved');
   else if(S.submitted)show('setup');
   else if(S.verified&&S.view==='app')show('app');
+  else if(S.view==='sms'&&S.email)show('sms');
   else if(S.view==='mfa'&&S.email)show('mfa');
   else show('auth');
 });
