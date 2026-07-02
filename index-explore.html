@@ -6,7 +6,7 @@
 <title>Loop | Open a business account</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   /* Loop Design System — Colors/Brand (Figma wT39SoimuAWJsoZZxEE5Sn, node 1525:271581) */
@@ -18,8 +18,9 @@
   --gray-400:#9AA4B2; --gray-500:#697586; --gray-600:#4B5565; --gray-700:#364152; --gray-800:#202939; --gray-900:#121926;
   --error-25:#FFF5F6; --error-50:#FFF1F3; --error-100:#FFE4E8; --error-200:#FECDD6; --error-300:#FEA3B4;
   --error-400:#FD6F8E; --error-500:#F63D68; --error-600:#E31B54; --error-700:#C01048; --error-800:#A11043; --error-900:#89123E;
-  --warn-25:#FFFCF5; --warn-50:#FFFAEB; --warn-100:#FEF0C7; --warn-200:#FEDF89; --warn-300:#FEC84B;
-  --warn-400:#FDB022; --warn-500:#F79009; --warn-600:#DC6803; --warn-700:#B54708; --warn-800:#93370D; --warn-900:#7A2E0E;
+  /* warn is deliberately light grey, not yellow — amber fought the brand green for attention */
+  --warn-25:#FCFCFD; --warn-50:#F8FAFC; --warn-100:#E3E8EF; --warn-200:#CDD5DF; --warn-300:#CDD5DF;
+  --warn-400:#9AA4B2; --warn-500:#697586; --warn-600:#4B5565; --warn-700:#4B5565; --warn-800:#364152; --warn-900:#202939;
   --blue-25:#F5FAFF; --blue-50:#EFF8FF; --blue-100:#D1E9FF; --blue-200:#B2DDFF; --blue-300:#84CAFF;
   --blue-400:#53B1FD; --blue-500:#2E90FA; --blue-600:#1570EF; --blue-700:#175CD3;
   --shadow-overlay:0 0 0 1px rgba(0,0,0,.06),0 12px 16px -4px rgba(0,0,0,.08),0 4px 6px -2px rgba(0,0,0,.03);
@@ -52,30 +53,119 @@ input,select,textarea{font-family:inherit}
 .pw-hint.ok{color:var(--success-700)}
 
 /* split-screen auth (sign in / sign up / MFA): form left, hero image right */
-/* lock the shell to exactly one screen so every auth step (sign in / sign up / MFA)
-   keeps the same 50/50 framing and full-height hero — the form side scrolls
-   internally instead of growing the page when its content is tall */
-.auth-shell{display:flex;height:100vh;height:100dvh;overflow:hidden}
-.auth-pane{flex:1 1 50%;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;padding:96px 48px 56px;overflow-y:auto}
+.auth-shell{display:flex;min-height:100vh}
+/* intro flow (sign up / sign in / SMS / MFA): vertically center each page's
+   content; top/bottom padding keeps short pages clear of the absolute brand logo
+   and lets tall pages (e.g. sign-up with referral open) scroll instead of clip */
+.auth-pane{flex:1 1 0;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:96px 48px 96px}
 .auth-brand{position:absolute;top:30px;left:40px}
 .auth-brand .logo img{height:30px}
-/* auto margins center the form when it fits, but let it scroll from the top
-   (under the pinned logo) without clipping when the window is short */
-.auth-inner{width:100%;max-width:400px;margin:auto 0}
+.auth-inner{width:100%;max-width:400px;position:relative}
 .auth-inner h1{font-size:27px;font-weight:500;letter-spacing:-.4px;margin-bottom:6px}
-.auth-media{flex:1 1 50%;min-width:0;background:#011710 url('loop-hero-background.png') center/cover no-repeat}
-#view-auth .auth-media,#view-mfa .auth-media{background-image:url('Gradient6.png');background-position:center}
+/* side panel: floating rounded photo carousel — three testimonial slides crossfade
+   on a fixed timer; viewport height with a 20px inset, 1024:1440 ratio */
+.auth-media{flex:0 0 auto;align-self:center;height:calc(100vh - 40px);aspect-ratio:1024/1440;margin:20px;border-radius:28px;position:relative;overflow:hidden}
+.am-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1s ease}
+.am-slide.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.am-slide{transition:none}}
+/* mandatory SMS verification */
+.sms-resend{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--gray-500);margin:18px 0 0}
+.sms-resend button{background:none;border:none;padding:0;font-size:13.5px;font-weight:600;color:var(--brand-600)}
+.sms-resend button:disabled{color:var(--gray-400);font-weight:400;cursor:default}
+.sms-status{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;margin-top:14px;min-height:20px}
+.sms-status.ok{color:var(--success-700)}
+.sms-status.err{color:var(--error-600)}
+.sms-status .spinner{width:15px;height:15px;border-width:2px}
+.sms-back,.back-link{display:inline-flex;align-items:center;gap:6px;margin-top:20px;background:none;border:none;padding:6px 0;font-size:13.5px;font-weight:600;color:var(--gray-500);transition:color .14s}
+.sms-back:hover,.back-link:hover{color:var(--gray-800)}
+.sms-back svg,.back-link svg{width:15px;height:15px}
 .btn.btn-google{width:100%;background:#fff;color:var(--gray-800);border:1px solid var(--gray-300)}
 .btn.btn-google:hover{background:var(--gray-50);border-color:var(--gray-400)}
 .btn-google svg{flex:0 0 18px}
 .or-divider.or-auth{margin:20px 0}
+/* authenticator-app setup: QR + secret key + numbered steps */
+.auth-qr{display:inline-block;line-height:0;background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:8px}
+.auth-secret{display:flex;flex-direction:column;gap:5px;min-width:0}
+.auth-secret .t{font-size:12px;color:var(--gray-500)}
+.auth-secret code{display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;letter-spacing:1.5px;color:var(--gray-800);background:var(--gray-100);border-radius:6px;padding:7px 9px;word-break:break-all}
+.auth-steps{margin:18px 0 16px;padding-left:20px;display:flex;flex-direction:column;gap:16px;font-size:14px;color:var(--gray-700)}
+.auth-steps>li{padding-left:4px;line-height:1.5}
+.auth-steps>li::marker{color:var(--gray-500);font-weight:700}
+.auth-apps{margin:6px 0 0;padding-left:18px;color:var(--gray-600);font-size:13.5px}
+.auth-apps li{padding:1.5px 0}
+.auth-2col{display:flex;align-items:stretch;gap:14px;margin-top:12px}
+.auth-2col .auth-qr{flex:0 0 auto}
+.auth-2col .auth-secret{flex:1 1 auto;justify-content:center}
+.or-vert{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--gray-400);font-size:11.5px;font-weight:700;letter-spacing:.07em}
+.or-vert::before,.or-vert::after{content:"";flex:1;width:1px;background:var(--gray-200)}
+.fgrid.mfa-form{margin-top:2px;gap:10px}
+.mfa-form .field{gap:4px}
+.mfa-form .field>input{height:45px}
+.mfa-form .field label{font-size:13px}
+.mfa-form .btn{height:45px;font-size:15px}
+.field label .opt{color:var(--gray-400);font-weight:400}
 /* simplified MFA option cards */
 .mfa-card.mfa-card-sm{align-items:center;gap:13px;padding:15px 16px}
 .mfa-card.mfa-card-sm .mic{flex:0 0 20px;width:20px;height:20px;background:none;border-radius:0;color:var(--gray-500)}
 .mfa-card.mfa-card-sm.on .mic{background:none;color:var(--brand-600)}
 .mfa-card.mfa-card-sm .mt{font-size:14.5px}
+.mfa-card-sm .mfa-chev{margin-left:auto;flex:0 0 16px;width:16px;height:16px;color:var(--gray-400)}
+.mfa-card-sm:hover .mfa-chev{color:var(--gray-600)}
+.mfa-card-sm:last-of-type{margin-bottom:0}
+/* the back link is absolutely positioned above the header (and "Skip for now" below
+   the options) so neither shifts the title off the shared top anchor */
+.back-top{margin:0 0 16px}
+.auth-pane .back-top{position:absolute;left:0;bottom:100%;margin:0 0 16px}
+.auth-pane .mfa-skip{position:absolute;left:0;top:100%;margin:18px 0 0}
 [data-theme="dark"] .btn.btn-google{background:var(--gray-100);color:var(--gray-900);border-color:var(--gray-300)}
-@media (max-width:860px){.auth-shell{height:auto;min-height:100vh;min-height:100dvh;overflow:visible}.auth-media{display:none}.auth-pane{flex:1 1 100%;padding:88px 24px 48px;overflow-y:visible}}
+@media (max-width:860px){.auth-media{display:none}.auth-pane{flex:1 1 100%;padding:88px 24px 48px}#view-auth .auth-pane{padding:88px 24px 48px}}
+
+/* === sign-up / sign-in (#view-auth) matched pixel-for-pixel to index-static.html:
+   floating side panel + centered, compact form. Scoped to #view-auth so the SMS
+   and MFA screens keep their existing framing. === */
+#view-auth{min-height:100vh;height:auto;overflow:visible}
+#view-auth .auth-pane{flex:1 1 0;justify-content:center;padding:96px 44px 96px;overflow:visible}
+#view-auth .auth-inner{margin:0;position:relative}
+#view-auth .auth-inner h1{font-size:27px;margin-bottom:3px}
+#view-auth #authSignup h1{margin-bottom:22px}
+#view-auth .auth-sub{font-size:13px;line-height:1.4;margin-bottom:12px}
+#view-auth .fgrid{gap:10px}
+#view-auth .field{gap:4px}
+#view-auth .field label{font-size:13px}
+#view-auth .field>input,#view-auth .field>select{height:45px}
+#view-auth .phone-combo{height:45px}
+#view-auth .btn{height:45px;font-size:15px}
+#view-auth .pw-hint{font-size:12px;margin:-3px 0 0 2px}
+#view-auth .or-divider.or-auth{margin:12px 0}
+#view-auth .auth-foot{margin-top:11px}
+#view-auth .auth-legal{margin-top:8px;font-size:11.5px;line-height:1.4}
+/* combined phone field: country code (left) + divider + number, in one box */
+.phone-combo{position:relative;display:flex;align-items:stretch;height:54px;border:1px solid var(--gray-300);border-radius:10px;background:#fff;transition:border-color .12s,box-shadow .12s}
+.phone-combo:focus-within{border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.12)}
+.phone-field.invalid .phone-combo{border-color:var(--error-600)}
+.cc-trigger{display:flex;align-items:center;gap:6px;height:100%;padding:0 12px;background:none;border:none;border-radius:10px 0 0 10px;color:var(--gray-800);font-size:15px;white-space:nowrap}
+.cc-trigger:hover{background:var(--gray-50)}
+.cc-flag{font-size:18px;line-height:1;flex:0 0 auto}
+.cc-name{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.cc-dial{font-weight:500;color:var(--gray-500);flex:0 0 auto}
+.cc-caret{color:var(--gray-500);flex:0 0 14px;width:14px;height:14px}
+.phone-field .phone-combo>input{flex:1 1 auto;min-width:0;width:100%;height:100%;border:none;border-left:1px solid var(--gray-300);border-radius:0;background:none;box-shadow:none;padding:0 16px;font-size:15px;color:var(--gray-900);appearance:none}
+.phone-field .phone-combo>input:focus{outline:none;border-color:var(--gray-300);box-shadow:none}
+.phone-field.invalid .phone-combo>input{border-left-color:var(--gray-300)}
+.cc-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;display:flex;flex-direction:column;max-height:288px;background:#fff;border:1px solid var(--gray-200);border-radius:12px;box-shadow:var(--shadow-overlay);padding:8px}
+.cc-search-wrap{padding:0 2px 8px}
+.cc-search{width:100%;height:40px;border:1px solid var(--gray-300);border-radius:8px;padding:0 12px;font-size:14px;color:var(--gray-900)}
+.cc-search:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(4,91,63,.12)}
+.cc-list{flex:1 1 auto;overflow-y:auto}
+.cc-opt{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:none;background:none;text-align:left;border-radius:8px;font-size:14px;color:var(--gray-800)}
+.cc-opt:hover{background:var(--brand-25)}
+.cc-opt-flag{font-size:18px;flex:0 0 auto;line-height:1}
+.cc-opt-name{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-opt-dial{color:var(--gray-500);flex:0 0 auto}
+.cc-opt.sel{color:var(--brand-700);font-weight:600}
+.cc-opt.sel .cc-opt-dial{color:var(--brand-600)}
+.cc-empty{padding:14px 10px;font-size:13.5px;color:var(--gray-500);text-align:center}
+[data-theme="dark"] .phone-combo,[data-theme="dark"] .cc-menu,[data-theme="dark"] .cc-search{background:var(--gray-50)}
 
 /* verify code */
 .code-row{display:flex;gap:10px;justify-content:center;margin:26px 0 6px}
@@ -83,6 +173,8 @@ input,select,textarea{font-family:inherit}
 .code-row input:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.14)}
 .code-row.sm input{width:42px;height:50px;font-size:19px}
 .code-row.sm{justify-content:flex-start;margin:16px 0 4px}
+.code-row.err input{border-color:var(--error-600);background:var(--error-25)}
+.code-row.err input:focus{border-color:var(--error-600);box-shadow:0 0 0 4px rgba(227,27,84,.14)}
 
 /* ---------- logo ---------- */
 .logo{display:inline-flex;align-items:center;text-decoration:none}
@@ -105,8 +197,11 @@ input,select,textarea{font-family:inherit}
 .nav-sub button.cur{color:var(--brand-700);font-weight:600;background:var(--brand-25)}
 .nav-sub .mini{margin-left:auto;display:inline-flex;align-items:center}
 .side-spacer{flex:1}
-.save-pill{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--gray-500);padding:8px 12px;border-radius:8px;transition:color .25s}
-.save-pill.flash{color:var(--success-700)}
+/* transient "saved" toast — shown only when the user switches pages (Continue / Back / top nav) */
+.save-toast{position:fixed;top:74px;left:22px;transform:translateY(-6px);display:flex;align-items:center;gap:8px;background:var(--gray-900);color:#fff;font-size:13px;font-weight:600;padding:9px 16px;border-radius:999px;box-shadow:var(--shadow-overlay);z-index:90;opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease}
+.save-toast.show{opacity:1;transform:translateY(0)}
+.save-toast svg{flex:0 0 14px;color:var(--success-500)}
+[data-theme="dark"] .save-toast{background:var(--gray-100);color:var(--gray-900)}
 .userbox{border-top:1px solid var(--gray-200);margin-top:8px;padding:14px 12px 0}
 .userbox .em{font-size:12.5px;color:var(--gray-600);word-break:break-all;margin-bottom:6px}
 .userbox button{background:none;border:none;font-size:13.5px;color:var(--gray-600);padding:0;display:flex;align-items:center;gap:7px}
@@ -148,6 +243,25 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .field.invalid label{color:var(--error-600)}
 .field.invalid .err-dot{display:block}
 .field.invalid .chev{display:none}
+/* inline error message under a field (email / phone) */
+.field .field-err{display:none;order:1;color:var(--error-600);font-size:12.5px;font-weight:500;line-height:1.35}
+.field.invalid .field-err{display:block}
+/* error states in the auth form rely on the red border + inline message, not the "!" dot */
+#view-auth .err-dot{display:none}
+/* invalid auth fields stay red on hover + focus instead of the green accent */
+#view-auth .field.invalid>input:hover:not(:focus):not([readonly]){border-color:var(--error-600);background:var(--error-25)}
+#view-auth .field.invalid>input:focus{border-color:var(--error-600);box-shadow:0 0 0 4px rgba(227,27,84,.14)}
+#view-auth .phone-field.invalid .phone-combo:hover{background:var(--error-25)}
+#view-auth .phone-field.invalid .phone-combo>input:hover:not(:focus){background:transparent}
+#view-auth .phone-field.invalid .phone-combo:focus-within{border-color:var(--error-600);box-shadow:0 0 0 4px rgba(227,27,84,.14)}
+/* password reveal (eye) toggle */
+.field .reveal-btn{position:absolute;right:10px;top:auto;bottom:22px;transform:translateY(50%);display:flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:none;background:none;color:var(--gray-500);cursor:pointer;border-radius:6px;transition:color .12s}
+.field .reveal-btn:hover{color:var(--gray-800)}
+.field .reveal-btn:focus-visible{outline:none;color:var(--brand-600);box-shadow:0 0 0 3px rgba(4,91,63,.18)}
+.field .reveal-btn svg{width:18px;height:18px}
+.field .reveal-btn .eye-off{display:none}
+.field .reveal-btn.revealed .eye-open{display:none}
+.field .reveal-btn.revealed .eye-off{display:block}
 .fixedbox{display:flex;flex-direction:column;justify-content:center;height:54px;border:1px solid var(--gray-300);border-radius:10px;padding:9px 16px}
 .fixedbox .t{font-size:11.5px;color:var(--gray-500)}
 .fixedbox .v{font-size:15px}
@@ -226,8 +340,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .btn-sm{height:44px;font-size:14.5px;padding:0 20px;width:auto}
 .continue-wrap{margin-top:56px;display:flex;gap:12px}
 .btn-back{width:auto;flex:0 0 auto;white-space:nowrap}
-.save-note{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--gray-500);margin-top:14px}
-.save-note svg{flex:0 0 14px;color:var(--success-600)}
 
 /* registry check */
 .reg-panel{border:1px solid var(--gray-200);border-radius:14px;background:#fff;box-shadow:var(--shadow-sm);padding:10px 24px;margin-top:30px}
@@ -314,9 +426,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .gaps{border:1px solid var(--warn-100);background:var(--warn-50);border-radius:12px;padding:18px 20px;margin-top:26px}
 .gaps h4{font-size:14.5px;font-weight:700;color:var(--warn-700);margin-bottom:8px}
 .gaps a{display:block;font-size:13.5px;color:var(--warn-700);padding:3px 0;text-decoration:underline;text-underline-offset:3px}
+.gaps .gaps-toggle{display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:6px 0 0;font-size:13px;font-weight:700;color:var(--warn-700);cursor:pointer}
+.gaps .gaps-toggle svg{transition:transform .18s ease}
+.gaps .gaps-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
 
 /* modal */
-#modalOverlay{position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:90;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal{background:#fff;border-radius:14px;box-shadow:var(--shadow-overlay);width:100%;max-width:480px;overflow:hidden}
 .modal .m-body{padding:30px 32px 26px}
 .modal h3{font-size:20px;font-weight:600;letter-spacing:-.2px;margin-bottom:10px}
@@ -454,9 +568,13 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 /* invite to co-fill (sidebar entry + multi-select panel) */
 .cofill-side{display:flex;align-items:center;gap:9px;width:100%;margin:0 0 8px;padding:10px 12px;border:1px dashed var(--gray-300);border-radius:8px;background:none;font-size:13px;font-weight:600;color:var(--gray-600);text-align:left}
-.cofill-side:hover{border-color:var(--blue-300);color:var(--blue-700);background:var(--blue-25)}
-.cofill-side .cnt{margin-left:auto;background:var(--blue-600);color:#fff;font-size:11px;font-weight:700;border-radius:999px;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
-.cofill-panel{position:fixed;left:calc(var(--rail) + 14px);bottom:18px;width:400px;max-width:calc(100vw - var(--rail) - 28px);max-height:78vh;display:flex;flex-direction:column;background:#fff;border:1px solid var(--gray-200);border-radius:16px;box-shadow:var(--shadow-overlay);z-index:85;overflow:hidden}
+.cofill-side:hover{border-color:var(--brand-300);color:var(--brand-700);background:var(--brand-25)}
+.cofill-side .cnt{margin-left:auto;background:var(--brand-500);color:#fff;font-size:11px;font-weight:700;border-radius:999px;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+/* anchored above the "Add a collaborator" button in the bottom-left corner; unrolls upward from it */
+.cofill-panel{position:fixed;left:22px;bottom:64px;width:400px;max-width:calc(100vw - 44px);max-height:min(78vh,calc(100vh - 88px));display:flex;flex-direction:column;background:#fff;border:1px solid var(--gray-200);border-radius:16px;box-shadow:var(--shadow-overlay);z-index:85;overflow:hidden;transform-origin:0 100%}
+.cofill-panel:not(.hidden){animation:cofill-unroll .28s cubic-bezier(.16,1,.3,1)}
+@keyframes cofill-unroll{from{opacity:0;transform:translateY(14px) scaleY(.88)}to{opacity:1;transform:translateY(0) scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.cofill-panel:not(.hidden){animation:none}}
 .cofill-panel .cp-head{padding:20px 22px 14px;border-bottom:1px solid var(--gray-100);position:relative}
 .cofill-panel .cp-head h4{font-size:15.5px;font-weight:600;margin-bottom:4px}
 .cofill-panel .cp-head .note{font-size:12.5px;color:var(--gray-500);line-height:1.55}
@@ -468,17 +586,17 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .cp-q{display:flex;align-items:center;gap:10px;padding:7px 8px 7px 26px;border-radius:7px;font-size:13px;color:var(--gray-700);cursor:pointer;user-select:none}
 .cp-q:hover,.cp-sec:hover{background:var(--gray-50);border-radius:7px}
 .cp-box{flex:0 0 18px;height:18px;border:1.6px solid var(--gray-300);border-radius:5px;background:#fff;display:flex;align-items:center;justify-content:center}
-.cp-q.on .cp-box,.cp-sec.on .cp-box{background:var(--blue-600);border-color:var(--blue-600)}
-.cp-sec.half .cp-box{border-color:var(--blue-600)}
-.cp-sec.half .cp-box::after{content:"";width:8px;height:2.4px;background:var(--blue-600);border-radius:2px}
+.cp-q.on .cp-box,.cp-sec.on .cp-box{background:var(--brand-500);border-color:var(--brand-500)}
+.cp-sec.half .cp-box{border-color:var(--brand-500)}
+.cp-sec.half .cp-box::after{content:"";width:8px;height:2.4px;background:var(--brand-500);border-radius:2px}
 .cp-q.taken{opacity:.55;cursor:default}
 .cp-q.taken:hover{background:none}
-.cp-q .taken-note{margin-left:auto;font-size:11px;font-weight:600;color:var(--blue-700);white-space:nowrap}
+.cp-q .taken-note{margin-left:auto;font-size:11px;font-weight:600;color:var(--brand-700);white-space:nowrap}
 .cofill-panel .cp-foot{border-top:1px solid var(--gray-200);padding:14px 20px 16px;background:var(--gray-25)}
 .cofill-panel .cp-foot .sel-count{font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:8px}
 .cofill-panel .cp-send-row{display:flex;gap:8px}
 .cofill-panel .cp-send-row input{flex:1;height:42px;border:1px solid var(--gray-300);border-radius:9px;padding:0 12px;font-size:13.5px}
-.cofill-panel .cp-send-row input:focus{outline:none;border-color:var(--blue-500)}
+.cofill-panel .cp-send-row input:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.12)}
 .cofill-panel .cp-send-row button{height:42px;padding:0 16px;border-radius:9px;border:none;background:var(--brand-500);color:#fff;font-size:13.5px;font-weight:600;white-space:nowrap}
 .cofill-panel .cp-send-row button:hover{background:var(--brand-600)}
 .cofill-sent{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--gray-200);border-radius:10px;padding:10px 12px;font-size:12.5px;margin:10px 8px 0;background:#fff}
@@ -596,6 +714,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .welcome-collab h2{font-size:20px;font-weight:600;letter-spacing:-.2px;margin-bottom:6px}
 .welcome-collab .cc-sub{font-size:14.5px;color:var(--gray-600);line-height:1.55;max-width:560px;margin-bottom:16px}
 .welcome-collab #collabList:not(:empty){margin-bottom:14px}
+/* divider between the collaborator section and the Start application button */
+#page-welcome .continue-wrap{margin-top:36px;padding-top:30px;border-top:1px solid var(--gray-200)}
 /* inline invite form, revealed by the welcome "Add a collaborator" button */
 .collab-invite{margin-top:14px;max-width:440px}
 .collab-invite .field{gap:6px}
@@ -702,6 +822,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .field input:hover:not(:focus):not([readonly]),.field select:hover:not(:focus),
 .qfield input:hover:not(:focus),.qfield select:hover:not(:focus),.qfield textarea:hover:not(:focus),
 .msel-btn:hover{border-color:var(--brand-300);background:var(--brand-25)}
+/* invalid fields stay red on hover instead of the green accent */
+.field.invalid input:hover:not(:focus):not([readonly]),.field.invalid select:hover:not(:focus),
+.q.invalid .qfield input:hover:not(:focus),.q.invalid .qfield select:hover:not(:focus),.q.invalid .qfield textarea:hover:not(:focus),
+.q.invalid .msel-btn:hover{border-color:var(--error-600);background:var(--error-25)}
 /* buttons darken on hover */
 .btn{transition:background-color .14s ease,border-color .14s ease,color .14s ease,box-shadow .14s ease}
 .btn-secondary:hover{border-color:var(--gray-400);background:var(--gray-100)}
@@ -714,6 +838,16 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .nav-item,.settings-row,.settings-opt,.icobtn,.plancard,.rolecard,.mfa-card,.cofill-side,.cp-collab-chip,.perm-row .pr-remove{transition:background-color .14s ease,border-color .14s ease,color .14s ease,box-shadow .14s ease}
 .plancard:not(.on):hover,.rolecard:not(.on):hover,.mfa-card:not(.on):hover{border-color:var(--gray-400)}
 
+/* ---------- directional page transitions ---------- */
+/* entrance-only: the incoming step slides in from the right going forward, from the left backtracking */
+@keyframes page-fwd{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes page-back{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
+.slide-fwd{animation:page-fwd .3s cubic-bezier(.22,.61,.2,1) both}
+.slide-back{animation:page-back .3s cubic-bezier(.22,.61,.2,1) both}
+@media (prefers-reduced-motion:reduce){
+  .slide-fwd,.slide-back{animation:none}
+}
+
 /* ---------- dark theme ---------- */
 :root[data-theme="dark"]{
   color-scheme:dark;
@@ -721,7 +855,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   --gray-400:#6b7585; --gray-500:#8c97a7; --gray-600:#abb4c2; --gray-700:#c9d1db; --gray-800:#e4e9f0; --gray-900:#f3f6fa;
   --brand-25:#13362833; --brand-50:#143a2b; --brand-700:#7fd3b1;
   --success-25:#0f2419; --success-50:#11301f; --success-100:#1c4a30; --success-700:#5fd79c; --success-800:#7ee5b0;
-  --warn-25:#241c0d; --warn-50:#2b210f; --warn-100:#3b2e13; --warn-200:#4d3c19; --warn-700:#f7bc5a; --warn-800:#f9cd80;
+  --warn-25:#161b22; --warn-50:#1f242c; --warn-100:#2b313b; --warn-200:#3a414e; --warn-700:#abb4c2; --warn-800:#c9d1db;
   --error-25:#2a1117; --error-50:#311420; --error-100:#45192b; --error-200:#5a2238; --error-600:#fb6f8e; --error-700:#fd8aa3;
   --blue-25:#0e1f30; --blue-50:#102538; --blue-200:#1f456b; --blue-600:#5aa9ff; --blue-700:#7cbcff;
   --shadow-overlay:0 0 0 1px rgba(255,255,255,.05),0 12px 18px -4px rgba(0,0,0,.55),0 4px 8px -2px rgba(0,0,0,.45);
@@ -743,6 +877,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 [data-theme="dark"] .billtoggle,[data-theme="dark"] .invited{background:var(--gray-100);color:var(--gray-900)}
 [data-theme="dark"] .consent .box,[data-theme="dark"] .rolecard .cb,[data-theme="dark"] .msel-row .box,
 [data-theme="dark"] .cp-box{background:var(--gray-100)}
+[data-theme="dark"] .code-row.err input{background:var(--gray-100);border-color:var(--error-500)}
 [data-theme="dark"] .sliderq input[type=range]{background:var(--gray-200)}
 [data-theme="dark"] .sliderq input[type=range]::-webkit-slider-thumb{background:var(--gray-100)}
 [data-theme="dark"] .plancard .pop{background:var(--brand-500)}
@@ -774,8 +909,101 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   .setup-wrap{padding:32px 18px 100px;gap:28px}
   .sub-card{padding:34px 22px}
   .auth-pane{padding:80px 20px 44px}
+  #view-auth .auth-pane{padding:80px 20px 44px}
   .invite-row{grid-template-columns:1fr;gap:8px}
   .idv-grid{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   NEW APP-FLOW COMPOSITION (application steps only)
+   top progress bar · centered questionnaire · bottom-left utils
+   chat stays bottom-right. Scoped to #app so other views are untouched.
+   ============================================================ */
+#app{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+
+/* ---- top progress bar ---- */
+.flow-top{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;padding:13px 30px;background:rgba(255,255,255,.86);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--gray-200)}
+.flow-top .logo{justify-self:start}
+.flow-top .logo img{height:26px}
+.flow-progress{position:absolute;left:0;right:0;bottom:-1px;height:2.5px;pointer-events:none}
+.flow-progress-fill{height:100%;width:0;background:var(--brand-500);border-radius:0 999px 999px 0;transition:width .45s cubic-bezier(.22,.61,.2,1)}
+.flow-center{justify-self:center;min-width:0}
+.flow-steps{display:flex;align-items:center;justify-content:center}
+.flow-step{display:inline-flex;align-items:center;gap:9px;background:none;border:none;cursor:pointer;padding:6px 6px;font-family:inherit;font-size:14px;font-weight:500;color:var(--gray-500);white-space:nowrap;transition:color .12s}
+.flow-step:hover{color:var(--gray-800)}
+/* each label reserves its bold (current-page) width so switching pages never reflows the bar */
+.flow-step .lbl{display:inline-flex;flex-direction:column;align-items:center}
+.flow-step .lbl::after{content:attr(data-text);font-weight:600;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
+/* incomplete (not started or in progress): grey number on a white fill */
+.flow-step .dot{flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--gray-500);box-shadow:inset 0 0 0 1.5px var(--gray-300);background:#fff;transition:all .12s}
+.flow-step .dot svg{width:13px;height:13px}
+/* done: dark-green fill, white check */
+.flow-step.done .dot{background:var(--brand-500);color:#fff;box-shadow:inset 0 0 0 1.5px var(--brand-500)}
+/* the page the user is on — wins over done/incomplete: light-green fill + dark-green border & text */
+.flow-step.cur{color:var(--gray-900);font-weight:600}
+.flow-step.cur .dot{background:var(--brand-50);color:var(--brand-700);box-shadow:inset 0 0 0 1.5px var(--brand-500)}
+.flow-conn{flex:0 0 auto;width:30px;border-top:1.5px dotted var(--gray-300);margin:0 2px}
+.flow-meta{display:none;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);text-align:center}
+/* settings (email) dropdown moved into the header's top-right slot */
+.flow-top .settings-trigger{justify-self:end;width:auto;font-size:13px;background:#fff;border:1px solid var(--gray-200);border-radius:999px;padding:7px 13px;box-shadow:var(--shadow-sm)}
+.flow-top .settings-trigger:hover{background:var(--gray-50)}
+.flow-top .settings-trigger .em{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---- centered questionnaire ---- */
+#app main{margin-left:0;flex:1;padding:60px 30px 150px;display:flex;justify-content:center}
+#app .col{width:100%;max-width:600px}
+
+/* ---- bottom-left utility cluster ---- */
+.flow-utils{position:fixed;left:22px;bottom:18px;z-index:55;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.flow-utils .cofill-side{order:2;width:auto;margin:0;border-radius:999px;padding:8px 14px;background:#fff}
+.flow-utils .cofill-side .cnt{margin-left:4px}
+.flow-utils .settings-trigger{order:1;width:auto;background:#fff;border:1px solid var(--gray-200);border-radius:999px;padding:7px 13px;box-shadow:var(--shadow-sm)}
+.flow-utils .settings-trigger:hover{background:var(--gray-50)}
+.flow-utils .settings-trigger .em{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flow-utils .settings-trigger .chev{order:2}
+.flow-utils .settings-trigger .em{order:1}
+
+/* ---- design-system signatures (scoped to app flow) ---- */
+#app .btn{border-radius:999px}
+#app .btn-primary{background:var(--brand-600);width:auto}
+#app .btn-primary:hover:not([disabled]){background:var(--brand-700)}
+#app .btn-primary[disabled]{background:var(--gray-200);color:var(--gray-500);cursor:not-allowed}
+#app .btn-secondary{width:auto;background:#fff;color:var(--gray-700);border:0;box-shadow:0 0 0 1px var(--gray-300) inset,0 -2px 0 0 rgba(0,0,0,.04) inset,0 1px 2px rgba(0,0,0,.05)}
+#app .btn-secondary:hover{background:var(--gray-50)}
+#app .continue-wrap .btn-primary{flex:0 0 auto}
+/* inputs: large-radius, inset border, 16px text */
+#app .field input,#app .field select,#app .qfield input,#app .qfield select,#app .qfield textarea,#app .fixedbox{border:0;border-radius:16px;font-size:16px;box-shadow:inset 0 0 0 1px var(--gray-300),0 1px 2px rgba(16,24,40,.05)}
+#app .field input:focus,#app .field select:focus,#app .qfield input:focus,#app .qfield select:focus,#app .qfield textarea:focus{box-shadow:inset 0 0 0 2px var(--brand-500),0 0 0 4px rgba(4,91,63,.12)}
+#app .field.invalid input,#app .field.invalid select,#app .q.invalid .qfield input,#app .q.invalid .qfield select,#app .q.invalid .qfield textarea{box-shadow:inset 0 0 0 2px var(--error-600)}
+#app .field input[readonly]{box-shadow:inset 0 0 0 1px var(--gray-200);background:var(--gray-50)}
+/* labels & small section eyebrows in DM Mono small-caps */
+#app .fsec h2,#app .pagebody h2{font-family:'DM Sans',sans-serif}
+#app .step-meta,#app .autofill-head .wr-proto,#app .wr-proto,#app .chips-label .req-mark{font-family:'DM Mono',monospace}
+#app .field label,#app .q-label{letter-spacing:.005em}
+[data-theme="dark"] .flow-top{background:rgba(18,19,20,.86);border-bottom-color:var(--gray-200)}
+[data-theme="dark"] .flow-progress-fill{background:var(--brand-300)}
+[data-theme="dark"] .flow-utils .settings-trigger,[data-theme="dark"] .flow-utils .cofill-side,[data-theme="dark"] .flow-top .settings-trigger{background:var(--gray-50)}
+[data-theme="dark"] #app .btn-secondary{background:var(--gray-100);color:var(--gray-900);box-shadow:0 0 0 1px var(--gray-300) inset}
+[data-theme="dark"] #app .btn-secondary:hover{background:var(--gray-200)}
+
+/* ---- responsive ---- */
+@media (max-width:1080px){
+  .flow-step .lbl{display:none}
+  .flow-step{padding:6px 3px}
+  .flow-conn{width:22px}
+}
+@media (max-width:720px){
+  .flow-top{grid-template-columns:auto 1fr auto;padding:11px 18px}
+  .flow-steps{display:none}
+  .flow-meta{display:block}
+  #app main{padding:40px 18px 150px}
+  .flow-top .settings-trigger .em{max-width:130px}
+}
+@media (max-width:560px){
+  .flow-utils{left:14px;bottom:12px}
+  .flow-utils .settings-trigger .em{max-width:140px}
+  /* keep the bottom-left corner minimal on phones (collaborator lives in the page header + welcome) */
+  .flow-utils .cofill-side{display:none}
 }
 </style>
 <script>
@@ -795,14 +1023,28 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
       <div id="authSignup">
         <h1>Open a business account</h1>
-        <p class="auth-sub">Create your account to start the application. Your progress saves as you go.</p>
         <div class="fgrid">
           <div class="row">
             <div class="field"><input id="su-fn" autocomplete="given-name"><label for="su-fn">Legal first name</label><span class="err-dot">!</span></div>
             <div class="field"><input id="su-ln" autocomplete="family-name"><label for="su-ln">Legal last name</label><span class="err-dot">!</span></div>
           </div>
-          <div class="field"><input id="su-email" type="email" autocomplete="email"><label for="su-email">Work email</label><span class="err-dot">!</span></div>
-          <div class="field"><input id="su-pass" type="password" autocomplete="new-password"><label for="su-pass">Password</label><span class="err-dot">!</span></div>
+          <div class="field"><input id="su-email" type="email" autocomplete="email"><label for="su-email">Work email</label><span class="err-dot">!</span><span class="field-err">Enter a valid email address.</span></div>
+          <div class="field phone-field">
+            <label for="su-phone">Mobile number</label>
+            <div class="phone-combo" id="phoneCombo">
+              <button type="button" class="cc-trigger" id="ccTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Country calling code">
+                <span class="cc-flag" id="ccFlag">&#127464;&#127462;</span><span class="cc-name" id="ccName">Canada</span><span class="cc-dial" id="ccDial">+1</span>
+                <svg class="cc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <input id="su-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(416) 555-5555">
+              <div class="cc-menu hidden" id="ccMenu" role="listbox">
+                <div class="cc-search-wrap"><input type="text" id="ccSearch" class="cc-search" placeholder="Search country or code" autocomplete="off"></div>
+                <div class="cc-list" id="ccList"></div>
+              </div>
+            </div>
+            <span class="field-err">Enter a valid phone number.</span>
+          </div>
+          <div class="field has-reveal"><input id="su-pass" type="password" autocomplete="new-password"><label for="su-pass">Password</label><button type="button" class="reveal-btn" id="su-pass-eye" aria-label="Show password" aria-pressed="false"><svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button><span class="err-dot">!</span></div>
           <p class="pw-hint" id="pwHint">At least 8 characters</p>
           <button type="button" class="btn-link" id="refToggle" style="padding:4px 0;font-size:13.5px;align-self:flex-start;text-decoration:none;color:var(--brand-600)">+ Add referral code</button>
           <div class="field hidden" id="refWrap"><input id="su-ref" autocapitalize="characters" autocomplete="off"><label for="su-ref">Referral code</label><span class="err-dot">!</span></div>
@@ -817,8 +1059,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <button class="btn btn-google" id="googleSignin" type="button"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg> Continue with Google</button>
         <div class="or-divider or-auth">OR</div>
         <div class="fgrid">
-          <div class="field"><input id="si-email" type="email" autocomplete="email"><label for="si-email">Work email</label><span class="err-dot">!</span></div>
-          <div class="field"><input id="si-pass" type="password" autocomplete="current-password"><label for="si-pass">Password</label><span class="err-dot">!</span></div>
+          <div class="field"><input id="si-email" type="email" autocomplete="email"><label for="si-email">Work email</label><span class="err-dot">!</span><span class="field-err">Enter a valid email address.</span></div>
+          <div class="field has-reveal"><input id="si-pass" type="password" autocomplete="current-password"><label for="si-pass">Password</label><button type="button" class="reveal-btn" id="si-pass-eye" aria-label="Show password" aria-pressed="false"><svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button><span class="err-dot">!</span></div>
           <button class="btn btn-primary" id="btnSignin" disabled>Sign in</button>
         </div>
         <p class="auth-foot">New to Loop? <a href="#" id="toSignup">Create an account</a></p>
@@ -830,15 +1072,26 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 </div>
 
 <!-- ================= MFA SETUP (optional) ================= -->
+<!-- ================= PHONE VERIFICATION (mandatory SMS) ================= -->
+<div id="view-sms" class="auth-shell hidden">
+  <div class="auth-pane">
+    <div class="auth-brand"><span class="logo" id="logoSms"></span></div>
+    <div class="auth-inner">
+      <button type="button" class="back-link back-top" id="smsBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
+      <h1>Verify your phone number</h1>
+      <p class="auth-sub">We texted a 6-digit code to <strong id="smsTo">your phone</strong>. Enter it below to keep going.</p>
+      <div id="smsBody"></div>
+    </div>
+  </div>
+  <div class="auth-media"></div>
+</div>
+
+<!-- ================= MFA SETUP (optional) ================= -->
 <div id="view-mfa" class="auth-shell hidden">
   <div class="auth-pane">
     <div class="auth-brand"><span class="logo" id="logoMfa"></span></div>
     <div class="auth-inner">
-      <h1>Add a second step</h1>
-      <p class="auth-sub">Two-step verification protects your account at sign-in.</p>
       <div id="mfaBody"></div>
-      <p class="auth-foot" style="text-align:left;margin-top:18px"><a href="#" id="mfaSkip">Skip for now</a></p>
-      <p id="mfaSkipErr" class="hidden" style="text-align:left;margin-top:8px;color:var(--error-600);font-weight:600;font-size:13px;line-height:1.5">Two-step verification keeps your account secure. Tap &ldquo;Skip anyway&rdquo; to continue without it.</p>
     </div>
   </div>
   <div class="auth-media"></div>
@@ -846,26 +1099,18 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 <!-- ================= APP SHELL ================= -->
 <div id="app" class="app hidden">
-  <header class="app-topbar">
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-    <span class="logo" id="logoTop"></span>
-    <div class="sp"></div>
-  </header>
-  <div class="nav-backdrop" id="navBackdrop"></div>
-  <aside class="sidebar">
+  <header class="flow-top">
     <span class="logo" id="logoSide"></span>
-    <div class="step-meta" id="stepMeta">Getting started</div>
-    <nav class="nav" id="nav"></nav>
-    <div class="side-spacer"></div>
-    <button class="cofill-side" id="cofillSideBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Add a collaborator</span><span class="cnt hidden" id="cofillCnt"></span></button>
-    <div class="save-pill" id="savePill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span id="saveTxt">Progress saved automatically</span></div>
-    <div class="userbox">
-      <button class="settings-trigger" id="settingsTrigger" aria-label="Settings">
-        <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span>
-        <span class="em" id="userEmail"></span>
-      </button>
+    <div class="flow-center">
+      <nav class="flow-steps" id="nav"></nav>
+      <div class="flow-meta" id="stepMeta">Getting started</div>
     </div>
-  </aside>
+    <button class="settings-trigger" id="settingsTrigger" aria-label="Settings">
+      <span class="em" id="userEmail"></span>
+      <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="flow-progress" aria-hidden="true"><div class="flow-progress-fill" id="flowProgressFill"></div></div>
+  </header>
 
   <main>
     <div class="col">
@@ -888,7 +1133,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <li>Date of birth and home address for each owner and director</li>
           </ul>
         </div>
-        <div class="autosave-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#045B3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 16px;margin-top:2px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>Your application saves automatically each time you continue. Sign back in anytime to finish.</span></div>
+        <div class="autosave-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#045B3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 16px;margin-top:2px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>Your progress is saved each time you move to another page. Sign back in anytime to finish.</span></div>
         <div class="welcome-collab">
           <h2>Working on this with someone?</h2>
           <p class="cc-sub">Invite a collaborator to fill the application with you. They'll get an email link to fill the whole application — you can scope access to a single page or change who has access anytime from the sidebar.</p>
@@ -917,7 +1162,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
           <div class="autofill-card" id="bizAutofill">
             <div class="autofill-head">
-              <span class="wr-proto">Prototype</span>
               <span class="autofill-h">Autofill from a document</span>
             </div>
             <p class="autofill-sub">Upload an incorporation certificate, business registration, or recent invoice and we'll read it to fill in the fields on this page. Review and edit everything before you continue.</p>
@@ -978,9 +1222,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           </div>
 
         </div>
-        <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="business"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="business">Continue <span>&#8594;</span></button></div>
-        <p class="save-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Your progress saves automatically</p>
-      </div>
+        <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="business"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="business">Continue <span>&#8594;</span></button></div>      </div>
 
       <!-- PAGE 2: BUSINESS CONTACTS -->
       <div id="page-contacts" class="appage hidden">
@@ -1042,9 +1284,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           </div>
 
         </div>
-        <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="contacts"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="contacts">Continue <span>&#8594;</span></button></div>
-        <p class="save-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Your progress saves automatically</p>
-      </div>
+        <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="contacts"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="contacts">Continue <span>&#8594;</span></button></div>      </div>
 
       <!-- PAGE 3: EXPECTED USAGE -->
       <div id="page-usage" class="appage hidden">
@@ -1095,9 +1335,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           </div>
 
         </div>
-        <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="usage"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="usage">Continue <span>&#8594;</span></button></div>
-        <p class="save-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Your progress saves automatically</p>
-      </div>
+        <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="usage"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="usage">Continue <span>&#8594;</span></button></div>      </div>
 
       <!-- PAGE 4: DOCUMENTS -->
       <div id="page-documents" class="appage hidden">
@@ -1117,9 +1355,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <p class="fhelp" style="margin-top:10px">PDF, JPEG, or PNG, up to 10 MB each. Accepted documents include a certificate or articles of incorporation, a corporate registry search report, or proof of operations such as a recent supplier invoice, signed customer contract, commercial lease, or bank statement.</p>
           </div>
         </div>
-        <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="documents"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="documents">Continue <span>&#8594;</span></button></div>
-        <p class="save-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Your progress saves automatically</p>
-      </div>
+        <div class="continue-wrap"><button class="btn btn-secondary btn-back" data-back="documents"><span>&#8592;</span> Back</button><button class="btn btn-primary" data-cont="documents">Continue <span>&#8594;</span></button></div>      </div>
 
       <!-- PAGE 5: REVIEW -->
       <div id="page-review" class="appage hidden">
@@ -1145,6 +1381,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
     </div>
   </main>
+
+  <div class="flow-utils">
+    <button class="cofill-side" id="cofillSideBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Add a collaborator</span><span class="cnt hidden" id="cofillCnt"></span></button>
+  </div>
+  <div class="save-toast" id="saveToast" role="status" aria-live="polite"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Progress saved</span></div>
 </div>
 
 <!-- ================= SETUP HUB (in review) ================= -->
@@ -1376,19 +1617,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
 </div>
 
-<!-- ================= MODAL ================= -->
-<div id="modalOverlay" class="hidden">
-  <div class="modal">
-    <div class="m-body">
-      <h3>Continue with incomplete fields?</h3>
-      <p id="modalBody"></p>
-    </div>
-    <div class="m-foot">
-      <button class="btn-link" id="modalBack">Back</button>
-      <button class="btn btn-primary" id="modalGo">Continue</button>
-    </div>
-  </div>
-</div>
 
 <script>
 /* ============================ data ============================ */
@@ -1398,6 +1626,102 @@ var KEY = 'loop-onboarding-app-v8';
 var PROVINCES = ['Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland and Labrador','Northwest Territories','Nova Scotia','Nunavut','Ontario','Prince Edward Island','Quebec','Saskatchewan','Yukon'];
 var US_STATES = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
 var COUNTRIES = ['Canada','United States','United Kingdom','Australia','Austria','Belgium','Brazil','China','Denmark','France','Germany','Hong Kong','India','Ireland','Israel','Italy','Japan','Mexico','Netherlands','New Zealand','Norway','Singapore','South Korea','Spain','Sweden','Switzerland','United Arab Emirates','Other'];
+/* sign-up mobile-number country picker (ported from index-static.html) */
+var DIALCODES=[
+{n:'Afghanistan',c:'AF',d:'+93'},{n:'Albania',c:'AL',d:'+355'},{n:'Algeria',c:'DZ',d:'+213'},{n:'Andorra',c:'AD',d:'+376'},
+{n:'Angola',c:'AO',d:'+244'},{n:'Antigua and Barbuda',c:'AG',d:'+1'},{n:'Argentina',c:'AR',d:'+54'},{n:'Armenia',c:'AM',d:'+374'},
+{n:'Australia',c:'AU',d:'+61'},{n:'Austria',c:'AT',d:'+43'},{n:'Azerbaijan',c:'AZ',d:'+994'},{n:'Bahamas',c:'BS',d:'+1'},
+{n:'Bahrain',c:'BH',d:'+973'},{n:'Bangladesh',c:'BD',d:'+880'},{n:'Barbados',c:'BB',d:'+1'},{n:'Belarus',c:'BY',d:'+375'},
+{n:'Belgium',c:'BE',d:'+32'},{n:'Belize',c:'BZ',d:'+501'},{n:'Benin',c:'BJ',d:'+229'},{n:'Bhutan',c:'BT',d:'+975'},
+{n:'Bolivia',c:'BO',d:'+591'},{n:'Bosnia and Herzegovina',c:'BA',d:'+387'},{n:'Botswana',c:'BW',d:'+267'},{n:'Brazil',c:'BR',d:'+55'},
+{n:'Brunei',c:'BN',d:'+673'},{n:'Bulgaria',c:'BG',d:'+359'},{n:'Burkina Faso',c:'BF',d:'+226'},{n:'Burundi',c:'BI',d:'+257'},
+{n:'Cambodia',c:'KH',d:'+855'},{n:'Cameroon',c:'CM',d:'+237'},{n:'Canada',c:'CA',d:'+1'},{n:'Cape Verde',c:'CV',d:'+238'},
+{n:'Central African Republic',c:'CF',d:'+236'},{n:'Chad',c:'TD',d:'+235'},{n:'Chile',c:'CL',d:'+56'},{n:'China',c:'CN',d:'+86'},
+{n:'Colombia',c:'CO',d:'+57'},{n:'Comoros',c:'KM',d:'+269'},{n:'Congo (Brazzaville)',c:'CG',d:'+242'},{n:'Congo (Kinshasa)',c:'CD',d:'+243'},
+{n:'Costa Rica',c:'CR',d:'+506'},{n:'Côte d\'Ivoire',c:'CI',d:'+225'},{n:'Croatia',c:'HR',d:'+385'},{n:'Cuba',c:'CU',d:'+53'},
+{n:'Cyprus',c:'CY',d:'+357'},{n:'Czechia',c:'CZ',d:'+420'},{n:'Denmark',c:'DK',d:'+45'},{n:'Djibouti',c:'DJ',d:'+253'},
+{n:'Dominica',c:'DM',d:'+1'},{n:'Dominican Republic',c:'DO',d:'+1'},{n:'Ecuador',c:'EC',d:'+593'},{n:'Egypt',c:'EG',d:'+20'},
+{n:'El Salvador',c:'SV',d:'+503'},{n:'Equatorial Guinea',c:'GQ',d:'+240'},{n:'Eritrea',c:'ER',d:'+291'},{n:'Estonia',c:'EE',d:'+372'},
+{n:'Eswatini',c:'SZ',d:'+268'},{n:'Ethiopia',c:'ET',d:'+251'},{n:'Fiji',c:'FJ',d:'+679'},{n:'Finland',c:'FI',d:'+358'},
+{n:'France',c:'FR',d:'+33'},{n:'Gabon',c:'GA',d:'+241'},{n:'Gambia',c:'GM',d:'+220'},{n:'Georgia',c:'GE',d:'+995'},
+{n:'Germany',c:'DE',d:'+49'},{n:'Ghana',c:'GH',d:'+233'},{n:'Greece',c:'GR',d:'+30'},{n:'Grenada',c:'GD',d:'+1'},
+{n:'Guatemala',c:'GT',d:'+502'},{n:'Guinea',c:'GN',d:'+224'},{n:'Guinea-Bissau',c:'GW',d:'+245'},{n:'Guyana',c:'GY',d:'+592'},
+{n:'Haiti',c:'HT',d:'+509'},{n:'Honduras',c:'HN',d:'+504'},{n:'Hong Kong',c:'HK',d:'+852'},{n:'Hungary',c:'HU',d:'+36'},
+{n:'Iceland',c:'IS',d:'+354'},{n:'India',c:'IN',d:'+91'},{n:'Indonesia',c:'ID',d:'+62'},{n:'Iran',c:'IR',d:'+98'},
+{n:'Iraq',c:'IQ',d:'+964'},{n:'Ireland',c:'IE',d:'+353'},{n:'Israel',c:'IL',d:'+972'},{n:'Italy',c:'IT',d:'+39'},
+{n:'Jamaica',c:'JM',d:'+1'},{n:'Japan',c:'JP',d:'+81'},{n:'Jordan',c:'JO',d:'+962'},{n:'Kazakhstan',c:'KZ',d:'+7'},
+{n:'Kenya',c:'KE',d:'+254'},{n:'Kiribati',c:'KI',d:'+686'},{n:'Kuwait',c:'KW',d:'+965'},{n:'Kyrgyzstan',c:'KG',d:'+996'},
+{n:'Laos',c:'LA',d:'+856'},{n:'Latvia',c:'LV',d:'+371'},{n:'Lebanon',c:'LB',d:'+961'},{n:'Lesotho',c:'LS',d:'+266'},
+{n:'Liberia',c:'LR',d:'+231'},{n:'Libya',c:'LY',d:'+218'},{n:'Liechtenstein',c:'LI',d:'+423'},{n:'Lithuania',c:'LT',d:'+370'},
+{n:'Luxembourg',c:'LU',d:'+352'},{n:'Macau',c:'MO',d:'+853'},{n:'Madagascar',c:'MG',d:'+261'},{n:'Malawi',c:'MW',d:'+265'},
+{n:'Malaysia',c:'MY',d:'+60'},{n:'Maldives',c:'MV',d:'+960'},{n:'Mali',c:'ML',d:'+223'},{n:'Malta',c:'MT',d:'+356'},
+{n:'Marshall Islands',c:'MH',d:'+692'},{n:'Mauritania',c:'MR',d:'+222'},{n:'Mauritius',c:'MU',d:'+230'},{n:'Mexico',c:'MX',d:'+52'},
+{n:'Micronesia',c:'FM',d:'+691'},{n:'Moldova',c:'MD',d:'+373'},{n:'Monaco',c:'MC',d:'+377'},{n:'Mongolia',c:'MN',d:'+976'},
+{n:'Montenegro',c:'ME',d:'+382'},{n:'Morocco',c:'MA',d:'+212'},{n:'Mozambique',c:'MZ',d:'+258'},{n:'Myanmar',c:'MM',d:'+95'},
+{n:'Namibia',c:'NA',d:'+264'},{n:'Nauru',c:'NR',d:'+674'},{n:'Nepal',c:'NP',d:'+977'},{n:'Netherlands',c:'NL',d:'+31'},
+{n:'New Zealand',c:'NZ',d:'+64'},{n:'Nicaragua',c:'NI',d:'+505'},{n:'Niger',c:'NE',d:'+227'},{n:'Nigeria',c:'NG',d:'+234'},
+{n:'North Korea',c:'KP',d:'+850'},{n:'North Macedonia',c:'MK',d:'+389'},{n:'Norway',c:'NO',d:'+47'},{n:'Oman',c:'OM',d:'+968'},
+{n:'Pakistan',c:'PK',d:'+92'},{n:'Palau',c:'PW',d:'+680'},{n:'Palestine',c:'PS',d:'+970'},{n:'Panama',c:'PA',d:'+507'},
+{n:'Papua New Guinea',c:'PG',d:'+675'},{n:'Paraguay',c:'PY',d:'+595'},{n:'Peru',c:'PE',d:'+51'},{n:'Philippines',c:'PH',d:'+63'},
+{n:'Poland',c:'PL',d:'+48'},{n:'Portugal',c:'PT',d:'+351'},{n:'Qatar',c:'QA',d:'+974'},{n:'Romania',c:'RO',d:'+40'},
+{n:'Russia',c:'RU',d:'+7'},{n:'Rwanda',c:'RW',d:'+250'},{n:'Saint Kitts and Nevis',c:'KN',d:'+1'},{n:'Saint Lucia',c:'LC',d:'+1'},
+{n:'Saint Vincent and the Grenadines',c:'VC',d:'+1'},{n:'Samoa',c:'WS',d:'+685'},{n:'San Marino',c:'SM',d:'+378'},{n:'Sao Tome and Principe',c:'ST',d:'+239'},
+{n:'Saudi Arabia',c:'SA',d:'+966'},{n:'Senegal',c:'SN',d:'+221'},{n:'Serbia',c:'RS',d:'+381'},{n:'Seychelles',c:'SC',d:'+248'},
+{n:'Sierra Leone',c:'SL',d:'+232'},{n:'Singapore',c:'SG',d:'+65'},{n:'Slovakia',c:'SK',d:'+421'},{n:'Slovenia',c:'SI',d:'+386'},
+{n:'Solomon Islands',c:'SB',d:'+677'},{n:'Somalia',c:'SO',d:'+252'},{n:'South Africa',c:'ZA',d:'+27'},{n:'South Korea',c:'KR',d:'+82'},
+{n:'South Sudan',c:'SS',d:'+211'},{n:'Spain',c:'ES',d:'+34'},{n:'Sri Lanka',c:'LK',d:'+94'},{n:'Sudan',c:'SD',d:'+249'},
+{n:'Suriname',c:'SR',d:'+597'},{n:'Sweden',c:'SE',d:'+46'},{n:'Switzerland',c:'CH',d:'+41'},{n:'Syria',c:'SY',d:'+963'},
+{n:'Taiwan',c:'TW',d:'+886'},{n:'Tajikistan',c:'TJ',d:'+992'},{n:'Tanzania',c:'TZ',d:'+255'},{n:'Thailand',c:'TH',d:'+66'},
+{n:'Timor-Leste',c:'TL',d:'+670'},{n:'Togo',c:'TG',d:'+228'},{n:'Tonga',c:'TO',d:'+676'},{n:'Trinidad and Tobago',c:'TT',d:'+1'},
+{n:'Tunisia',c:'TN',d:'+216'},{n:'Turkey',c:'TR',d:'+90'},{n:'Turkmenistan',c:'TM',d:'+993'},{n:'Tuvalu',c:'TV',d:'+688'},
+{n:'Uganda',c:'UG',d:'+256'},{n:'Ukraine',c:'UA',d:'+380'},{n:'United Arab Emirates',c:'AE',d:'+971'},{n:'United Kingdom',c:'GB',d:'+44'},
+{n:'United States',c:'US',d:'+1'},{n:'Uruguay',c:'UY',d:'+598'},{n:'Uzbekistan',c:'UZ',d:'+998'},{n:'Vanuatu',c:'VU',d:'+678'},
+{n:'Vatican City',c:'VA',d:'+379'},{n:'Venezuela',c:'VE',d:'+58'},{n:'Vietnam',c:'VN',d:'+84'},{n:'Yemen',c:'YE',d:'+967'},
+{n:'Zambia',c:'ZM',d:'+260'},{n:'Zimbabwe',c:'ZW',d:'+263'}
+].sort(function(a,b){return a.n.localeCompare(b.n);});
+function flagOf(cc){return String(cc||'').toUpperCase().replace(/[A-Z]/g,function(ch){return String.fromCodePoint(127397+ch.charCodeAt(0));});}
+var ccOpen=false,ccSel=null;
+function buildCcList(filter){
+  var list=$('ccList');if(!list)return;
+  var q=(filter||'').trim().toLowerCase(),qd=q.replace(/^\+/,'');
+  var items=DIALCODES.filter(function(o){
+    if(!q)return true;
+    return o.n.toLowerCase().indexOf(q)>=0||o.d.replace('+','').indexOf(qd)===0;
+  });
+  list.innerHTML=items.length?items.map(function(o){
+    return '<button type="button" class="cc-opt'+(ccSel&&ccSel.c===o.c?' sel':'')+'" data-c="'+o.c+'" data-d="'+esc(o.d)+'" role="option"><span class="cc-opt-flag">'+flagOf(o.c)+'</span><span class="cc-opt-name">'+esc(o.n)+'</span><span class="cc-opt-dial">'+esc(o.d)+'</span></button>';
+  }).join(''):'<div class="cc-empty">No matching country</div>';
+  list.querySelectorAll('.cc-opt').forEach(function(b){b.onclick=function(){selectCc(b.dataset.c,b.dataset.d);};});
+}
+function selectCc(c,d){
+  var o=DIALCODES.filter(function(x){return x.c===c;})[0];
+  ccSel={c:c,d:d};
+  if($('ccFlag'))$('ccFlag').textContent=flagOf(c);
+  if($('ccName'))$('ccName').textContent=o?o.n:'';
+  if($('ccDial'))$('ccDial').textContent=d;
+  S.acctPhoneDial=d;
+  closeCc();
+  if($('su-phone'))$('su-phone').focus();
+}
+function openCc(){
+  ccOpen=true;$('ccMenu').classList.remove('hidden');$('ccTrigger').setAttribute('aria-expanded','true');
+  $('ccSearch').value='';buildCcList('');
+  var sel=$('ccList').querySelector('.cc-opt.sel');if(sel)sel.scrollIntoView({block:'center'});
+  setTimeout(function(){$('ccSearch').focus();},0);
+}
+function closeCc(){ccOpen=false;if($('ccMenu'))$('ccMenu').classList.add('hidden');if($('ccTrigger'))$('ccTrigger').setAttribute('aria-expanded','false');}
+function setupCountryPicker(){
+  var t=$('ccTrigger');if(!t)return;
+  var def=DIALCODES.filter(function(o){return o.c==='CA';})[0]||{n:'Canada',c:'CA',d:'+1'};
+  ccSel={c:def.c,d:def.d};
+  $('ccFlag').textContent=flagOf(def.c);if($('ccName'))$('ccName').textContent=def.n;$('ccDial').textContent=def.d;
+  t.onclick=function(e){e.stopPropagation();ccOpen?closeCc():openCc();};
+  $('ccSearch').addEventListener('input',function(){buildCcList(this.value);});
+  $('ccSearch').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();var f=$('ccList').querySelector('.cc-opt');if(f)f.click();}});
+  $('ccMenu').addEventListener('click',function(e){e.stopPropagation();});
+  document.addEventListener('click',function(){if(ccOpen)closeCc();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ccOpen)closeCc();});
+}
 var ENTITIES = ['Corporation (federal)','Corporation (provincial)','Sole proprietorship','Partnership','Cooperative','Holding company'];
 var INDUSTRIES = ['Software and technology','Professional services','E-commerce and retail','Wholesale and distribution','Manufacturing','Construction and trades','Healthcare','Transportation and logistics','Hospitality and food service','Agriculture','Media and marketing','Real estate services','Education','Other'];
 var SUBIND = {
@@ -1512,7 +1836,7 @@ var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',phone:'',website:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',outValue:'',outCount:'',inValue:'',inCount:'',regions:[],docs:[],docScreenFor:'',certify:false};}
 function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],plan:'',billing:'monthly',accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{},mandatoryDocs:[]};}
 function freshSettings(){return {appearance:'system',lang:'en'};}
-function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,planFinal:'',payDone:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
+function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],acctPhone:'',acctPhoneDial:'+1',phoneVerified:false,mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,planFinal:'',payDone:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
 /* Signing officer and control person were merged into a single "Signing officer" role */
 function migrateRoles(s){
   (s.f&&s.f.individuals||[]).forEach(function(p){
@@ -1529,14 +1853,17 @@ function load(){
   try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);if(s&&s.settings)st.settings=Object.assign(freshSettings(),s.settings);}}catch(e){}
   return st;
 }
-var pillT=null;
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){/* storage unavailable (e.g., private browsing) — keep working in memory */}}
 function save(){
   persist();
-  var pill=document.getElementById('savePill'),txt=document.getElementById('saveTxt');
-  if(pill){pill.classList.add('flash');txt.textContent='Saved just now';clearTimeout(pillT);
-    pillT=setTimeout(function(){pill.classList.remove('flash');txt.textContent='Progress saved automatically';},1600);}
   paintProgress();paintNav();
+}
+/* saving happens on page switches (Continue / Back / top nav), not on a timer — the toast marks that moment */
+var toastT=null;
+function showSaveToast(){
+  var t=document.getElementById('saveToast');if(!t)return;
+  t.classList.add('show');clearTimeout(toastT);
+  toastT=setTimeout(function(){t.classList.remove('show');},1500);
 }
 
 /* ============================ settings: appearance, language, permissions ============================ */
@@ -1547,7 +1874,8 @@ var SVGI={
   logout:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
   chevR:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
   check:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  trash:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>'
+  trash:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  help:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
 };
 var APPEARANCE_LABELS={light:'Light',dark:'Dark',system:'System'};
 var LANG_LABELS={en:'English',fr:'Français'};
@@ -1577,6 +1905,7 @@ function settingsMenuHTML(showPerm){
     '<div class="settings-row has-sub" data-sub="language"><span class="ic">'+SVGI.globe+'</span><span class="lbl">Language</span><span class="val">'+lgL+'</span><span class="arrow">'+SVGI.chevR+'</span>'+
       '<div class="settings-sub hidden" data-submenu="language">'+settingsOpt('language','en','English')+settingsOpt('language','fr','Français')+'</div></div>'+
     (showPerm?'<div class="settings-row" data-act="permissions"><span class="ic">'+SVGI.users+'</span><span class="lbl">Permissions</span></div>':'')+
+    '<div class="settings-row" data-act="help"><span class="ic">'+SVGI.help+'</span><span class="lbl">Help</span></div>'+
     '<div class="settings-sep"></div>'+
     '<div class="settings-row" data-act="signout"><span class="ic">'+SVGI.logout+'</span><span class="lbl">Sign out</span></div>';
 }
@@ -1605,6 +1934,7 @@ function wireSettingsMenu(){
     b.onclick=function(e){e.stopPropagation();if(b.dataset.set==='appearance')setAppearance(b.dataset.val);else setLanguage(b.dataset.val);};
   });
   var perm=menu.querySelector('[data-act="permissions"]');if(perm)perm.onclick=function(){closeSettingsMenu();openPermissions();};
+  var hlp=menu.querySelector('[data-act="help"]');if(hlp)hlp.onclick=function(){closeSettingsMenu();var p=$('chatPanel');if(p&&p.classList.contains('hidden')){var f=$('chatFab');if(f)f.click();}};
   var so=menu.querySelector('[data-act="signout"]');if(so)so.onclick=function(){closeSettingsMenu();doSignOut();};
 }
 function openSettingsMenu(trigger){
@@ -1612,7 +1942,7 @@ function openSettingsMenu(trigger){
   if(settingsAnchor===trigger&&!menu.classList.contains('hidden')){closeSettingsMenu();return;}
   closeSettingsMenu();
   settingsAnchor=trigger;
-  var topbar=trigger.id==='setupSettingsTrigger';
+  var topbar=trigger.id==='setupSettingsTrigger'||trigger.id==='settingsTrigger';
   menu.classList.toggle('flip-left',topbar);
   menu.innerHTML=settingsMenuHTML(trigger.id==='settingsTrigger');
   menu.classList.remove('hidden');
@@ -1622,10 +1952,8 @@ function openSettingsMenu(trigger){
   menu.style.top=menu.style.bottom=menu.style.left=menu.style.right='';
   if(topbar){menu.style.top=(r.bottom+8)+'px';menu.style.left=Math.max(8,r.right-W)+'px';}
   else{
-    /* center the menu within the left sidebar rail */
-    var sb=document.querySelector('.sidebar');
-    var sr=sb?sb.getBoundingClientRect():{left:0,width:268};
-    menu.style.left=Math.round(sr.left+(sr.width-W)/2)+'px';
+    /* open upward from the bottom-left utility trigger */
+    menu.style.left=Math.max(8,Math.round(r.left))+'px';
     menu.style.bottom=(window.innerHeight-r.top+8)+'px';
   }
   trigger.classList.add('open');
@@ -1687,9 +2015,11 @@ function doSignOut(){
 /* reset application state but keep the appearance/language preference */
 function freshKeepSettings(){var st=S.settings;var ns=freshState();ns.settings=st;return ns;}
 /* keep Create Account / Sign in greyed out until their fields are valid */
+function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim());}
+function validPhone(v){var d=String(v||'').replace(/\D/g,'');return d.length>=7&&d.length<=15;}
 function syncAuthButtons(){
   var b1=$('btnSignup');
-  if(b1)b1.disabled=!($('su-fn').value.trim()&&$('su-ln').value.trim()&&$('su-email').value.indexOf('@')>0&&$('su-pass').value.length>=8);
+  if(b1)b1.disabled=!($('su-fn').value.trim()&&$('su-ln').value.trim()&&$('su-email').value.indexOf('@')>0&&$('su-phone').value.replace(/\D/g,'').length>=7&&$('su-pass').value.length>=8);
   var b2=$('btnSignin');
   if(b2)b2.disabled=!($('si-email').value.indexOf('@')>0&&$('si-pass').value.trim());
 }
@@ -1784,13 +2114,33 @@ function requiredTotal(){
 
 /* ============================ views ============================ */
 function closeNav(){document.body.classList.remove('nav-open');var t=$('navToggle');if(t)t.setAttribute('aria-expanded','false');}
+/* directional transitions: entrance-only slide+fade on real view/page changes (never intra-view re-renders) */
+var VIEW_SEQ=['auth','sms','mfa','app','setup','approved','plan','live'];
+var prevView=null,prevPage=null;/* runtime only — never persisted */
+function slideIn(elm,dir){
+  if(!elm)return;
+  elm.classList.remove('slide-fwd','slide-back');
+  void elm.offsetWidth;/* force reflow so a mid-animation retrigger restarts */
+  elm.classList.add(dir==='back'?'slide-back':'slide-fwd');
+  elm.addEventListener('animationend',function(){elm.classList.remove('slide-fwd','slide-back');},{once:true});
+}
+function viewDir(from,to){
+  var a=VIEW_SEQ.indexOf(from),b=VIEW_SEQ.indexOf(to);
+  if(a<0||b<0)return 'fwd';/* views outside the sequence (invitee) always read as forward */
+  return b<a?'back':'fwd';
+}
 function show(view){
+  var dir=(prevView===null||prevView===view)?null:viewDir(prevView,view);/* null = first paint or same view: no animation */
+  prevView=view;
   S.view=view;persist();
   closeNav();
   closeSettingsMenu();
-  ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
+  if(view!=='sms')stopSmsTimer();
+  if(view!=='mfa')stopMfaTimer();
+  ['view-auth','view-sms','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
   if(view==='auth'){$('view-auth').classList.remove('hidden');syncAuthButtons();}
+  else if(view==='sms'){$('view-sms').classList.remove('hidden');renderSms();}
   else if(view==='mfa'){$('view-mfa').classList.remove('hidden');renderMfa();}
   else if(view==='setup'){
     $('view-setup').classList.remove('hidden');
@@ -1815,20 +2165,25 @@ function show(view){
     renderLive();
   }
   else{
-    $('app').classList.remove('hidden');$('progressLine').classList.remove('hidden');
+    $('app').classList.remove('hidden');/* progress shown via the top stepper, not the thin line */
     $('userEmail').textContent=S.email;
-    showPage(S.page);
+    showPage(S.page,dir);/* #app itself never animates — .flow-utils inside it is position:fixed */
   }
+  if(dir&&view!=='app')slideIn($('view-'+view),dir);
   updateChatVisibility();
   window.scrollTo(0,0);
 }
 
-function showPage(id){
+function showPage(id,forceDir){
+  var dir=forceDir||((prevPage===null||prevPage===id)?null:
+    (PAGE_ORDER.indexOf(id)<PAGE_ORDER.indexOf(prevPage)?'back':'fwd'));/* welcome isn't in PAGE_ORDER: indexOf -1 sorts it before everything, which is correct */
+  var switched=prevPage!==null&&prevPage!==id;
+  prevPage=id;
   S.page=id;persist();
   closeNav();
   document.querySelectorAll('.appage').forEach(function(p){p.classList.add('hidden');});
   var div=$('page-'+id);
-  if(div)div.classList.remove('hidden');
+  if(div){div.classList.remove('hidden');if(dir)slideIn(div,dir);}
   if(id==='welcome'){$('stepMeta').textContent='Getting started';renderCollabList();var ci=$('collabInvite');if(ci){ci.classList.add('hidden');$('wcEmail').value='';$('btnAddCollab').setAttribute('aria-expanded','false');}}
   else{
     S.visited[id]=true;persist();
@@ -1836,11 +2191,14 @@ function showPage(id){
     if(id==='usage'){syncSliders();renderMsel();}
     if(id==='contacts'){renderIndividuals();renderRelBizExtra();}
     if(id==='documents'){startDocScreen();renderDocs();}
-    if(id==='review')renderReview();
+    /* reaching review is the moment gaps become visible: from here on, every
+       page shows error states for its unfilled mandatory fields */
+    if(id==='review'){PAGE_ORDER.forEach(function(p){S.attempted[p]=true;});persist();renderReview();}
     refreshInvalid(id);
     applyCofillLocks(id);
   }
   paintNav();paintProgress();
+  if(switched)showSaveToast();
   window.scrollTo(0,0);
 }
 
@@ -1849,11 +2207,11 @@ var IC={
   todo:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.6" fill="none" stroke="#9AA4B2" stroke-width="1.7"/></svg>',
   cur:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.6" fill="none" stroke="#045B3F" stroke-width="1.9"/><circle cx="10" cy="10" r="3.4" fill="#045B3F"/></svg>',
   done:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#045B3F"/><path d="M6.4 10.2l2.4 2.4 4.8-5" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  warn:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#FEF0C7"/><text x="10" y="14" text-anchor="middle" font-size="11.5" font-weight="700" fill="#B54708">!</text></svg>'
+  warn:'<svg width="17" height="17" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#E3E8EF"/><text x="10" y="14" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4B5565">!</text></svg>'
 };
 var MINI={
   done:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#099250" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  warn:'<svg width="13" height="13" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#FEF0C7"/><text x="10" y="14" text-anchor="middle" font-size="11.5" font-weight="700" fill="#B54708">!</text></svg>'
+  warn:'<svg width="13" height="13" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.4" fill="#E3E8EF"/><text x="10" y="14" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4B5565">!</text></svg>'
 };
 function curPageForNav(){return S.page;}
 function pageStatus(id){
@@ -1878,25 +2236,21 @@ function groupStatus(g){
   if(hasCur)return 'cur';
   return 'todo';
 }
+var STEP_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+/* top progress bar: one step per application group, numbered (DM Mono) */
 function paintNav(){
   var nav=$('nav');nav.innerHTML='';
   var cur=curPageForNav();
-  GROUPS.forEach(function(g){
-    var gActive=g.pages.some(function(pg){return pg[0]===cur;});
-    var b=el('button','nav-item'+(gActive?' active':''),'<span class="stat">'+IC[groupStatus(g)]+'</span><span>'+g.title+'</span>');
+  GROUPS.forEach(function(g,i){
+    if(i>0)nav.appendChild(el('span','flow-conn',''));
+    var st=groupStatus(g);
+    var isCur=g.pages.some(function(pg){return pg[0]===cur;});
+    var done=st==='done';
+    var dot=done?STEP_CHECK:String(i+1);
+    var cls='flow-step'+(isCur?' cur':'')+(done?' done':'');
+    var b=el('button',cls,'<span class="dot">'+dot+'</span><span class="lbl" data-text="'+esc(g.title)+'">'+g.title+'</span>');
     b.onclick=function(){showPage(g.pages[0][0]);};
     nav.appendChild(b);
-    if(g.pages.length>1){
-      var sub=el('div','nav-sub');
-      g.pages.forEach(function(pg){
-        var st=pageStatus(pg[0]);
-        var mini=st==='done'?MINI.done:st==='warn'?MINI.warn:'';
-        var a=el('button',pg[0]===cur?'cur':'',pg[1]+'<span class="mini">'+mini+'</span>');
-        a.onclick=function(){showPage(pg[0]);};
-        sub.appendChild(a);
-      });
-      nav.appendChild(sub);
-    }
   });
 }
 function paintProgress(){
@@ -1904,6 +2258,7 @@ function paintProgress(){
   var pct=Math.round((total-allMissing().length)/total*100);
   if(S.submitted)pct=100;
   $('progressFill').style.width=pct+'%';
+  var fp=$('flowProgressFill');if(fp)fp.style.width=pct+'%';
 }
 
 /* ============================ field binding ============================ */
@@ -2258,7 +2613,7 @@ function renderDocScreenResult(animate){
   sec.classList.remove('hidden');
   if(req.length){
     R.innerHTML=req.map(function(r){
-      return '<div class="docreq"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B54708" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 18px;margin-top:2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg><div><div class="dt">'+r.t+'</div><div class="dd">'+r.d+'</div></div></div>';
+      return '<div class="docreq"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4B5565" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 18px;margin-top:2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg><div><div class="dt">'+r.t+'</div><div class="dd">'+r.d+'</div></div></div>';
     }).join('');
     $('docUploadTitle').textContent='Upload the requested document'+(req.length>1?'s':'');
     $('docUploadWhy').innerHTML='Upload the '+req.length+' item'+(req.length>1?'s':'')+' above and you’re done here.';
@@ -2788,6 +3143,7 @@ function renderReview(){
   wireGapLinks(R);
   paintGaps();
 }
+var gapsExpanded=false;
 function paintGaps(){
   var box=$('gapsBox');var all=allMissing();
   var auth=submitAuthorized();
@@ -2800,14 +3156,24 @@ function paintGaps(){
       gate.classList.remove('hidden');
     }else gate.classList.add('hidden');
   }
-  if(!all.length){box.innerHTML='';return;}
+  if(!all.length){box.innerHTML='';gapsExpanded=false;return;}
+  /* long lists collapse to the first few items behind a "show all" toggle */
+  var COLLAPSE_AT=5,collapsed=all.length>COLLAPSE_AT&&!gapsExpanded;
+  var shown=collapsed?all.slice(0,COLLAPSE_AT):all;
   var html='<div class="gaps"><h4>Complete '+all.length+' required item'+(all.length>1?'s':'')+' to submit</h4>';
-  all.forEach(function(k){
+  shown.forEach(function(k){
     html+='<a href="#" data-goto="'+keyPage(k)+'" data-key="'+k+'">'+esc(labelFor(k))+'</a>';
   });
+  if(all.length>COLLAPSE_AT){
+    html+='<button type="button" class="gaps-toggle" id="gapsToggle" aria-expanded="'+(!collapsed)+'">'+
+      (collapsed?'Show all '+all.length+' items':'Show fewer items')+
+      ' <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>';
+  }
   html+='</div>';
   box.innerHTML=html;
   wireGapLinks(box);
+  var tog=$('gapsToggle');
+  if(tog)tog.onclick=function(){gapsExpanded=!gapsExpanded;paintGaps();};
 }
 
 /* ============================ setup hub ============================ */
@@ -3172,6 +3538,8 @@ function startInvitee(i){
   ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
   $('view-invitee').classList.remove('hidden');
+  if(prevView)slideIn($('view-invitee'),'fwd');
+  prevView='invitee';
   updateChatVisibility();
   renderInvStep('choice');
   window.scrollTo(0,0);
@@ -3263,60 +3631,195 @@ function renderInvStep(step){
 
 /* ============================ MFA setup (optional, after sign-up) ============================ */
 var mfaSent=false;
-function mfaFinish(){S.verified=true;S.page='welcome';save();show('app');}
+/* ============================ phone verification (mandatory SMS, before MFA) ============================ */
+var smsTimer=null,smsLeft=0,smsVerifying=false,smsVerified=false;
+var SMS_WAIT=30;
+function stopSmsTimer(){if(smsTimer){clearInterval(smsTimer);smsTimer=null;}}
+function fmtAcctPhone(v){
+  var dial=S.acctPhoneDial||'+1';
+  var d=String(v||'').replace(/\D/g,'');
+  if(dial==='+1'){
+    if(d.length===11&&d.charAt(0)==='1')d=d.slice(1);
+    if(d.length===10)return '+1 ('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6);
+  }
+  return d?(dial+' '+d):'your phone';
+}
+function setResend(label,disabled){var b=$('smsResendBtn');if(!b)return;b.textContent=label;b.disabled=disabled;}
+function fmtLeft(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);}
+function tickSms(){
+  var b=$('smsResendBtn');if(!b){stopSmsTimer();return;}
+  smsLeft--;
+  if(smsLeft>0){setResend('Resend in '+fmtLeft(smsLeft),true);}
+  else{setResend('Resend code',false);stopSmsTimer();}
+}
+function startSmsCountdown(){
+  stopSmsTimer();
+  smsLeft=SMS_WAIT;
+  setResend('Resend in '+fmtLeft(smsLeft),true);
+  smsTimer=setInterval(tickSms,1000);
+}
+function renderSms(){
+  smsVerifying=false;smsVerified=false;
+  $('smsTo').textContent=fmtAcctPhone(S.acctPhone);
+  var body=$('smsBody');if(!body)return;
+  var codeRow='<div class="code-row sm" id="smsCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>';
+  body.innerHTML=codeRow+
+    '<div class="sms-resend"><span>Didn&rsquo;t get a code?</span> <button type="button" id="smsResendBtn" disabled>Resend code</button></div>'+
+    '<div class="sms-status" id="smsStatus"></div>'+
+    '<button class="btn btn-primary" id="smsContinue" disabled style="margin-top:14px">Continue</button>';
+  /* auto-check fires on the 6th digit; Continue only unlocks once the code verifies, then it just advances */
+  wireCodeRow($('smsCode'),function(ok){if(smsVerifying||smsVerified)return;clearCodeError('smsCode','smsStatus');if(ok)verifySmsCode();});
+  $('smsContinue').onclick=function(){if(!this.disabled&&smsVerified){S.phoneVerified=true;persist();stopSmsTimer();show('mfa');}};
+  $('smsBack').onclick=function(){stopSmsTimer();smsVerifying=false;smsVerified=false;show('auth');};
+  $('smsResendBtn').onclick=function(){
+    if(this.disabled)return;
+    $('smsCode').classList.remove('err');
+    $('smsCode').querySelectorAll('input').forEach(function(i){i.value='';i.disabled=false;});
+    $('smsCode').querySelector('input').focus();
+    $('smsContinue').disabled=true;
+    var st=$('smsStatus');st.className='sms-status ok';st.textContent='A new code is on its way.';
+    smsVerifying=false;smsVerified=false;
+    startSmsCountdown();
+  };
+  startSmsCountdown();
+}
+/* prototype: only this demo code verifies; anything else errors and lets the user retry */
+var DEMO_CODE='123456';
+function readCode(rowId){return Array.prototype.map.call($(rowId).querySelectorAll('input'),function(i){return i.value;}).join('');}
+function codeError(rowId,st){
+  st.className='sms-status err';
+  st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> That code isn&rsquo;t right &mdash; check it and enter it again.';
+  $(rowId).classList.add('err');
+  var ins=$(rowId).querySelectorAll('input');
+  ins.forEach(function(i){i.disabled=false;i.value='';});
+  ins[0].focus();
+}
+/* error clears the moment the user starts re-entering digits */
+function clearCodeError(rowId,stId){var row=$(rowId);if(!row||!row.classList.contains('err'))return;row.classList.remove('err');var st=$(stId);if(st){st.className='sms-status';st.textContent='';}}
+/* auto-check: fires as soon as the 6th digit is in; Continue only advances after it passes */
+function verifySmsCode(){
+  var code=readCode('smsCode');
+  smsVerifying=true;
+  var cb=$('smsContinue');if(cb)cb.disabled=true;
+  $('smsCode').querySelectorAll('input').forEach(function(i){i.disabled=true;});
+  var st=$('smsStatus');st.className='sms-status';st.innerHTML='<span class="spinner"></span> Verifying&hellip;';
+  setTimeout(function(){
+    if(!smsVerifying||$('smsStatus')!==st)return;/* resend or back cancelled this check */
+    smsVerifying=false;
+    if(code!==DEMO_CODE){codeError('smsCode',st);if(cb)cb.disabled=true;return;}
+    smsVerified=true;
+    st.className='sms-status ok';
+    st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verified';
+    if(cb)cb.disabled=false;
+  },1000);
+}
+
+/* ============================ MFA setup (optional, after sign-up) ============================ */
+var mfaSent=false;
+/* resend countdown for the email two-step setup (reuses SMS_WAIT/fmtLeft) */
+var mfaTimer=null,mfaLeft=0;
+function stopMfaTimer(){if(mfaTimer){clearInterval(mfaTimer);mfaTimer=null;}}
+function setMfaResend(label,disabled){var b=$('mfaResendBtn');if(!b)return;b.textContent=label;b.disabled=disabled;}
+function tickMfa(){var b=$('mfaResendBtn');if(!b){stopMfaTimer();return;}mfaLeft--;if(mfaLeft>0)setMfaResend('Resend in '+fmtLeft(mfaLeft),true);else{setMfaResend('Resend code',false);stopMfaTimer();}}
+function startMfaCountdown(){stopMfaTimer();mfaLeft=SMS_WAIT;setMfaResend('Resend in '+fmtLeft(mfaLeft),true);mfaTimer=setInterval(tickMfa,1000);}
+/* deterministic QR-code placeholder for authenticator-app setup */
+function qrSvg(seed){
+  var N=21,c=5,pad=6,size=N*c+pad*2,s=String(seed||'loop2fa');
+  function isFinder(i,j){return (i<7&&j<7)||(i>=N-7&&j<7)||(i<7&&j>=N-7);}
+  var r='',h=2166136261;
+  for(var i=0;i<N;i++)for(var j=0;j<N;j++){
+    if(isFinder(i,j))continue;
+    h=((h^(i*131+j*17+s.charCodeAt((i*j+j)%s.length)))*16777619)>>>0;
+    if((h&7)<3)r+='<rect x="'+(pad+i*c)+'" y="'+(pad+j*c)+'" width="'+c+'" height="'+c+'"/>';
+  }
+  function finder(ox,oy){var x=pad+ox*c,y=pad+oy*c;return '<rect x="'+x+'" y="'+y+'" width="'+(7*c)+'" height="'+(7*c)+'"/><rect x="'+(x+c)+'" y="'+(y+c)+'" width="'+(5*c)+'" height="'+(5*c)+'" fill="#fff"/><rect x="'+(x+2*c)+'" y="'+(y+2*c)+'" width="'+(3*c)+'" height="'+(3*c)+'"/>';}
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg" fill="#011710"><rect width="'+size+'" height="'+size+'" fill="#fff"/>'+r+finder(0,0)+finder(N-7,0)+finder(0,N-7)+'</svg>';
+}
+var MFA_SECRET='LOOP K4F2 9XQ7 ZM3T';
+function mfaFinish(){stopMfaTimer();S.verified=true;S.page='welcome';save();show('app');}
+var mfaVerifying=false,mfaVerified=false;
+function backLink(){return '<button type="button" class="back-link back-top" id="mfaBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>';}
+function wireMfaBack(){var b=$('mfaBack');if(b)b.onclick=function(){stopMfaTimer();S.mfaMethod='';mfaSent=false;mfaVerifying=false;mfaVerified=false;persist();renderMfa();};}
+/* router: the chooser and each method now live on their own page within view-mfa */
 function renderMfa(){
   var body=$('mfaBody');if(!body)return;
-  /* reset the skip-confirmation warning each time the step is shown */
-  var sk=$('mfaSkip'),ske=$('mfaSkipErr');
-  if(sk)sk.textContent='Skip for now';
-  if(ske)ske.classList.add('hidden');
-  if(S.mfaEnabled){
-    var m=S.mfaMethod,label=m==='passkey'?'a passkey':m==='sms'?('text codes to '+esc(S.mfaPhone||'your phone')):('email codes to '+esc(S.email));
-    body.innerHTML='<div class="mfa-ok"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Two-step verification is on using '+label+'.</div>'+
-      '<button class="btn btn-primary" id="mfaContinue">Continue to your application &#8594;</button>';
-    $('mfaContinue').onclick=mfaFinish;
-    return;
-  }
-  var KEYICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>';
-  var PHONEICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
-  var MAILICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>';
-  var cards=[
-    ['passkey','Passkey',KEYICON],
-    ['sms','Text message',PHONEICON],
-    ['email','Email code',MAILICON]
-  ];
-  body.innerHTML=cards.map(function(c){
-    return '<div class="mfa-card mfa-card-sm'+(S.mfaMethod===c[0]?' on':'')+'" data-mfa="'+c[0]+'"><span class="mic">'+c[2]+'</span><div class="mt">'+c[1]+'</div></div>';
-  }).join('')+'<div id="mfaSetup"></div>';
-  body.querySelectorAll('[data-mfa]').forEach(function(card){
-    card.onclick=function(){S.mfaMethod=card.dataset.mfa;mfaSent=false;persist();renderMfa();};
-  });
-  renderMfaSetup();
+  stopMfaTimer();
+  if(S.mfaEnabled)renderMfaDone(body);
+  else if(S.mfaMethod==='passkey')renderMfaPasskey(body);
+  else if(S.mfaMethod==='authenticator')renderMfaAuth(body);
+  else renderMfaChooser(body);
 }
-function renderMfaSetup(){
-  var box=$('mfaSetup');if(!box)return;
-  var m=S.mfaMethod;if(!m){box.innerHTML='';return;}
-  var codeRow='<div class="code-row sm" id="mfaCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>';
-  if(m==='passkey'){
-    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 12px">Your device will ask for Face ID, your fingerprint, or a security key.</p><button class="btn btn-primary btn-sm" id="mfaPasskey">Create a passkey</button></div>';
-    $('mfaPasskey').onclick=function(){
-      var b=$('mfaPasskey');b.disabled=true;b.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Waiting for your device&hellip;';
-      setTimeout(function(){S.mfaEnabled=true;persist();renderMfa();},1400);
-    };
-  }else if(m==='sms'&&!mfaSent){
-    box.innerHTML='<div class="mfa-setup"><div class="row" style="grid-template-columns:120px 1fr"><div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div><div class="field'+(S.mfaPhone?' filled':'')+'"><input id="mfaPhone" type="tel" inputmode="tel" value="'+esc(S.mfaPhone||'')+'"><label for="mfaPhone">Mobile number</label></div></div><button class="btn btn-primary btn-sm" id="mfaSend" style="margin-top:12px">Text me a code</button></div>';
-    var ph=$('mfaPhone');
-    ph.addEventListener('input',function(){S.mfaPhone=ph.value;ph.closest('.field').classList.toggle('filled',!!ph.value);ph.closest('.field').classList.remove('invalid');persist();});
-    $('mfaSend').onclick=function(){if(!ph.value){ph.closest('.field').classList.add('invalid');return;}mfaSent=true;renderMfaSetup();};
-  }else if(m==='email'&&!mfaSent){
-    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 12px">We&rsquo;ll email a 6-digit code to <strong>'+esc(S.email)+'</strong>.</p><button class="btn btn-primary btn-sm" id="mfaSend">Send code</button></div>';
-    $('mfaSend').onclick=function(){mfaSent=true;renderMfaSetup();};
-  }else{
-    var to=m==='sms'?esc(S.mfaPhone):esc(S.email);
-    box.innerHTML='<div class="mfa-setup"><p class="desc" style="margin:0 0 8px">Enter the 6-digit code we sent to '+to+'.</p>'+codeRow+'<button class="btn btn-primary btn-sm" id="mfaVerify" disabled style="margin-top:12px">Verify and enable</button></div>';
-    wireCodeRow($('mfaCode'),function(ok){$('mfaVerify').disabled=!ok;});
-    $('mfaVerify').onclick=function(){S.mfaEnabled=true;persist();renderMfa();};
-  }
+function renderMfaDone(body){
+  var m=S.mfaMethod,label=m==='passkey'?'a passkey':m==='authenticator'?'an authenticator app':('email codes to '+esc(S.email));
+  body.innerHTML='<h1>You&rsquo;re all set</h1>'+
+    '<div class="mfa-ok" style="margin-top:18px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Two-step verification is on using '+label+'.</div>'+
+    '<button class="btn btn-primary" id="mfaContinue">Continue to your application &#8594;</button>';
+  $('mfaContinue').onclick=mfaFinish;
+}
+function renderMfaChooser(body){
+  var KEYICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>';
+  var AUTHICON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3"/><path d="M21 14v7h-7"/></svg>';
+  var CHEV='<svg class="mfa-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+  var cards=[['passkey','Continue with Passkey',KEYICON],['authenticator','Continue with Authenticator',AUTHICON]];
+  body.innerHTML='<h1>Add a second step</h1>'+
+    '<p class="auth-sub">Two-step verification protects your account at sign-in.</p>'+
+    cards.map(function(c){return '<div class="mfa-card mfa-card-sm" data-mfa="'+c[0]+'"><span class="mic">'+c[2]+'</span><div class="mt">'+c[1]+'</div>'+CHEV+'</div>';}).join('')+
+    '<p class="auth-foot mfa-skip" style="text-align:left"><a href="#" id="mfaSkip">Skip for now</a></p>';
+  body.querySelectorAll('[data-mfa]').forEach(function(card){card.onclick=function(){S.mfaMethod=card.dataset.mfa;mfaSent=false;mfaVerifying=false;mfaVerified=false;persist();renderMfa();};});
+  $('mfaSkip').onclick=function(e){e.preventDefault();mfaFinish();};
+}
+function renderMfaPasskey(body){
+  body.innerHTML=backLink()+'<h1>Set up a passkey</h1>'+
+    '<p class="auth-sub">Use Face ID, your fingerprint, or a security key to sign in.</p>'+
+    '<button class="btn btn-primary" id="mfaPasskey">Create a passkey</button>'+
+    '<div class="sms-status" id="mfaStatus"></div>';
+  $('mfaPasskey').onclick=function(){
+    var b=$('mfaPasskey');b.disabled=true;b.innerHTML='<span class="spinner" style="width:15px;height:15px;border-width:2px"></span> Waiting for your device&hellip;';
+    setTimeout(function(){S.mfaEnabled=true;persist();renderMfa();},1400);
+  };
+  wireMfaBack();
+}
+function renderMfaAuth(body){
+  mfaVerifying=false;mfaVerified=false;
+  body.innerHTML=backLink()+'<h1>Set up an authenticator app</h1>'+
+    '<ol class="auth-steps">'+
+      '<li>Install an authenticator app on your phone:'+
+        '<ul class="auth-apps"><li>Google Authenticator</li><li>Microsoft Authenticator</li><li>1Password or Authy</li></ul></li>'+
+      '<li>Use the app to scan this QR code, or enter the setup key:'+
+        '<div class="auth-2col">'+
+          '<span class="auth-qr">'+qrSvg(S.email)+'</span>'+
+          '<div class="or-vert">OR</div>'+
+          '<div class="auth-secret"><span class="t">Setup key</span><code>'+esc(MFA_SECRET)+'</code></div>'+
+        '</div></li>'+
+      '<li>Enter the 6-digit code your app shows.</li>'+
+    '</ol>'+
+    '<div class="fgrid mfa-form">'+
+      '<div class="code-row sm" id="mfaCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>'+
+      '<div class="sms-status" id="mfaStatus"></div>'+
+      '<button class="btn btn-primary" id="mfaVerify" disabled>Verify and enable</button>'+
+    '</div>';
+  /* 6-box code entry (same format as phone verification); auto-checks on the 6th digit, Verify unlocks once it passes */
+  wireCodeRow($('mfaCode'),function(ok){if(mfaVerifying||mfaVerified)return;clearCodeError('mfaCode','mfaStatus');if(ok)verifyMfaCode();});
+  $('mfaVerify').onclick=function(){if(!this.disabled&&mfaVerified){S.mfaEnabled=true;persist();renderMfa();}};
+  wireMfaBack();
+}
+/* auto-check: fires as soon as the 6th digit is in; Verify and enable only proceeds after it passes (same DEMO_CODE as SMS) */
+function verifyMfaCode(){
+  var code=readCode('mfaCode');
+  mfaVerifying=true;
+  $('mfaVerify').disabled=true;
+  $('mfaCode').querySelectorAll('input').forEach(function(i){i.disabled=true;});
+  var st=$('mfaStatus');st.className='sms-status';st.innerHTML='<span class="spinner"></span> Verifying&hellip;';
+  setTimeout(function(){
+    if(!mfaVerifying||$('mfaStatus')!==st)return;/* back cancelled this check */
+    mfaVerifying=false;
+    var b=$('mfaVerify');
+    if(code!==DEMO_CODE){codeError('mfaCode',st);if(b)b.disabled=true;return;}
+    mfaVerified=true;
+    st.className='sms-status ok';
+    st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verified';
+    if(b)b.disabled=false;
+  },1000);
 }
 
 /* ============================ collaborators (added at the start, view access) ============================ */
@@ -3354,7 +3857,7 @@ var CHAT_QA={
   'Talk to a human':'You’re in the queue. Someone from our support team will reply right here, usually within a few minutes. You can also email <a href="mailto:support@bankonloop.com">support@bankonloop.com</a>.'
 };
 var CHAT_QA_APP={
-  'How long does this take?':'Most businesses finish in about 15 minutes, and progress saves automatically. After you submit, our team reviews within <strong>3&ndash;6 business days</strong>.',
+  'How long does this take?':'Most businesses finish in about 15 minutes, and your progress is saved every time you move between pages. After you submit, our team reviews within <strong>3&ndash;6 business days</strong>.',
   'Who counts as a key contact?':'Anyone who is a director, a signing officer, an owner of 25% or more, or who controls the business day to day. You verify your own identity here; everyone else gets an emailed link.',
   'Can a teammate help me fill this in?':'Yes. Use <strong>Add a collaborator</strong> in the left panel to invite a collaborator to fill the whole application or just one page. You can revoke access anytime.',
   'Talk to a human':'Happy to help. Someone from our team will reply right here, usually within a few minutes. You can also email <a href="mailto:support@bankonloop.com">support@bankonloop.com</a>.'
@@ -3366,7 +3869,7 @@ function updateChatVisibility(){
   var v=S.view;
   var allowed=appOpen||v==='setup'||v==='approved'||v==='plan'||v==='live';
   /* tuck the bot away while a modal/drawer covers the screen so it doesn't overlap */
-  var overlay=!$('drawer').classList.contains('hidden')||!$('modalOverlay').classList.contains('hidden')||!$('collabOverlay').classList.contains('hidden')||!$('permOverlay').classList.contains('hidden');
+  var overlay=!$('drawer').classList.contains('hidden')||!$('collabOverlay').classList.contains('hidden')||!$('permOverlay').classList.contains('hidden');
   var visible=allowed&&!overlay;
   fab.classList.toggle('hidden',!visible);
   if(!visible)$('chatPanel').classList.add('hidden');
@@ -3415,35 +3918,43 @@ function dropConfetti(){
 }
 
 /* ============================ modal ============================ */
-var modalNext=null;
-function openModal(count,next){
-  modalNext=next;
-  $('modalBody').textContent=count+(count===1?' field isn’t':' fields aren’t')+' complete. You can move on now, but you or a teammate will need to complete '+(count===1?'it':'them')+' before submitting.';
-  $('modalOverlay').classList.remove('hidden');
-  updateChatVisibility();
-}
-function closeModal(){$('modalOverlay').classList.add('hidden');modalNext=null;updateChatVisibility();}
-
 /* ============================ continue ============================ */
+/* incomplete fields never block or warn while moving forward — the review
+   screen is where every gap surfaces (and marks the pages, see showPage) */
 function continueFrom(id){
-  S.attempted[id]=true;
   var miss=missingPage(id);
-  refreshInvalid(id);
   save();
-  var next=function(){showPage(NEXT_PAGE[id]);};
   /* requested documents are mandatory — no skipping past this page without them */
   if(id==='documents'&&miss.indexOf('docs')>=0){
     renderDocs();
     var t=$('upDocs');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  if(miss.length)openModal(miss.length,next);
-  else next();
+  showPage(NEXT_PAGE[id]);
+}
+
+/* ============================ auth side panel ============================ */
+/* photo carousel: the three slides crossfade on a fixed timer across every auth view */
+var AUTH_SLIDES=['carousel-dt-ecom.png','carousel-sheet-happens.png','carousel-junip.png'];
+var AUTH_SLIDE_MS=5000;
+function renderAuthMedia(){
+  var html=AUTH_SLIDES.map(function(src,i){
+    return '<div class="am-slide'+(i===0?' on':'')+'" style="background-image:url(\''+src+'\')"></div>';
+  }).join('');
+  document.querySelectorAll('.auth-media').forEach(function(m){m.innerHTML=html;});
+  var idx=0;
+  setInterval(function(){
+    idx=(idx+1)%AUTH_SLIDES.length;
+    document.querySelectorAll('.auth-media .am-slide').forEach(function(s,i){
+      s.classList.toggle('on',i%AUTH_SLIDES.length===idx);
+    });
+  },AUTH_SLIDE_MS);
 }
 
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
-  ['logoAuth','logoMfa','logoSide','logoTop','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
+  ['logoAuth','logoSms','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
+  renderAuthMedia();
   fillSelect($('f-entityType'),ENTITIES);
   fillSelect($('f-industry'),sortedIndustries());
   fillSelect($('f-rbRelType'),RELTYPES);
@@ -3490,7 +4001,7 @@ document.addEventListener('DOMContentLoaded',function(){
   /* auth */
   $('toSignin').onclick=function(e){e.preventDefault();$('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');syncAuthButtons();};
   $('toSignup').onclick=function(e){e.preventDefault();$('authSignin').classList.add('hidden');$('authSignup').classList.remove('hidden');syncAuthButtons();};
-  ['su-fn','su-ln','su-email','su-pass','si-email','si-pass'].forEach(function(id){
+  ['su-fn','su-ln','su-email','su-phone','su-pass','si-email','si-pass'].forEach(function(id){
     var inp=$(id);
     inp.addEventListener('input',function(){
       inp.closest('.field').classList.toggle('filled',!!inp.value);
@@ -3499,6 +4010,28 @@ document.addEventListener('DOMContentLoaded',function(){
       syncAuthButtons();
     });
   });
+  /* flag a bad email / phone once the field is left (only when there's something to judge) */
+  [['su-email',validEmail],['si-email',validEmail],['su-phone',validPhone]].forEach(function(pair){
+    var inp=$(pair[0]);if(!inp)return;
+    inp.addEventListener('blur',function(){
+      var f=inp.closest('.field');
+      if(inp.value.trim()&&!pair[1](inp.value))f.classList.add('invalid');
+      else f.classList.remove('invalid');
+    });
+  });
+  /* password visibility toggles (eye icon) */
+  [['su-pass','su-pass-eye'],['si-pass','si-pass-eye']].forEach(function(pair){
+    var inp=$(pair[0]),btn=$(pair[1]);if(!inp||!btn)return;
+    btn.onclick=function(){
+      var reveal=inp.type==='password';
+      inp.type=reveal?'text':'password';
+      btn.classList.toggle('revealed',reveal);
+      btn.setAttribute('aria-pressed',reveal?'true':'false');
+      btn.setAttribute('aria-label',reveal?'Hide password':'Show password');
+      inp.focus();
+    };
+  });
+  setupCountryPicker();
   /* referral code — hidden until the applicant chooses to add one */
   $('refToggle').onclick=function(){
     $('refToggle').classList.add('hidden');
@@ -3509,21 +4042,24 @@ document.addEventListener('DOMContentLoaded',function(){
   /* Continue with Google (simulated) — sign in only */
   $('googleSignin').onclick=function(){S=freshKeepSettings();S.email='you@gmail.com';S.verified=true;S.page='welcome';save();show('app');};
   $('btnSignup').onclick=function(){
-    var fn=$('su-fn'),ln=$('su-ln'),em=$('su-email'),pw=$('su-pass'),ref=$('su-ref').value.trim(),ok=true;
+    var fn=$('su-fn'),ln=$('su-ln'),em=$('su-email'),ph=$('su-phone'),pw=$('su-pass'),ref=$('su-ref').value.trim(),ok=true;
     if(!fn.value){fn.closest('.field').classList.add('invalid');ok=false;}
     if(!ln.value){ln.closest('.field').classList.add('invalid');ok=false;}
-    if(!em.value||em.value.indexOf('@')<1){em.closest('.field').classList.add('invalid');ok=false;}
+    if(!validEmail(em.value)){em.closest('.field').classList.add('invalid');ok=false;}
+    if(!validPhone(ph.value)){ph.closest('.field').classList.add('invalid');ok=false;}
     if(pw.value.length<8){pw.closest('.field').classList.add('invalid');ok=false;}
     if(!ok)return;
     if(em.value.trim().toLowerCase()!==(S.email||'').toLowerCase()){S=freshKeepSettings();}
     S.email=em.value.trim();S.firstName=fn.value.trim();S.lastName=ln.value.trim();S.verified=false;
+    S.acctPhone=ph.value.trim();S.acctPhoneDial=($('ccDial')?$('ccDial').textContent.trim():'+1')||'+1';S.phoneVerified=false;
     S.referralCode=ref;
     S.mfaMethod='';S.mfaEnabled=false;mfaSent=false;
-    save();show('mfa');
+    /* creating the account immediately fires the mandatory verification text */
+    save();show('sms');
   };
   $('btnSignin').onclick=function(){
     var em=$('si-email'),pw=$('si-pass'),ok=true;
-    if(!em.value||em.value.indexOf('@')<1){em.closest('.field').classList.add('invalid');ok=false;}
+    if(!validEmail(em.value)){em.closest('.field').classList.add('invalid');ok=false;}
     if(!pw.value){pw.closest('.field').classList.add('invalid');ok=false;}
     if(!ok)return;
     if(em.value.trim().toLowerCase()===(S.email||'').toLowerCase()&&S.verified){
@@ -3534,18 +4070,6 @@ document.addEventListener('DOMContentLoaded',function(){
     }else{
       S=freshKeepSettings();S.email=em.value.trim();S.verified=true;S.page='welcome';save();show('app');
     }
-  };
-
-  /* MFA setup (optional) — skipping surfaces a warning first, then proceeds on confirm */
-  $('mfaSkip').onclick=function(e){
-    e.preventDefault();
-    var err=$('mfaSkipErr');
-    if(err&&err.classList.contains('hidden')){
-      err.classList.remove('hidden');
-      $('mfaSkip').textContent='Skip anyway';
-      return;
-    }
-    mfaFinish();
   };
 
   /* welcome + continue buttons */
@@ -3719,12 +4243,10 @@ document.addEventListener('DOMContentLoaded',function(){
     inp.addEventListener('change',function(){inp.closest('.field').classList.toggle('filled',!!inp.value);});
   });
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){closeNav();closeDrawer();closeModal();closeCollabModal();closePermissions();closeSettingsMenu();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
+    if(e.key==='Escape'){closeNav();closeDrawer();closeCollabModal();closePermissions();closeSettingsMenu();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
   });
 
   /* modal */
-  $('modalBack').onclick=closeModal;
-  $('modalGo').onclick=function(){var n=modalNext;closeModal();if(n)n();};
 
   /* sign out (sidebar + waitroom sign-out moved into the settings menu) */
   $('apSignOut').onclick=doSignOut;
@@ -3741,9 +4263,6 @@ document.addEventListener('DOMContentLoaded',function(){
   $('settingsTrigger').onclick=function(e){e.stopPropagation();openSettingsMenu($('settingsTrigger'));};
   $('setupSettingsTrigger').onclick=function(e){e.stopPropagation();openSettingsMenu($('setupSettingsTrigger'));};
 
-  /* mobile off-canvas sidebar (top-bar hamburger) */
-  $('navToggle').onclick=function(e){e.stopPropagation();var open=document.body.classList.toggle('nav-open');$('navToggle').setAttribute('aria-expanded',open?'true':'false');};
-  $('navBackdrop').onclick=closeNav;
   $('permClose').onclick=closePermissions;
   $('permOverlay').onclick=function(e){if(e.target===$('permOverlay'))closePermissions();};
 
@@ -3769,6 +4288,7 @@ document.addEventListener('DOMContentLoaded',function(){
   else if(S.approved)show('approved');
   else if(S.submitted)show('setup');
   else if(S.verified&&S.view==='app')show('app');
+  else if(S.view==='sms'&&S.email)show('sms');
   else if(S.view==='mfa'&&S.email)show('mfa');
   else show('auth');
 });
