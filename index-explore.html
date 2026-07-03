@@ -283,17 +283,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .q.invalid .q-label{color:var(--error-600)}
 .q.invalid .qfield select,.q.invalid .qfield input{border-color:var(--error-600)}
 
-/* sliders (Ramp style) */
-.sliderq{margin-top:26px}
-.sliderq input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:var(--gray-100);outline:none;margin:10px 0 2px;cursor:pointer}
-.sliderq input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2.5px solid var(--brand-500);box-shadow:0 1px 3px rgba(16,24,40,.18);cursor:grab}
-.sliderq input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;box-shadow:0 0 0 6px rgba(4,91,63,.12)}
-.sliderq input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:2.5px solid var(--brand-500);box-shadow:0 1px 3px rgba(16,24,40,.18);cursor:grab}
-.slider-read{font-size:13.5px;color:var(--gray-600);margin-top:8px}
-.slider-read strong{color:var(--gray-900);font-weight:600}
-.sliderq.invalid .q-label{color:var(--error-600)}
-.sliderq.invalid .slider-read{color:var(--error-600)}
-.slider-pair{display:grid;grid-template-columns:1fr 1fr;gap:0 36px}
 
 /* chips + segmented */
 .chips{display:flex;flex-wrap:wrap;gap:10px}
@@ -307,6 +296,9 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .chips-label .req-mark{color:var(--gray-500);font-weight:400}
 .chips-wrap.invalid .chips-label{color:var(--error-600)}
 .chips-wrap.invalid .chip{border-color:var(--error-200)}
+/* in the key-contact drawer the question matches the surrounding .field labels */
+#taxSec .chips-label{font-size:13.5px;color:var(--gray-700)}
+#taxSec .chips-wrap.invalid .chips-label{color:var(--error-600)}
 
 /* uploads */
 .upload{border:1.5px dashed var(--gray-300);border-radius:12px;padding:30px 20px;text-align:center;cursor:pointer;transition:all .12s;background:#fff}
@@ -457,8 +449,9 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .topbar .em{font-size:13px;color:var(--gray-600)}
 .topbar button{background:none;border:none;font-size:13.5px;color:var(--gray-600);display:flex;align-items:center;gap:7px}
 .topbar button:hover{color:var(--gray-900)}
-.setup-wrap{display:flex;gap:48px;max-width:1100px;margin:0 auto;padding:56px 40px 120px;align-items:flex-start}
-.setup-main{flex:1;min-width:0;max-width:660px}
+/* main column centered on the viewport; the timeline is fixed against the right edge */
+.setup-wrap{padding:56px 40px 120px}
+.setup-main{max-width:660px;margin:0 auto}
 .setup-count{font-size:13px;font-weight:600;color:var(--gray-500);margin:26px 0 12px;letter-spacing:.02em}
 .setup-item{border:1px solid var(--gray-200);border-radius:14px;background:#fff;box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden}
 .setup-head{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;background:none;border:none;width:100%;text-align:left}
@@ -477,16 +470,13 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .invited{display:flex;align-items:center;gap:10px;border:1px solid var(--gray-200);border-radius:10px;padding:11px 14px;margin-bottom:8px;font-size:14px}
 .invited .iv-em{flex:1;font-weight:600;word-break:break-all}
 .invited .iv-role{font-size:12.5px;color:var(--gray-500)}
-.plancard{display:flex;gap:14px;border:1px solid var(--gray-300);border-radius:12px;padding:16px 18px;cursor:pointer;margin-bottom:10px;background:#fff;transition:all .12s;position:relative}
-.plancard.on{border-color:var(--brand-500);background:var(--brand-25)}
-.plancard .pn{font-weight:600;font-size:15px}
-.plancard .pp{font-size:13.5px;color:var(--gray-600)}
-.plancard .pf{font-size:13px;color:var(--gray-500);margin-top:6px;line-height:1.6}
-.plancard .pop{position:absolute;top:14px;right:16px;background:var(--brand-500);color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:3px 9px}
-.plancard.on .pop{background:var(--brand-700)}
-.plan-note{font-size:12.5px;color:var(--gray-500);margin-top:10px}
+/* waiting-room credit application */
+.credit-sec-h{font-size:14.5px;font-weight:700;margin:24px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--gray-100)}
+.credit-boost{border:1px solid var(--gray-200);border-radius:14px;padding:18px 20px;margin-top:16px;background:var(--gray-25)}
+.credit-boost h4{font-size:14.5px;font-weight:600;margin-bottom:4px}
+.credit-boost p{font-size:13px;color:var(--gray-600);line-height:1.55;margin-bottom:12px}
 /* timeline card */
-.tcard{width:300px;flex:0 0 300px;border:1px solid var(--gray-200);border-radius:14px;padding:22px;box-shadow:var(--shadow-sm);position:sticky;top:32px;background:#fff}
+.tcard{width:300px;position:fixed;right:24px;top:104px;padding:22px}
 .tcard h3{font-size:15px;font-weight:600;margin-bottom:16px}
 .tstep{display:flex;gap:13px}
 .tstep .trail{display:flex;flex-direction:column;align-items:center}
@@ -554,9 +544,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* tax-id format warning */
 .fhelp.warn{color:var(--warn-700);font-weight:600}
 
-/* underline payment terms */
-.sliderq .q-label strong{text-decoration:underline;text-underline-offset:2px}
-
 /* hover tooltip */
 .tip{position:relative;display:inline-flex;vertical-align:-3px;margin-left:6px;color:var(--gray-400);cursor:help}
 .tip:hover{color:var(--gray-600)}
@@ -610,7 +597,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .fgrid>.cofill-lock{margin:0}
 .fsec .cofill-lock{margin-top:26px;margin-bottom:0}
 .fsec .fgrid .cofill-lock{margin-top:0}
-.cofill-lock+.q,.cofill-lock+.sliderq,.cofill-lock+.chips-wrap{margin-top:10px}
+.cofill-lock+.q,.cofill-lock+.chips-wrap{margin-top:10px}
 .cofill-lock .rv-btn{margin-left:auto;background:none;border:none;font-size:12px;font-weight:600;color:var(--blue-700);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .cofill-lock .rv-btn:hover{color:var(--error-600)}
 .cofill-locked-area{opacity:.45;pointer-events:none;user-select:none}
@@ -650,13 +637,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* QR hand-off */
 .qr-wrap{display:flex;align-items:center;gap:16px;justify-content:center;margin-top:14px;text-align:left}
 .qr-wrap svg{flex:0 0 104px;width:104px;height:104px;border:1px solid var(--gray-200);border-radius:10px;background:#fff;padding:7px}
-
-/* billing toggle */
-.billtoggle{display:inline-flex;border:1px solid var(--gray-300);border-radius:999px;padding:3px;margin-bottom:14px;background:#fff}
-.billtoggle button{border:none;background:none;border-radius:999px;padding:7px 16px;font-size:13px;font-weight:600;color:var(--gray-600);display:inline-flex;align-items:center}
-.billtoggle button.on{background:var(--brand-500);color:#fff}
-.billtoggle .save{font-size:10.5px;font-weight:700;margin-left:6px;color:var(--success-700);background:var(--success-50);border-radius:999px;padding:2px 7px}
-.billtoggle button.on .save{color:#fff;background:rgba(255,255,255,.18)}
 
 /* chat (Intercom-style messenger) */
 .chatfab{position:fixed;right:24px;bottom:24px;width:54px;height:54px;border-radius:50%;background:var(--brand-500);border:none;box-shadow:0 8px 24px rgba(0,41,26,.35);display:flex;align-items:center;justify-content:center;color:#fff;z-index:95;transition:background .12s}
@@ -812,9 +792,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .wr-mand-item .wmd{font-size:12.5px;color:var(--gray-600);margin:2px 0 12px;line-height:1.5}
 
 /* ---------- payment (paid plan) ---------- */
-.pay-card{border:1px solid var(--gray-200);border-radius:14px;padding:20px 22px;margin-top:18px;background:var(--gray-25);text-align:left}
-.pay-card h4{font-size:14.5px;font-weight:600;margin-bottom:3px}
-.pay-card .pay-sub{font-size:13px;color:var(--gray-600);margin-bottom:14px;line-height:1.5}
 
 /* ---------- hover animations ---------- */
 /* inputs lighten on hover */
@@ -835,8 +812,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .chip{transition:all .14s ease}
 .chip:not(.on):hover{border-color:var(--gray-400);background:var(--gray-50)}
 /* smooth the other interactive surfaces */
-.nav-item,.settings-row,.settings-opt,.icobtn,.plancard,.rolecard,.mfa-card,.cofill-side,.cp-collab-chip,.perm-row .pr-remove{transition:background-color .14s ease,border-color .14s ease,color .14s ease,box-shadow .14s ease}
-.plancard:not(.on):hover,.rolecard:not(.on):hover,.mfa-card:not(.on):hover{border-color:var(--gray-400)}
+.nav-item,.settings-row,.settings-opt,.icobtn,.rolecard,.mfa-card,.cofill-side,.cp-collab-chip,.perm-row .pr-remove{transition:background-color .14s ease,border-color .14s ease,color .14s ease,box-shadow .14s ease}
+.rolecard:not(.on):hover,.mfa-card:not(.on):hover{border-color:var(--gray-400)}
 
 /* ---------- directional page transitions ---------- */
 /* entrance-only: the incoming step slides in from the right going forward, from the left backtracking */
@@ -865,8 +842,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 [data-theme="dark"] .logo img{filter:brightness(0) invert(1)}
 [data-theme="dark"] .auth-card,[data-theme="dark"] .sub-card,[data-theme="dark"] .reg-panel,[data-theme="dark"] .ind-card,
 [data-theme="dark"] #drawer,[data-theme="dark"] .rolecard,[data-theme="dark"] .modal,[data-theme="dark"] .perm-modal,
-[data-theme="dark"] .rev-card,[data-theme="dark"] .signcard,[data-theme="dark"] .tcard,[data-theme="dark"] .topbar,[data-theme="dark"] .app-topbar,
-[data-theme="dark"] .setup-item,[data-theme="dark"] .plancard,[data-theme="dark"] .chatpanel,[data-theme="dark"] .chat-msg.bot,
+[data-theme="dark"] .rev-card,[data-theme="dark"] .signcard,[data-theme="dark"] .topbar,[data-theme="dark"] .app-topbar,
+[data-theme="dark"] .setup-item,[data-theme="dark"] .credit-boost,[data-theme="dark"] .chatpanel,[data-theme="dark"] .chat-msg.bot,
 [data-theme="dark"] .chat-foot,[data-theme="dark"] .cofill-panel,[data-theme="dark"] .collab-row,[data-theme="dark"] .mfa-card,
 [data-theme="dark"] .acc-req,[data-theme="dark"] .settings-pop,[data-theme="dark"] .settings-sub,[data-theme="dark"] .perm-row,
 [data-theme="dark"] .fixedbox{background:var(--gray-50)}
@@ -874,20 +851,17 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 [data-theme="dark"] .qfield select,[data-theme="dark"] .qfield textarea,[data-theme="dark"] .chip,[data-theme="dark"] .upload,
 [data-theme="dark"] .filechip,[data-theme="dark"] .msel-btn,[data-theme="dark"] .msel-panel,[data-theme="dark"] .btn-secondary,
 [data-theme="dark"] .code-row input,[data-theme="dark"] .cp-send-row input,[data-theme="dark"] .chat-foot input,
-[data-theme="dark"] .billtoggle,[data-theme="dark"] .invited{background:var(--gray-100);color:var(--gray-900)}
+[data-theme="dark"] .invited{background:var(--gray-100);color:var(--gray-900)}
 [data-theme="dark"] .consent .box,[data-theme="dark"] .rolecard .cb,[data-theme="dark"] .msel-row .box,
 [data-theme="dark"] .cp-box{background:var(--gray-100)}
 [data-theme="dark"] .code-row.err input{background:var(--gray-100);border-color:var(--error-500)}
-[data-theme="dark"] .sliderq input[type=range]{background:var(--gray-200)}
-[data-theme="dark"] .sliderq input[type=range]::-webkit-slider-thumb{background:var(--gray-100)}
-[data-theme="dark"] .plancard .pop{background:var(--brand-500)}
-[data-theme="dark"] .plancard.on .pop{background:var(--brand-400)}
 [data-theme="dark"] .nav-item.active,[data-theme="dark"] .chip.on,[data-theme="dark"] .rolecard.on,
-[data-theme="dark"] .plancard.on,[data-theme="dark"] .mfa-card.on{background:var(--brand-50)}
+[data-theme="dark"] .mfa-card.on{background:var(--brand-50)}
 [data-theme="dark"] a{color:var(--brand-300)}
 [data-theme="dark"] .btn-primary[disabled]{background:var(--gray-200);color:var(--gray-500)}
 
-@media (max-width:1020px){
+/* fixed-left timeline needs room beside the centered column before it overlaps */
+@media (max-width:1320px){
   .tcard{display:none}
 }
 @media (max-width:980px){
@@ -898,7 +872,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   body.nav-open .nav-backdrop{display:block}
   main{margin-left:0;padding:28px 22px 100px}
   #drawer{width:100vw;max-width:100vw;height:100vh;max-height:100vh;top:0;left:0;transform:none;border-radius:0}
-  .slider-pair{grid-template-columns:1fr}
   /* cofill panel uses --rail in its width on desktop; go full-width on mobile */
   .cofill-panel{left:12px;right:12px;width:auto;max-width:none;bottom:12px;max-height:85vh}
 }
@@ -1303,35 +1276,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
               <div class="chips" id="incomeSeg"></div>
               <p class="fhelp" style="margin-top:10px"><strong>Active</strong> income comes from selling products or services. <strong>Passive</strong> income comes from investments, rent, royalties, or holding assets.</p>
             </div>
-          </div>
-
-          <div class="fsec">
-            <h2>Payments</h2>
-            <p class="why">Your estimates set the right limits on day one, so your first payments aren't held for review. Drag each slider, roughly is fine.</p>
-            <div class="sliderq" data-slider="outValue" data-suffix=" per year, USD">
-              <div class="q-label">Estimated total <strong>value</strong> of annual <strong>outgoing</strong> payments in USD <span class="req-star">*</span></div>
-              <input type="range" min="0" max="3" step="1" value="0" aria-label="Value of annual outgoing payments">
-              <div class="slider-read"></div>
-            </div>
-            <div class="sliderq" data-slider="outCount" data-suffix=" payments per year">
-              <div class="q-label">Estimated total <strong>number</strong> of annual <strong>outgoing</strong> payments <span class="req-star">*</span></div>
-              <input type="range" min="0" max="3" step="1" value="0" aria-label="Number of annual outgoing payments">
-              <div class="slider-read"></div>
-            </div>
-            <div class="sliderq" data-slider="inValue" data-suffix=" per year, USD">
-              <div class="q-label">Estimated total <strong>value</strong> of annual <strong>incoming</strong> payments in USD <span class="req-star">*</span></div>
-              <input type="range" min="0" max="3" step="1" value="0" aria-label="Value of annual incoming payments">
-              <div class="slider-read"></div>
-            </div>
-            <div class="sliderq" data-slider="inCount" data-suffix=" payments per year">
-              <div class="q-label">Estimated total <strong>number</strong> of annual <strong>incoming</strong> payments <span class="req-star">*</span></div>
-              <input type="range" min="0" max="3" step="1" value="0" aria-label="Number of annual incoming payments">
-              <div class="slider-read"></div>
-            </div>
             <div class="q" id="q-regions" style="margin-top:26px">
               <div class="q-label">Which countries do you expect to send or receive money from? <span class="req-mark">(select all that apply)</span></div>
               <div class="msel" id="regionsMsel"></div>
             </div>
+            <div class="field" style="margin-top:26px"><select data-k="hearAbout" id="f-hearAbout"></select><label for="f-hearAbout">How did you hear about Loop? <span class="opt">(optional)</span></label><span class="chev">&#9662;</span></div>
           </div>
 
         </div>
@@ -1436,22 +1385,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
 </div>
 
-<!-- ================= APPROVED: CHOOSE PLAN ================= -->
-<div id="view-plan" class="sub-wrap hidden">
-  <div class="sub-brand"><span class="logo" id="logoPlan"></span></div>
-  <div class="sub-card">
-    <h1>Choose your plan</h1>
-    <p class="lead">Every plan has 0% FX fees on card purchases, free wire transfers, and no account minimums. You can change plans anytime.</p>
-    <div id="planToggleFinal" style="margin-top:22px"></div>
-    <div id="planCards"></div>
-    <div id="planPayment"></div>
-    <p class="plan-note">Billing starts only after your account is active.</p>
-    <button class="btn btn-primary" id="btnPlanGo" disabled style="margin-top:18px">Continue to your account</button>
-    <p class="fhelp" style="margin-top:10px;text-align:center">The account dashboard is out of scope for this prototype.</p>
-    <div class="sub-out"><button id="planSignOut">Sign out</button></div>
-  </div>
-</div>
-
 <!-- ================= LIVE ================= -->
 <div id="view-live" class="sub-wrap hidden">
   <div class="sub-brand"><span class="logo" id="logoLive"></span></div>
@@ -1544,16 +1477,20 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
     <div class="dr-sec" id="taxSec">
       <h3>Tax details</h3>
-      <div class="chips-wrap" id="taxResWrap">
-        <div class="chips-label">Is this person a tax resident of the US or Canada? <span class="req-star">*</span></div>
+      <div class="fgrid">
+        <div class="field"><input id="d-sin" inputmode="numeric" maxlength="11"><label for="d-sin">Canadian Social Insurance Number (SIN)<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-tin"><label for="d-tin">If this contact has a US TIN or SSN, please provide it here</label><span class="err-dot">!</span></div>
+      </div>
+      <div class="chips-wrap" id="taxResWrap" style="margin-top:22px">
+        <div class="chips-label">Is this person a tax resident of a jurisdiction other than Canada or the US? <span class="req-star">*</span></div>
         <div class="chips" id="taxResSeg">
           <label class="chip" data-taxres="Yes"><span>Yes</span></label>
           <label class="chip" data-taxres="No"><span>No</span></label>
         </div>
       </div>
-      <div class="fgrid" style="margin-top:20px">
-        <div class="field"><input id="d-sin" inputmode="numeric" maxlength="11"><label for="d-sin">Canadian Social Insurance Number (SIN)<span class="req-star">*</span></label><span class="err-dot">!</span></div>
-        <div class="field"><input id="d-tin"><label for="d-tin">Tax identification number (TIN)<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+      <div class="fgrid hidden" id="otherTaxWrap" style="margin-top:20px">
+        <div class="field"><select id="d-taxCountry"></select><label for="d-taxCountry">Country of tax residency<span class="req-star">*</span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
+        <div class="field"><input id="d-taxIdOther"><label for="d-taxIdOther">Tax ID for that jurisdiction<span class="req-star">*</span></label><span class="err-dot">!</span></div>
       </div>
     </div>
 
@@ -1626,6 +1563,9 @@ var KEY = 'loop-onboarding-app-v8';
 var PROVINCES = ['Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland and Labrador','Northwest Territories','Nova Scotia','Nunavut','Ontario','Prince Edward Island','Quebec','Saskatchewan','Yukon'];
 var US_STATES = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
 var COUNTRIES = ['Canada','United States','United Kingdom','Australia','Austria','Belgium','Brazil','China','Denmark','France','Germany','Hong Kong','India','Ireland','Israel','Italy','Japan','Mexico','Netherlands','New Zealand','Norway','Singapore','South Korea','Spain','Sweden','Switzerland','United Arab Emirates','Other'];
+/* other-jurisdiction tax residency: all countries excluding Canada, the US, and
+   sanctioned jurisdictions (placeholder list — swap for the compliance-approved one) */
+var TAX_COUNTRIES = ['Albania','Algeria','Andorra','Angola','Antigua and Barbuda','Argentina','Armenia','Australia','Austria','Azerbaijan','Bahamas','Bahrain','Bangladesh','Barbados','Belgium','Belize','Benin','Bhutan','Bolivia','Bosnia and Herzegovina','Botswana','Brazil','Brunei','Bulgaria','Burkina Faso','Burundi','Cabo Verde','Cambodia','Cameroon','Chad','Chile','China','Colombia','Comoros','Costa Rica','Croatia','Cyprus','Czechia','Denmark','Djibouti','Dominica','Dominican Republic','Ecuador','Egypt','El Salvador','Equatorial Guinea','Estonia','Eswatini','Ethiopia','Fiji','Finland','France','Gabon','Gambia','Georgia','Germany','Ghana','Greece','Grenada','Guatemala','Guinea','Guinea-Bissau','Guyana','Honduras','Hong Kong','Hungary','Iceland','India','Indonesia','Ireland','Israel','Italy','Ivory Coast','Jamaica','Japan','Jordan','Kazakhstan','Kenya','Kiribati','Kosovo','Kuwait','Kyrgyzstan','Laos','Latvia','Lebanon','Lesotho','Liberia','Liechtenstein','Lithuania','Luxembourg','Madagascar','Malawi','Malaysia','Maldives','Malta','Marshall Islands','Mauritania','Mauritius','Mexico','Micronesia','Moldova','Monaco','Mongolia','Montenegro','Morocco','Mozambique','Namibia','Nauru','Nepal','Netherlands','New Zealand','Niger','Nigeria','North Macedonia','Norway','Oman','Pakistan','Palau','Panama','Papua New Guinea','Paraguay','Peru','Philippines','Poland','Portugal','Qatar','Romania','Rwanda','Saint Kitts and Nevis','Saint Lucia','Saint Vincent and the Grenadines','Samoa','San Marino','Sao Tome and Principe','Saudi Arabia','Senegal','Serbia','Seychelles','Sierra Leone','Singapore','Slovakia','Slovenia','Solomon Islands','South Africa','South Korea','Spain','Sri Lanka','Suriname','Sweden','Switzerland','Taiwan','Tajikistan','Tanzania','Thailand','Timor-Leste','Togo','Tonga','Trinidad and Tobago','Tunisia','Turkey','Turkmenistan','Tuvalu','Uganda','Ukraine','United Arab Emirates','United Kingdom','Uruguay','Uzbekistan','Vanuatu','Vatican City','Vietnam','Zambia'];
 /* sign-up mobile-number country picker (ported from index-static.html) */
 var DIALCODES=[
 {n:'Afghanistan',c:'AF',d:'+93'},{n:'Albania',c:'AL',d:'+355'},{n:'Algeria',c:'DZ',d:'+213'},{n:'Andorra',c:'AD',d:'+376'},
@@ -1743,41 +1683,17 @@ var SUBIND = {
 var RELTYPES = ['Parent company','Holding company','Affiliate or sister company','Trust or investment fund','Other'];
 var USES = ['Receive business revenue','Pay business expenses','Cross-border business payments','Holding company or investment purposes','Other'];
 var INCOME = ['Active income','Passive income'];
-var FLOWVALS = ['Under $100K','$100K to $500K','$500K to $2M','Over $2M'];
-var FLOWCOUNTS = ['Under 50','50 to 250','250 to 1,000','Over 1,000'];
 var REGIONS = ['Domestic only','USA / Mexico','South America','UK / Europe','Asia-Pacific','Middle East','Africa'];
+var HEARD = ['Google or web search','Social media (LinkedIn, Instagram, X)','Referral from a friend or colleague','My accountant or bookkeeper','Podcast or newsletter','Event or conference','News or press article','Other'];
 var YESNO = ['Yes','No'];
 var ROLES_TEAM = ['Admin','Finance manager','Bookkeeper','Card member'];
 var COLLAB_ROLES = ['Key contact (director, owner, officer)','Company secretary','Finance team member','Bookkeeper or accountant','Legal counsel','Assistant','Other teammate'];
 /* roles that count as managerial authority for submitting the application */
 var MGMT_ROLES = ['Director','Signing officer'];
 var DEPMETHODS = ['Interac e-Transfer','Instant bank connection (Flinks)','EFT deposit'];
-var SLIDERS = {outValue:FLOWVALS,outCount:FLOWCOUNTS,inValue:FLOWVALS,inCount:FLOWCOUNTS};
-/* plans per bankonloop.com/pricing */
-var PLANS = [
-  {name:'Basic',monthly:'$0/mo',annual:'$0/mo',annualNote:'',pop:false,
-   feat:'Competitive FX rates (0.47%) &middot; 0% FX fees on USD, GBP, EUR, CAD card purchases &middot; No-fee US, UK, EU accounts &middot; Unlimited team members &middot; 20 virtual and 2 physical cards &middot; 1x points on CAD card spend'},
-  {name:'Loop Plus',monthly:'$79/mo',annual:'$71/mo',annualNote:'billed at CA $850/year &middot; 10% off',pop:true,
-   feat:'Preferred FX rates (0.27%) &middot; Unlimited virtual cards, 10 physical &middot; Custom rules and approval controls &middot; Expense reimbursements &middot; 2x points on CAD card spend'},
-  {name:'Loop Power',monthly:'$299/mo',annual:'$250/mo',annualNote:'billed at CA $3,000/year &middot; 16% off',pop:false,
-   feat:'Institutional FX rates (0.12%) &middot; 50 physical cards &middot; Multi-approver payment rules &middot; Expedited payment clearing &middot; Dedicated Customer Success Manager &middot; 2x points on all card spend'}
-];
-function planPrice(p){
-  if(S.setup.billing==='annual')return p.annual+(p.annualNote?', '+p.annualNote:'');
-  return p.monthly;
-}
-function billToggleHTML(id){
-  var b=S.setup.billing||'monthly';
-  return '<div class="billtoggle" id="'+id+'">'+
-    '<button type="button" data-bill="monthly" class="'+(b==='monthly'?'on':'')+'">Monthly</button>'+
-    '<button type="button" data-bill="annual" class="'+(b==='annual'?'on':'')+'">Annual <span class="save">Save up to 16%</span></button>'+
-    '</div>';
-}
-function wireBillToggle(root,rerender){
-  root.querySelectorAll('[data-bill]').forEach(function(b){
-    b.onclick=function(e){e.stopPropagation();S.setup.billing=b.dataset.bill;persist();rerender();};
-  });
-}
+/* waiting-room credit application: dropdown options */
+var CREDIT_REV_SOURCES = ['E-commerce sales','Retail or in-person sales','Wholesale or distribution','Services or consulting','Subscriptions or SaaS','Marketplace payouts (Amazon, Etsy, etc.)','Other'];
+var CREDIT_PAY_FREQ = ['Always — paid in full every month','Usually — most months','Sometimes','Rarely or never'];
 
 var LABELS = {
   legalName:'Legal business name', operatingName:'Operating or trade name',
@@ -1785,9 +1701,8 @@ var LABELS = {
   entityType:'Legal business structure', industry:'Business industry', subIndustry:'Sub-industry', description:'Company description',
   country:'Country', address1:'Address line 1', address2:'Address line 2', provState:'Province or state', city:'City', postal:'Postal code',
   intendedUse:'How you plan to use Loop', incomeType:'Type of income',
-  outValue:'Value of annual outgoing payments (USD)', outCount:'Number of annual outgoing payments',
-  inValue:'Value of annual incoming payments (USD)', inCount:'Number of annual incoming payments',
   regions:'Countries you send to or receive from',
+  hearAbout:'How you heard about Loop',
   docs:'Documents requested by the screening',
   individuals:'At least one key contact', consent:'Confirmation that all key people are added',
   relBiz:'Related Businesses answer', rbName:'Related business name', rbOwnPct:'Related business ownership percent',
@@ -1820,8 +1735,7 @@ var COFILL_STRUCT = [
     {t:'Related businesses',keys:['relBiz','rbName','rbOwnPct','rbShares','rbRelType','rbCountry']}
   ]},
   {page:'usage',title:'Expected usage',sections:[
-    {t:'Account usage',keys:['intendedUse','incomeType']},
-    {t:'Payments',keys:['outValue','outCount','inValue','inCount','regions']}
+    {t:'Account usage',keys:['intendedUse','incomeType','regions']}
   ]},
   {page:'documents',title:'Documents',sections:[
     {t:'Supporting documents',keys:['docs']}
@@ -1829,14 +1743,14 @@ var COFILL_STRUCT = [
 ];
 
 var K_BUSINESS = ['legalName','phone','taxId','entityType','industry','subIndustry','description','address1','provState','city','postal'];
-var K_USAGE = ['incomeType','outValue','outCount','inValue','inCount'];
+var K_USAGE = ['incomeType'];
 var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 
 /* ============================ state ============================ */
-function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',phone:'',website:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',outValue:'',outCount:'',inValue:'',inCount:'',regions:[],docs:[],docScreenFor:'',certify:false};}
-function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],plan:'',billing:'monthly',accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{},mandatoryDocs:[]};}
+function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',phone:'',website:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',regions:[],hearAbout:'',docs:[],docScreenFor:'',certify:false};}
+function freshSetup(){return {open:0,depMethod:'Interac e-Transfer',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],credit:{stage:'intro',revenue:'',margin:'',profitable:'',debt:'',debtPay:'',revSource:'',payFreq:'',salesChannel:false},accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{},mandatoryDocs:[]};}
 function freshSettings(){return {appearance:'system',lang:'en'};}
-function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],acctPhone:'',acctPhoneDial:'+1',phoneVerified:false,mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,planFinal:'',payDone:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
+function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],acctPhone:'',acctPhoneDial:'+1',phoneVerified:false,mfaMethod:'',mfaEnabled:false,mfaPhone:'',submitted:false,approved:false,activated:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
 /* Signing officer and control person were merged into a single "Signing officer" role */
 function migrateRoles(s){
   (s.f&&s.f.individuals||[]).forEach(function(p){
@@ -2060,10 +1974,9 @@ function docRequirements(){
   var req=[],f=S.f;
   if(/Sole proprietorship|Partnership/.test(f.entityType))req.push({t:'Proof of business operations',d:'Sole proprietorships and partnerships aren’t in the corporate registry, so we need a recent supplier invoice, signed customer contract, commercial lease, or bank statement.'});
   if(f.relBiz==='Yes')req.push({t:'Ownership structure document',d:'A shareholder register or ownership chart showing how the related business holds 25% or more of your company.'});
-  if(f.outValue==='Over $2M'||f.inValue==='Over $2M')req.push({t:'Recent business bank statement',d:'Payment volumes over $2M a year get one extra check. A recent statement covers it.'});
   return req;
 }
-function docScreenKey(){return [S.f.entityType,S.f.relBiz,S.f.outValue,S.f.inValue].join('|');}
+function docScreenKey(){return [S.f.entityType,S.f.relBiz].join('|');}
 function fmtDate(ts){return new Date(ts).toLocaleDateString('en-CA',{month:'long',day:'numeric'});}
 
 /* missing-field computation, per page */
@@ -2115,7 +2028,7 @@ function requiredTotal(){
 /* ============================ views ============================ */
 function closeNav(){document.body.classList.remove('nav-open');var t=$('navToggle');if(t)t.setAttribute('aria-expanded','false');}
 /* directional transitions: entrance-only slide+fade on real view/page changes (never intra-view re-renders) */
-var VIEW_SEQ=['auth','sms','mfa','app','setup','approved','plan','live'];
+var VIEW_SEQ=['auth','sms','mfa','app','setup','approved','live'];
 var prevView=null,prevPage=null;/* runtime only — never persisted */
 function slideIn(elm,dir){
   if(!elm)return;
@@ -2137,7 +2050,7 @@ function show(view){
   closeSettingsMenu();
   if(view!=='sms')stopSmsTimer();
   if(view!=='mfa')stopMfaTimer();
-  ['view-auth','view-sms','view-mfa','app','view-setup','view-approved','view-plan','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
+  ['view-auth','view-sms','view-mfa','app','view-setup','view-approved','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
   if(view==='auth'){$('view-auth').classList.remove('hidden');syncAuthButtons();}
   else if(view==='sms'){$('view-sms').classList.remove('hidden');renderSms();}
@@ -2155,10 +2068,6 @@ function show(view){
     $('ap-sign').value=S.signName||'';
     $('ap-sign').closest('.field').classList.toggle('filled',!!S.signName);
     $('btnActivate').disabled=!S.signName;
-  }
-  else if(view==='plan'){
-    $('view-plan').classList.remove('hidden');
-    renderPlanPage();
   }
   else if(view==='live'){
     $('view-live').classList.remove('hidden');
@@ -2188,7 +2097,7 @@ function showPage(id,forceDir){
   else{
     S.visited[id]=true;persist();
     $('stepMeta').textContent='Step '+(PAGE_ORDER.indexOf(id)+1)+' of '+PAGE_ORDER.length;
-    if(id==='usage'){syncSliders();renderMsel();}
+    if(id==='usage'){renderMsel();}
     if(id==='contacts'){renderIndividuals();renderRelBizExtra();}
     if(id==='documents'){startDocScreen();renderDocs();}
     /* reaching review is the moment gaps become visible: from here on, every
@@ -2290,7 +2199,7 @@ function hydrateFields(){
     if(w)w.classList.toggle('filled',!!S.f[k]);
   });
   $('f-consent').checked=!!S.f.consent;
-  renderAllChips();renderDocs();syncRelBiz();renderRelBizExtra();syncSliders();syncTradeName();syncSubIndustry();syncProvState();renderMsel();syncTaxIdWarn();
+  renderAllChips();renderDocs();syncRelBiz();renderRelBizExtra();syncTradeName();syncSubIndustry();syncProvState();renderMsel();syncTaxIdWarn();
 }
 /* CRA business number validation: 9 digits, starts 1/7/8, passes Luhn mod-10 */
 function luhnOk(s){
@@ -2363,37 +2272,6 @@ function runBizAutofill(name){
     $('bizDocClear').onclick=function(){chip.classList.add('hidden');$('bizDocUpload').classList.remove('hidden');$('bizDocInput').value='';};
   },1500);
 }
-
-/* sliders (Ramp style) */
-function sliderEls(){return document.querySelectorAll('.sliderq[data-slider]');}
-function paintSlider(sq){
-  var k=sq.dataset.slider,opts=SLIDERS[k],inp=sq.querySelector('input'),read=sq.querySelector('.slider-read');
-  var v=S.f[k];
-  var idx=v?opts.indexOf(v):-1;
-  inp.value=idx>=0?idx:0;
-  var p=(idx>=0?idx:0)/(opts.length-1)*100;
-  inp.style.background='linear-gradient(to right, var(--brand-500) '+p+'%, var(--gray-100) '+p+'%)';
-  if(idx>=0){
-    read.innerHTML='Selected: <strong>'+esc(v)+'</strong>'+esc(sq.dataset.suffix||'');
-    sq.classList.remove('invalid');
-  }else{
-    read.textContent='Drag the slider to select an estimate';
-  }
-}
-function bindSliders(){
-  sliderEls().forEach(function(sq){
-    var k=sq.dataset.slider,opts=SLIDERS[k],inp=sq.querySelector('input');
-    inp.max=opts.length-1;
-    var set=function(){
-      S.f[k]=opts[+inp.value];
-      paintSlider(sq);
-      save();
-    };
-    inp.addEventListener('input',set);
-    inp.addEventListener('change',set);
-  });
-}
-function syncSliders(){sliderEls().forEach(paintSlider);}
 
 /* chips + seg */
 function renderChips(boxId,wrapId,key,options,exclusive){
@@ -2549,7 +2427,6 @@ function refreshInvalid(id){
     renderRelBizExtra();
   }
   if(id==='usage'){
-    sliderEls().forEach(function(sq){sq.classList.toggle('invalid',miss.indexOf(sq.dataset.slider)>=0);});
     $('q-intendedUse').classList.toggle('invalid',miss.indexOf('intendedUse')>=0);
     $('incomeWrap').classList.toggle('invalid',miss.indexOf('incomeType')>=0);
     $('q-regions').classList.toggle('invalid',miss.indexOf('regions')>=0);
@@ -2726,7 +2603,11 @@ function sendIdvRequest(i){
 
 /* drawer */
 var editIdx=-1, drMode='add', drRoles=[], drIdv=false, drTaxRes='', camT=null, qrT=null;
-var DK=['firstName','lastName','dob','email','phone','occupation','sin','tin','street','unit','city','province','postal'];
+var DK=['firstName','lastName','dob','email','phone','occupation','sin','tin','taxCountry','taxIdOther','street','unit','city','province','postal'];
+/* optional drawer fields: unit always; tin (US TIN/SSN) always; the other-jurisdiction
+   pair only becomes required when the tax residency answer is Yes */
+function dkOptional(k){return k==='unit'||k==='tin'||((k==='taxCountry'||k==='taxIdOther')&&drTaxRes!=='Yes');}
+function syncOtherTax(){$('otherTaxWrap').classList.toggle('hidden',drTaxRes!=='Yes');}
 function qrSvg(){
   /* deterministic fake QR */
   var cells='',seed=7;
@@ -2844,6 +2725,7 @@ function openDrawer(idx,mode){
   drTaxRes=p?(p.taxResident||''):'';
   $('taxResWrap').classList.remove('invalid');
   document.querySelectorAll('#taxResSeg .chip').forEach(function(c){c.classList.toggle('on',c.dataset.taxres===drTaxRes);});
+  syncOtherTax();
   syncOwnPct();syncIsMe();syncDrMode();
   $('drawer').classList.remove('hidden');$('drawerOverlay').classList.remove('hidden');
   $('drawer').querySelector('.dr-body').scrollTop=0;
@@ -2881,7 +2763,7 @@ function saveDrawer(){
   var ok=true,firstBad=null;
   if(!drRoles.length){$('rolesWrap').classList.add('invalid');ok=false;firstBad=firstBad||$('rolesWrap');}
   DK.forEach(function(k){
-    if(k==='unit')return;
+    if(dkOptional(k))return;
     var inp=$('d-'+k);
     var bad=!inp.value;
     inp.closest('.field').classList.toggle('invalid',bad);
@@ -2901,6 +2783,7 @@ function saveDrawer(){
   var isMe=$('d-isMe').checked;
   var p={roles:drRoles.slice(),ownPct:$('d-ownPct').value,isMe:isMe,idv:isMe?drIdv:false,taxResident:drTaxRes};
   DK.forEach(function(k){p[k]=$('d-'+k).value;});
+  if(drTaxRes!=='Yes'){p.taxCountry='';p.taxIdOther='';}
   if(editIdx>=0){
     var old=S.f.individuals[editIdx];
     p.extIdv=!!old.extIdv;
@@ -3040,7 +2923,6 @@ function reqLink(page,key){return '<a class="req" href="#" data-goto="'+page+'" 
 function gotoTarget(k){
   if(k.indexOf('idv:')===0)return null;
   if(k.indexOf('rbx:')===0)return $('relBizExtraList');
-  if(SLIDERS[k])return document.querySelector('.sliderq[data-slider="'+k+'"]');
   return k==='docs'?$('upDocs')
     :k==='intendedUse'?$('q-intendedUse'):k==='incomeType'?$('incomeWrap'):k==='regions'?$('q-regions')
     :k==='relBiz'?$('relBizWrap'):k==='description'?$('q-description')
@@ -3072,7 +2954,7 @@ function revSection(title,page,miss,bodyEl,topMargin){
 function kvCard(page,keys){
   var card=el('div','rev-card');
   keys.forEach(function(k){
-    var optional=(k==='website'||k==='address2');
+    var optional=(k==='website'||k==='address2'||k==='hearAbout');
     var v=fieldVal(k);
     var inner;
     if(v)inner='<div class="rv">'+esc(v)+'</div>';
@@ -3122,7 +3004,7 @@ function renderReview(){
   }
   R.appendChild(revSection('Business contacts','contacts',missingPage('contacts'),pCard));
 
-  R.appendChild(revSection('Expected usage','usage',missingPage('usage'),kvCard('usage',['intendedUse','incomeType','outValue','outCount','inValue','inCount','regions'])));
+  R.appendChild(revSection('Expected usage','usage',missingPage('usage'),kvCard('usage',['intendedUse','incomeType','regions','hearAbout'])));
 
   var dCard=el('div','rev-card');
   var dreq=docRequirements();
@@ -3178,10 +3060,10 @@ function paintGaps(){
 
 /* ============================ setup hub ============================ */
 function setupDone(){
-  return [S.setup.depositDone,!!S.setup.plan,S.setup.tfaEnabled];
+  return [S.setup.depositDone,S.setup.credit.stage==='done',S.setup.tfaEnabled];
 }
 /* the "enable MFA" optional task only applies if they didn't set it up at sign-up */
-function optionalApplicable(){return {deposit:true,plan:true,mfa:!S.mfaEnabled};}
+function optionalApplicable(){return {deposit:true,credit:true,mfa:!S.mfaEnabled};}
 function renderTimeline(){
   var t=$('timelineBody');
   t.innerHTML=
@@ -3203,7 +3085,7 @@ function skipLink(i){return '<div style="margin-top:14px"><button class="btn-lin
 function renderSetup(){
   var d=setupDone();
   var appl=optionalApplicable();
-  var applKeys=['deposit','plan','mfa'].filter(function(k){return appl[k];});
+  var applKeys=['deposit','credit','mfa'].filter(function(k){return appl[k];});
   var doneCount=(d[0]?1:0)+(d[1]?1:0)+(appl.mfa&&d[2]?1:0);
   $('setupCount').textContent='';
   var open=S.setup.open;
@@ -3286,20 +3168,56 @@ function renderSetup(){
   }
   list.appendChild(it1);
 
-  /* 2 — plans */
-  var planMeta=d[1]?S.setup.plan+' &middot; '+(S.setup.billing==='annual'?'Annual':'Monthly'):'';
-  var it3=el('div','setup-item',setupHead(1,'View and choose your plan',d[1],planMeta));
+  /* 2 — credit application (optional while the application is in review) */
+  var cr=S.setup.credit;
+  var it3=el('div','setup-item',setupHead(1,'Apply for a Loop credit limit',d[1],d[1]?'Application in review':''));
   if(open===1){
     var b3=el('div','setup-body');
-    var cards='';
-    PLANS.forEach(function(p){
-      var on=S.setup.plan===p.name;
-      cards+='<div class="plancard'+(on?' on':'')+'" data-plan="'+esc(p.name)+'">'+(p.pop?'<span class="pop">Most popular</span>':'')+
-        '<div style="flex:1;min-width:0"><div class="pn">'+esc(p.name)+'</div><div class="pp">'+planPrice(p)+'</div><div class="pf">'+p.feat+'</div></div></div>';
-    });
-    b3.innerHTML='<p class="desc">Every plan has 0% FX fees on card purchases, free wire transfers, and no account minimums. You’ll confirm your plan after approval.</p>'+
-      billToggleHTML('billToggleSetup')+cards+
-      '<p class="plan-note">You can change plans or switch between monthly and annual billing anytime. Billing starts only after your account is active.</p>'+skipLink(1);
+    if(cr.stage==='done'){
+      b3.innerHTML='<div class="done-banner"><span>Application submitted! We’ve received your credit application and will review it shortly.</span></div>'+
+        '<div class="credit-boost">'+
+          '<h4>Get approved faster</h4>'+
+          '<p>Connect a sales channel to verify your revenue. This helps us approve your credit limit quickly — the more revenue sources you connect, the higher your potential limit.</p>'+
+          (cr.salesChannel
+            ?'<div class="done-banner" style="margin:0"><span>PayPal is connected. We’ll use it to verify your revenue.</span></div>'
+            :'<button class="btn btn-primary btn-sm" id="creditChannelBtn">Connect sales channel</button>')+
+        '</div>';
+    }else if(cr.stage==='form'){
+      function crMoney(id,label,help,val){
+        return '<div class="q" id="q-'+id+'" style="margin:0 0 4px;max-width:360px"><div class="q-label">'+label+'</div><div class="qfield"><input id="'+id+'" inputmode="decimal" placeholder="$ 0.00" value="'+esc(val)+'"></div></div>'+
+          '<p class="fhelp" style="margin:0 0 18px">'+help+'</p>';
+      }
+      function crSelect(id,label,help,placeholder,opts,val){
+        return '<div class="q" id="q-'+id+'" style="margin:0 0 4px;max-width:360px"><div class="q-label">'+label+'</div><div class="qfield"><select id="'+id+'"><option value="">'+esc(placeholder)+'</option>'+
+          opts.map(function(o){return '<option value="'+esc(o)+'"'+(val===o?' selected':'')+'>'+esc(o)+'</option>';}).join('')+
+          '</select><span class="chev">&#9662;</span></div></div>'+
+          '<p class="fhelp" style="margin:0 0 18px">'+help+'</p>';
+      }
+      b3.innerHTML=
+        '<div class="credit-sec-h" style="margin-top:0">Business revenue</div>'+
+        crMoney('cr-revenue','Total annual business revenue','Your total revenue over the last 12 months.',cr.revenue)+
+        '<div class="q" id="q-cr-margin" style="margin:0 0 4px;max-width:200px"><div class="q-label">Average gross profit margin</div><div class="qfield"><input id="cr-margin" inputmode="numeric" placeholder="e.g. 35" maxlength="3" value="'+esc(cr.margin)+'"><span class="chev" style="pointer-events:none">%</span></div></div>'+
+        '<p class="fhelp" style="margin:0 0 18px">Revenue minus cost of goods sold, as a percentage.</p>'+
+        '<div class="chips-wrap" id="crProfitWrap" style="margin:0 0 18px"><div class="chips-label" style="font-size:14.5px">Is your business currently profitable?</div><div class="chips">'+
+          ['Yes','No'].map(function(o){var on=cr.profitable===o;return '<label class="chip'+(on?' on':'')+'"><input type="radio" name="crprofit"'+(on?' checked':'')+' data-crprofit="'+o+'"><span>'+o+'</span></label>';}).join('')+
+        '</div></div>'+
+        '<div class="credit-sec-h">Debt and payments</div>'+
+        crMoney('cr-debt','Current total debt outstanding','Total business debt including loans, credit lines, etc.',cr.debt)+
+        crMoney('cr-debtPay','Average monthly debt payments','Average amount you pay toward debt each month.',cr.debtPay)+
+        '<div class="credit-sec-h">Revenue and payment patterns</div>'+
+        crSelect('cr-revSource','Primary source of revenue','Choose the option that best describes your main revenue stream.','Select your primary revenue source',CREDIT_REV_SOURCES,cr.revSource)+
+        crSelect('cr-payFreq','How often do you pay your credit card balance in full?','Based on the last 12 months.','Select frequency',CREDIT_PAY_FREQ,cr.payFreq)+
+        '<button class="btn btn-primary btn-sm" id="creditSubmitBtn">Submit application</button>'+
+        '<div style="margin-top:14px"><button class="btn-link" id="creditCancelBtn" style="padding:4px 0;font-size:13.5px;color:var(--gray-500)">Cancel</button></div>';
+    }else{
+      b3.innerHTML='<p class="desc">Get access to flexible credit for your business with no FX fees, no annual fees, and up to 55 days interest-free. Applying now means your credit limit can be ready the moment your account opens.</p>'+
+        '<ul class="accepts" style="margin:14px 0 18px">'+
+          '<li><span><strong>Multi-currency credit</strong> — spend and repay in CAD, USD, GBP, and EUR, saving every time you spend globally.</span></li>'+
+          '<li><span><strong>Fast approval</strong> — based on your business revenue, with no impact on your personal credit.</span></li>'+
+          '<li><span><strong>No fees or surprises</strong> — no annual fee, no FX fees, no minimum spend.</span></li>'+
+        '</ul>'+
+        '<button class="btn btn-primary btn-sm" id="creditApplyBtn">Apply now</button>'+skipLink(1);
+    }
     it3.appendChild(b3);
   }
   list.appendChild(it3);
@@ -3405,7 +3323,6 @@ function renderSetup(){
     S.setup.depositAnother=null;
     persist();renderSetup();
   };
-  wireBillToggle(list,renderSetup);
   list.querySelectorAll('[data-invitee]').forEach(function(b){
     b.onclick=function(){startInvitee(+b.dataset.invitee);};
   });
@@ -3423,9 +3340,46 @@ function renderSetup(){
       persist();renderSetup();
     };
   });
-  list.querySelectorAll('.plancard').forEach(function(pc){
-    pc.onclick=function(){S.setup.plan=pc.dataset.plan;persist();renderSetup();};
+  /* credit application */
+  var cab=$('creditApplyBtn');if(cab)cab.onclick=function(){S.setup.credit.stage='form';persist();renderSetup();};
+  var crc=$('creditCancelBtn');if(crc)crc.onclick=function(){S.setup.credit.stage='intro';persist();renderSetup();};
+  var ccb=$('creditChannelBtn');if(ccb)ccb.onclick=function(){
+    ccb.disabled=true;
+    ccb.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Connecting&hellip;';
+    setTimeout(function(){S.setup.credit.salesChannel=true;persist();renderSetup();},1200);
+  };
+  [['cr-revenue','revenue'],['cr-margin','margin'],['cr-debt','debt'],['cr-debtPay','debtPay']].forEach(function(pair){
+    var inp=$(pair[0]);if(!inp)return;
+    inp.addEventListener('input',function(){
+      if(pair[0]==='cr-margin')inp.value=inp.value.replace(/\D/g,'').slice(0,3);
+      else inp.value=inp.value.replace(/[^0-9.,]/g,'');
+      S.setup.credit[pair[1]]=inp.value;persist();
+      if(inp.value)inp.closest('.q').classList.remove('invalid');
+    });
   });
+  [['cr-revSource','revSource'],['cr-payFreq','payFreq']].forEach(function(pair){
+    var sel=$(pair[0]);if(!sel)return;
+    sel.addEventListener('change',function(){
+      S.setup.credit[pair[1]]=sel.value;persist();
+      if(sel.value)sel.closest('.q').classList.remove('invalid');
+    });
+  });
+  list.querySelectorAll('input[data-crprofit]').forEach(function(r){
+    r.addEventListener('change',function(){S.setup.credit.profitable=r.dataset.crprofit;persist();renderSetup();});
+  });
+  var csb=$('creditSubmitBtn');if(csb)csb.onclick=function(){
+    var c=S.setup.credit,ok=true;
+    [['cr-revenue','revenue'],['cr-margin','margin'],['cr-debt','debt'],['cr-debtPay','debtPay'],['cr-revSource','revSource'],['cr-payFreq','payFreq']].forEach(function(pair){
+      var bad=!c[pair[1]];
+      $('q-'+pair[0]).classList.toggle('invalid',bad);
+      if(bad)ok=false;
+    });
+    var pBad=!c.profitable;
+    $('crProfitWrap').classList.toggle('invalid',pBad);
+    if(pBad)ok=false;
+    if(!ok)return;
+    c.stage='done';persist();renderSetup();
+  };
   var tfp=$('tfaPhone');if(tfp)tfp.addEventListener('input',function(){S.setup.tfaPhone=tfp.value;persist();});
   var tfs=$('tfaSend');if(tfs)tfs.onclick=function(){
     if(!S.setup.tfaPhone){$('tfaPhone').style.borderColor='var(--error-600)';return;}
@@ -3456,66 +3410,10 @@ function renderLive(){
   rows+=S.setup.depositDone
     ?'<div class="live-row">'+ic+'<span>Your deposit'+(S.setup.etAmount?' of $'+esc(S.setup.etAmount):'')+' via '+esc(S.setup.depMethod)+' has been credited to your CAD account</span></div>'
     :'<div class="live-row">'+ic+'<span>Make your first deposit from the dashboard to start transacting</span></div>';
-  var planName=S.planFinal||S.setup.plan;
-  rows+='<div class="live-row">'+ic+'<span>'+(planName?('You’re on '+esc(planName)+'. Change plans anytime in settings'):'You’re on Basic. Upgrade anytime in settings')+'</span></div>';
+  if(S.setup.credit.stage==='done')rows+='<div class="live-row">'+ic+'<span>Your credit limit application is in review'+(S.setup.credit.salesChannel?' · PayPal connected to verify revenue':'')+'</span></div>';
   if(S.setup.invites.length)rows+='<div class="live-row">'+ic+'<span>'+S.setup.invites.length+' team invitation'+(S.setup.invites.length>1?'s':'')+' sent</span></div>';
   rows+='<div class="live-row">'+ic+'<span>Two-factor authentication is '+(S.setup.tfaEnabled?'on':'off, you can enable it in security settings')+'</span></div>';
   $('liveRows').innerHTML=rows;
-}
-
-/* ============================ plan selection (after approval) ============================ */
-function planByName(n){return PLANS.filter(function(p){return p.name===n;})[0];}
-function planIsPaid(n){var p=planByName(n);return !!(p&&p.monthly!=='$0/mo');}
-function renderPlanPayment(){
-  var box=$('planPayment');if(!box)return;
-  if(!S.planFinal||!planIsPaid(S.planFinal)){box.innerHTML='';return;}
-  var p=planByName(S.planFinal);
-  box.innerHTML='<div class="pay-card"><h4>Payment method</h4>'+
-    '<p class="pay-sub">'+esc(S.planFinal)+' is '+planPrice(p)+'. Add a card to confirm. You will not be charged until your account is active.</p>'+
-    '<div class="fgrid">'+
-      '<div class="field"><input id="payCard" inputmode="numeric" autocomplete="cc-number" maxlength="19"><label for="payCard">Card number<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
-      '<div class="row">'+
-        '<div class="field"><input id="payExp" inputmode="numeric" maxlength="7"><label for="payExp">Expiry (MM / YY)<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
-        '<div class="field"><input id="payCvc" inputmode="numeric" maxlength="4"><label for="payCvc">CVC<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
-      '</div>'+
-    '</div></div>';
-  ['payCard','payExp','payCvc'].forEach(function(id){
-    var inp=$(id);
-    inp.addEventListener('input',function(){
-      if(id==='payCard')inp.value=inp.value.replace(/\D/g,'').slice(0,16).replace(/(.{4})(?=.)/g,'$1 ');
-      if(id==='payExp'){var v=inp.value.replace(/\D/g,'').slice(0,4);inp.value=v.length>2?v.slice(0,2)+' / '+v.slice(2):v;}
-      if(id==='payCvc')inp.value=inp.value.replace(/\D/g,'');
-      inp.closest('.field').classList.toggle('filled',!!inp.value);
-      if(inp.value)inp.closest('.field').classList.remove('invalid');
-    });
-  });
-}
-function validatePayment(){
-  var ok=true;
-  ['payCard','payExp','payCvc'].forEach(function(id){
-    var inp=$(id);if(!inp)return;
-    var bad=!inp.value.trim();
-    inp.closest('.field').classList.toggle('invalid',bad);
-    if(bad)ok=false;
-  });
-  return ok;
-}
-function renderPlanPage(){
-  var box=$('planCards');box.innerHTML='';
-  var tog=$('planToggleFinal');tog.innerHTML=billToggleHTML('billToggleFinal');
-  wireBillToggle(tog,renderPlanPage);
-  if(!S.planFinal&&S.setup.plan)S.planFinal=S.setup.plan;
-  PLANS.forEach(function(p){
-    var on=S.planFinal===p.name;
-    var pc=el('div','plancard'+(on?' on':''),
-      (p.pop?'<span class="pop">Most popular</span>':'')+
-      '<div style="flex:1;min-width:0"><div class="pn">'+esc(p.name)+'</div><div class="pp">'+planPrice(p)+'</div><div class="pf">'+p.feat+'</div></div>');
-    pc.onclick=function(){S.planFinal=p.name;persist();renderPlanPage();};
-    box.appendChild(pc);
-  });
-  renderPlanPayment();
-  $('btnPlanGo').disabled=!S.planFinal;
-  $('btnPlanGo').textContent=(S.planFinal&&planIsPaid(S.planFinal))?'Confirm and pay':'Continue to your account';
 }
 
 /* ============================ invitee preview (key contact experience) ============================ */
@@ -3535,7 +3433,7 @@ function wireCodeRow(row,onComplete){
 function invPerson(){return S.f.individuals[invIdx]||{firstName:'your contact',lastName:'',email:'them@company.com',roles:[]};}
 function startInvitee(i){
   invIdx=i;invChose=false;clearTimeout(invT);
-  ['view-auth','view-mfa','app','view-setup','view-approved','view-plan','view-live'].forEach(function(id){$(id).classList.add('hidden');});
+  ['view-auth','view-mfa','app','view-setup','view-approved','view-live'].forEach(function(id){$(id).classList.add('hidden');});
   $('progressLine').classList.add('hidden');
   $('view-invitee').classList.remove('hidden');
   if(prevView)slideIn($('view-invitee'),'fwd');
@@ -3867,7 +3765,7 @@ function updateChatVisibility(){
   var fab=$('chatFab');if(!fab)return;
   var appOpen=$('app')&&!$('app').classList.contains('hidden');
   var v=S.view;
-  var allowed=appOpen||v==='setup'||v==='approved'||v==='plan'||v==='live';
+  var allowed=appOpen||v==='setup'||v==='approved'||v==='live';
   /* tuck the bot away while a modal/drawer covers the screen so it doesn't overlap */
   var overlay=!$('drawer').classList.contains('hidden')||!$('collabOverlay').classList.contains('hidden')||!$('permOverlay').classList.contains('hidden');
   var visible=allowed&&!overlay;
@@ -3953,15 +3851,17 @@ function renderAuthMedia(){
 
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
-  ['logoAuth','logoSms','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoPlan','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
+  ['logoAuth','logoSms','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoLive'].forEach(function(id){$(id).innerHTML=LOGO;});
   renderAuthMedia();
   fillSelect($('f-entityType'),ENTITIES);
   fillSelect($('f-industry'),sortedIndustries());
   fillSelect($('f-rbRelType'),RELTYPES);
   fillSelect($('f-rbCountry'),COUNTRIES);
   fillSelect($('d-province'),PROVINCES);
+  fillSelect($('d-taxCountry'),TAX_COUNTRIES);
+  fillSelect($('f-hearAbout'),HEARD);
   fillSelect($('collabRole'),COLLAB_ROLES);
-  bindFields();bindSliders();hydrateFields();
+  bindFields();hydrateFields();
 
   /* operating / trade name checkbox */
   $('f-hasTradeName').addEventListener('change',function(e){
@@ -4063,8 +3963,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!pw.value){pw.closest('.field').classList.add('invalid');ok=false;}
     if(!ok)return;
     if(em.value.trim().toLowerCase()===(S.email||'').toLowerCase()&&S.verified){
-      if(S.activated&&S.planFinal)show('live');
-      else if(S.activated)show('plan');
+      if(S.activated)show('live');
       else if(S.submitted){S.approved=true;persist();show('approved');}
       else show('app');
     }else{
@@ -4182,14 +4081,7 @@ document.addEventListener('DOMContentLoaded',function(){
   });
   $('btnActivate').onclick=function(){
     if(!S.signName.trim())return;
-    S.activated=true;S.signedAt=Date.now();persist();show('plan');
-  };
-
-  /* plan selection (confirm, and collect payment for paid plans) */
-  $('btnPlanGo').onclick=function(){
-    if(!S.planFinal)return;
-    if(planIsPaid(S.planFinal)&&!validatePayment())return;
-    S.payDone=true;persist();show('live');
+    S.activated=true;S.signedAt=Date.now();persist();show('live');
   };
 
   /* individuals */
@@ -4224,12 +4116,14 @@ document.addEventListener('DOMContentLoaded',function(){
       syncOwnPct();
     };
   });
-  /* tax residency Yes/No */
+  /* tax residency outside Canada/US: Yes reveals the country + tax ID pair */
   document.querySelectorAll('#taxResSeg .chip').forEach(function(c){
     c.onclick=function(){
       drTaxRes=c.dataset.taxres;
       document.querySelectorAll('#taxResSeg .chip').forEach(function(x){x.classList.toggle('on',x===c);});
       $('taxResWrap').classList.remove('invalid');
+      syncOtherTax();
+      if(drTaxRes!=='Yes')['d-taxCountry','d-taxIdOther'].forEach(function(id){$(id).closest('.field').classList.remove('invalid');});
     };
   });
   DK.concat(['ownPct']).forEach(function(k){
@@ -4250,7 +4144,6 @@ document.addEventListener('DOMContentLoaded',function(){
 
   /* sign out (sidebar + waitroom sign-out moved into the settings menu) */
   $('apSignOut').onclick=doSignOut;
-  $('planSignOut').onclick=doSignOut;
   $('liveSignOut').onclick=doSignOut;
 
   /* settings menu (sidebar + waitroom) */
@@ -4283,8 +4176,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
   /* restore */
   if(S.view==='auth')show('auth');
-  else if(S.activated&&S.view==='live')show('live');
-  else if(S.activated)show('plan');
+  else if(S.activated)show('live');
   else if(S.approved)show('approved');
   else if(S.submitted)show('setup');
   else if(S.verified&&S.view==='app')show('app');
