@@ -31,11 +31,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # The Pages root serves index.html, which is regenerated at build time from
-      # index-explore.html — the demo root always tracks the latest pushed explore
-      # iteration. index.html in the repo is a separate working copy and is not served.
-      - name: Sync explore prototype to Pages root (index.html)
-        run: cp index-explore.html index.html
+      # The Pages root serves index.html, which is regenerated at build time from the
+      # current iteration in Iterations/ — the demo root always tracks the latest pushed
+      # version. The iteration references its images one level up (../), so the copy
+      # rewrites those to root-relative paths.
+      - name: Sync current iteration to Pages root (index.html)
+        run: sed -e 's|src="\.\./|src="|g' -e "s|'\.\./|'|g" "Iterations/Onboarding_Redesign_V2.1.html" > index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
