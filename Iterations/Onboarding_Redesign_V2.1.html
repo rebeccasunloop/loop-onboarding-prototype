@@ -65,6 +65,8 @@ input,select,textarea{font-family:inherit}
 .pw-inline.w .fill{stroke:var(--error-500)}
 .pw-inline.m{color:#B54708}
 .pw-inline.m .fill{stroke:#F79009}
+.pw-inline.g{color:var(--success-600)}
+.pw-inline.g .fill{stroke:var(--success-400)}
 .pw-inline.s{color:var(--success-700)}
 .pw-inline.s .fill{stroke:var(--success-500)}
 
@@ -408,6 +410,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .who-card .wc-head .icobtn{flex:0 0 32px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;padding:0;margin:-4px -4px 0 0}
 #whoBody .fgrid{max-width:560px}
 #whoBody .who-results{max-width:560px}
+/* the divider frames the two zones: identical air above and below (the base
+   .or-divider rule has a -6px bottom margin that must not leak in here) */
+#whoBody .who-or{max-width:560px;margin:26px 0}
+.who-skip{width:auto;align-self:flex-start;padding:2px 0;font-size:13.5px;font-weight:500;color:var(--gray-500);text-underline-offset:3px}
+.who-skip:hover{color:var(--gray-700)}
 #whoBody .who-foot{margin-top:26px;font-size:13.5px;color:var(--gray-500)}
 #whoBody .who-foot a{color:var(--gray-600)}
 
@@ -2019,26 +2026,30 @@ function doSignOut(){
 function freshKeepSettings(){var st=S.settings;var ns=freshState();ns.settings=st;return ns;}
 /* keep Create Account / Sign in greyed out until their fields are valid */
 function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim());}
-/* password strength: the extras are capitals, digits, and specials —
-   none of them is weak, one is moderate, two or more is strong */
+/* password strength: 12 characters is a hard floor — under it is always weak.
+   At 12+, the extras (capital, digit, special) grade it: none = moderate,
+   one = good, two or more = strong. */
 function pwStrength(v){
+  if(v.length<12)return 0;
   var extras=(/[A-Z]/.test(v)?1:0)+(/[0-9]/.test(v)?1:0)+(/[^A-Za-z0-9]/.test(v)?1:0);
-  return extras>=2?2:extras;
+  return extras>=2?3:extras===1?2:1;
 }
+/* gate: good or better (12+ characters with at least one extra) */
+function pwAcceptable(v){return pwStrength(v)>=2;}
 function paintPwStrength(hintId,v){
   var h=$(hintId);if(!h)return;
   var f=h.querySelector('.fill'),lb=h.querySelector('.pw-slabel'),C=34.6;
-  h.classList.remove('w','m','s');
+  h.classList.remove('w','m','g','s');
   if(!v){lb.textContent='';f.style.strokeDashoffset=C;return;}
   var s=pwStrength(v);
-  h.classList.add(['w','m','s'][s]);
-  lb.textContent=['Weak','Moderate','Strong'][s];
-  f.style.strokeDashoffset=C-C*(s+1)/3;
+  h.classList.add(['w','m','g','s'][s]);
+  lb.textContent=['Weak','Moderate','Good','Strong'][s];
+  f.style.strokeDashoffset=C-C*(s+1)/4;
 }
 function validPhone(v){var d=String(v||'').replace(/\D/g,'');return d.length>=7&&d.length<=15;}
 function syncAuthButtons(){
   var b1=$('btnSignup');
-  if(b1)b1.disabled=!($('su-fn').value.trim()&&$('su-ln').value.trim()&&$('su-email').value.indexOf('@')>0&&$('su-phone').value.replace(/\D/g,'').length>=7&&$('su-pass').value.length>=8&&pwStrength($('su-pass').value)>=1);
+  if(b1)b1.disabled=!($('su-fn').value.trim()&&$('su-ln').value.trim()&&$('su-email').value.indexOf('@')>0&&$('su-phone').value.replace(/\D/g,'').length>=7&&pwAcceptable($('su-pass').value));
   var b2=$('btnSignin');
   if(b2)b2.disabled=!($('si-email').value.indexOf('@')>0&&$('si-pass').value.trim());
 }
@@ -3973,31 +3984,50 @@ function applyRegistryPrefill(r){
   S.regPrefilled=true;S.regName=r.name;
   hydrateFields();save();
 }
-var whoRec=null;/* runtime only — the record being confirmed */
+var whoRec=null,whoMode='name';/* runtime only — the record being confirmed + name/upload mode */
 function renderWho(){renderWhoSearch();}
 function whoBack(){return '<button type="button" class="back-link back-top" id="whoBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back to search</button>';}
-/* one screen: type-ahead against the registry; a selection swaps the input for a
-   removable record card, so choosing, clearing, and re-entering all happen here */
+/* one screen: the name type-ahead is primary; below a divider the user can flip the
+   input into a document upload (and back), or skip the lookup entirely. A selection
+   swaps the input area for a removable record card. */
 function renderWhoSearch(){
   var body=$('whoBody');if(!body)return;
+  var mid;
+  if(whoRec){
+    mid='<div class="who-card"><div class="wc-head"><div><div class="wc-name">'+esc(whoRec.name)+'</div><div class="wc-meta">'+regMeta(whoRec)+'</div></div>'+
+      '<button class="icobtn" id="whoClear" aria-label="Remove this business and search again"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
+      '<div class="who-kv"><span class="k">Incorporated</span><span class="v">'+whoRec.founded+' &mdash; '+esc(whoRec.entity)+'</span></div>'+
+      '<div class="who-kv"><span class="k">Registered office</span><span class="v">'+esc(whoRec.city)+', '+esc(whoRec.prov)+'</span></div>'+
+      '<div class="who-kv"><span class="k">Industry</span><span class="v">'+esc(whoRec.industry)+'</span></div></div>'+
+      '<button class="btn btn-primary" id="whoConfirm" style="margin-top:10px">This is my business</button>';
+  }else if(whoMode==='upload'){
+    mid='<label class="upload sm" id="whoDocUpload"><input type="file" id="whoDocMain" accept=".pdf,.png,.jpg,.jpeg" hidden>'+
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#697586" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+
+      '<div class="u1">Upload a business document</div>'+
+      '<div class="u2">Helpful documents: certificate or articles of incorporation, corporate registry search report, business registration, or a recent invoice &mdash; PDF, PNG, or JPG</div></label>'+
+      /* hidden until an upload starts — runWhoRerun's className reset reveals it */
+      '<div class="sms-status hidden" id="whoStatus" style="margin-top:0"></div>';
+  }else{
+    mid='<div class="field who-field">'+
+      '<input id="whoQ" autocomplete="off" spellcheck="false" placeholder="Legal business name">'+
+      '<label for="whoQ">Legal business name</label>'+
+      '<div class="who-menu hidden" id="whoMenu"><div class="who-list" id="whoList"></div>'+
+      '<button type="button" class="who-nf" id="whoNF"><span>I can&rsquo;t find my business</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>'+
+      '</div>'+
+      '<button class="btn btn-primary" id="whoConfirm" style="margin-top:10px" disabled>This is my business</button>';
+  }
   body.innerHTML='<h1 class="page-h">Find your business</h1>'+
     '<p class="page-sub">Find your business and we&rsquo;ll autofill your application.</p>'+
-    '<div class="fgrid" style="margin-top:34px">'+
-    (whoRec
-      ?'<div class="who-card"><div class="wc-head"><div><div class="wc-name">'+esc(whoRec.name)+'</div><div class="wc-meta">'+regMeta(whoRec)+'</div></div>'+
-        '<button class="icobtn" id="whoClear" aria-label="Remove this business and search again"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
-        '<div class="who-kv"><span class="k">Incorporated</span><span class="v">'+whoRec.founded+' &mdash; '+esc(whoRec.entity)+'</span></div>'+
-        '<div class="who-kv"><span class="k">Registered office</span><span class="v">'+esc(whoRec.city)+', '+esc(whoRec.prov)+'</span></div>'+
-        '<div class="who-kv"><span class="k">Industry</span><span class="v">'+esc(whoRec.industry)+'</span></div></div>'
-      :'<div class="field who-field">'+
-        '<input id="whoQ" autocomplete="off" spellcheck="false" placeholder="Legal business name">'+
-        '<label for="whoQ">Legal business name</label>'+
-        '<div class="who-menu hidden" id="whoMenu"><div class="who-list" id="whoList"></div>'+
-        '<button type="button" class="who-nf" id="whoNF"><span>I can&rsquo;t find my business</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>'+
-      '</div>')+
-    '<button class="btn btn-primary" id="whoConfirm" style="margin-top:10px"'+(whoRec?'':' disabled')+'>This is my business</button>'+
+    '<div class="fgrid" style="margin-top:34px">'+mid+'</div>'+
+    '<div class="or-divider who-or">OR</div>'+
+    '<div class="fgrid">'+
+      '<button type="button" class="btn btn-secondary" id="whoModeBtn">'+(whoMode==='upload'?'Find business by name':'Upload documents to autofill')+'</button>'+
+      '<button type="button" class="btn-link who-skip" id="whoSkip">Skip this step and enter my details manually</button>'+
     '</div>';
-  $('whoConfirm').onclick=function(){
+  $('whoModeBtn').onclick=function(){whoMode=(whoMode==='upload'?'name':'upload');whoRec=null;renderWhoSearch();};
+  $('whoSkip').onclick=function(){whoRec=null;showPage('welcome');};
+  var cf=$('whoConfirm');
+  if(cf)cf.onclick=function(){
     if(this.disabled||!whoRec)return;
     applyRegistryPrefill(whoRec);
     whoRec=null;
@@ -4005,6 +4035,10 @@ function renderWhoSearch(){
   };
   if(whoRec){
     $('whoClear').onclick=function(){whoRec=null;renderWhoSearch();var q=$('whoQ');if(q)q.focus();};
+    return;
+  }
+  if(whoMode==='upload'){
+    $('whoDocMain').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)runWhoRerun('document',f.name);});
     return;
   }
   var q=$('whoQ'),menu=$('whoMenu'),list=$('whoList');
@@ -4017,7 +4051,7 @@ function renderWhoSearch(){
       ?results.map(function(r,i){return regOptRow(i,r);}).join('')
       :'<div class="who-empty">No registered businesses match that name.</div>';
     list.querySelectorAll('[data-who]').forEach(function(b){
-      b.onclick=function(){whoRec=results[+b.dataset.who];renderWhoSearch();};
+      b.onclick=function(){whoRec=results[+b.dataset.who];whoMode='name';renderWhoSearch();};
     });
     menu.classList.remove('hidden');
   }
@@ -4068,9 +4102,9 @@ function renderWhoResults(recs,kind){
     '<p class="page-sub">Based on the '+(kind==='document'?'document you provided':'website you provided')+', these registered businesses are the closest matches. Select yours to continue.</p>'+
     '<div class="who-results" style="margin-top:34px">'+recs.map(function(r,i){return regOptRow(i,r);}).join('')+'</div>'+
     '<p class="who-foot"><a href="#" id="whoManual">None of these is my business &mdash; enter my details manually</a></p>';
-  $('whoBack').onclick=function(){whoRec=null;renderWhoSearch();};
+  $('whoBack').onclick=function(){whoRec=null;whoMode='name';renderWhoSearch();};
   body.querySelectorAll('[data-who]').forEach(function(b){
-    b.onclick=function(){whoRec=recs[+b.dataset.who];renderWhoSearch();};
+    b.onclick=function(){whoRec=recs[+b.dataset.who];whoMode='name';renderWhoSearch();};
   });
   $('whoManual').onclick=function(e){e.preventDefault();whoRec=null;showPage('welcome');};
 }
@@ -4310,7 +4344,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!ln.value){ln.closest('.field').classList.add('invalid');ok=false;}
     if(!validEmail(em.value)){em.closest('.field').classList.add('invalid');ok=false;}
     if(!validPhone(ph.value)){ph.closest('.field').classList.add('invalid');ok=false;}
-    if(pw.value.length<8||pwStrength(pw.value)<1){pw.closest('.field').classList.add('invalid');ok=false;}
+    if(!pwAcceptable(pw.value)){pw.closest('.field').classList.add('invalid');ok=false;}
     if(!ok)return;
     if(em.value.trim().toLowerCase()!==(S.email||'').toLowerCase()){S=freshKeepSettings();}
     S.email=em.value.trim();S.firstName=fn.value.trim();S.lastName=ln.value.trim();S.verified=false;
@@ -4339,7 +4373,7 @@ document.addEventListener('DOMContentLoaded',function(){
     paintPwStrength('rpHint',p);
     var mismatch=!!p2&&p!==p2;
     $('rpMatch').classList.toggle('hidden',!mismatch);
-    $('rpSave').disabled=!(p.length>=8&&pwStrength(p)>=1&&p===p2);
+    $('rpSave').disabled=!(pwAcceptable(p)&&p===p2);
   };
   ['rp-pass','rp-pass2'].forEach(function(id){$(id).addEventListener('input',rpSync);});
   $('rpSave').onclick=function(){
