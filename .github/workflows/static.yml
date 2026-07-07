@@ -36,7 +36,7 @@ jobs:
       # version. The iteration references its images one level up (../), so the copy
       # rewrites those to root-relative paths.
       - name: Sync current iteration to Pages root (index.html)
-        run: sed -e 's|src="\.\./|src="|g' -e "s|'\.\./|'|g" "Iterations/Onboarding_Redesign_V2.1.html" > index.html
+        run: sed -e 's|src="\.\./|src="|g' -e "s|'\.\./|'|g" "Iterations/Onboarding_Redesign_V2.2.html" > index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
