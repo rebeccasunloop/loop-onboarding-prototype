@@ -8,8 +8,8 @@ Magic inputs and special-cased values for demoing edge cases. Written against
 | Input | Result |
 |---|---|
 | Password under 12 chars | "The email or password you entered is incorrect" — 5 misses in a row → "Too many attempts" lockout with a reset link |
-| Password 12+ chars (anything) | Accepted, proceeds to 2FA |
-| 6-digit code `123456` | The only valid code **everywhere**: sign-in 2FA, SMS verification, authenticator/MFA setup. Anything else → error state |
+| Password 12+ chars (anything) | Accepted, signs you straight in — there is no MFA step at sign-in |
+| 6-digit code `123456` | The only valid code everywhere it appears: sign-up SMS verification and authenticator/MFA setup. Anything else → error state |
 | Sign in with the same email as your last session | Resumes where you left off (application → wait room → approved → live, depending on state) |
 | Sign in with a new email | Wipes state, starts a fresh application at "Find your business" |
 | "Continue with Google" | Instant fresh session as `you@gmail.com` |
@@ -89,13 +89,9 @@ demo-related remains in the main UI.
     (Normal / Delayed / Material requested), and per-person
     "mark verified" for pending identity checks.
   - **Cheatsheet** — the magic values from this file, always visible.
-- Every filled field shows a low-profile **"🔄 Last edit: [name] • [time]"**
-  stamp underneath, cross-fading when a background update changes the editor.
-
-Other notes:
-
-- Sign-in 2FA method list is randomized per attempt (SMS always present) —
-  retry sign-in to see different method sets.
+- Every filled field shows a low-profile **"✎ Last edit: [name]"** stamp
+  underneath (pencil vector icon), cross-fading when a background update
+  changes the editor.
 
 ## Notes
 

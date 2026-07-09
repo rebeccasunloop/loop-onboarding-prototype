@@ -1312,7 +1312,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 /* ============== collaboration layer + global demo harness (prototype) ============== */
 /* inline audit stamp under a field; cross-fades when the editor changes */
-.stamp{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--gray-400);line-height:1.4;transition:opacity .25s ease}
+.stamp{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:11.5px;color:var(--gray-400);line-height:1.4;transition:opacity .25s ease}
+.stamp svg{flex:0 0 auto}
 .stamp.fading{opacity:0}
 .qfield .stamp{margin-top:6px}
 /* review rows a teammate changed mid-review — soft informational tint after "Keep editing" */
@@ -1439,15 +1440,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <p class="auth-sub">We texted a 6-digit code to <strong id="smsTo">your phone</strong>. Enter it below to continue your journey.</p>
       <div id="smsBody"></div>
     </div>
-  </div>
-  <div class="auth-media"></div>
-</div>
-
-<!-- ================= SIGN-IN VERIFICATION (one-time code after password) ================= -->
-<div id="view-si2fa" class="auth-shell hidden">
-  <div class="auth-pane">
-    <div class="auth-brand"><span class="logo" id="logoSi2fa"></span></div>
-    <div class="auth-inner"><div id="si2faBody"></div></div>
   </div>
   <div class="auth-media"></div>
 </div>
@@ -2737,13 +2729,11 @@ function show(view){
   closeSettingsMenu();
   if(view!=='sms')stopSmsTimer();
   if(view!=='mfa')stopMfaTimer();
-  if(view!=='si2fa')stopSi2faTimer();
-  ['view-auth','view-changepw','view-reset','view-sms','view-si2fa','view-mfa','app','view-setup','view-approved','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
+  ['view-auth','view-changepw','view-reset','view-sms','view-mfa','app','view-setup','view-approved','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   if(view==='auth'){$('view-auth').classList.remove('hidden');syncAuthButtons();}
   else if(view==='changepw'){$('view-changepw').classList.remove('hidden');renderChangePw();}
   else if(view==='reset'){$('view-reset').classList.remove('hidden');renderReset();}
   else if(view==='sms'){$('view-sms').classList.remove('hidden');renderSms();}
-  else if(view==='si2fa'){$('view-si2fa').classList.remove('hidden');renderSi2fa();}
   else if(view==='mfa'){$('view-mfa').classList.remove('hidden');renderMfa();}
   else if(view==='setup'){
     $('view-setup').classList.remove('hidden');
@@ -4962,118 +4952,11 @@ function verifySmsCode(){
   },1000);
 }
 
-/* ============================ sign-in verification (one-time code after password) ============================ */
-/* After a correct email + password, a one-time code goes out by SMS by default.
-   The account may also have other MFA methods enabled — randomized on every
-   sign-in (a non-empty subset of authenticator / email / passkey) — offered
-   under "Verify another way". The demo code verifies, same as everywhere else. */
+/* ============================ sign-in (no MFA step: password goes straight in) ============================ */
 /* wrong-password tracking: five consecutive misses prompt a reset */
 var siFailCount=0,SI_FAIL_LIMIT=5;
 /* demo: emails already tied to a group business account — sign-up redirects to sign in */
 var EXISTING_ACCOUNT_EMAILS=['rebecca@mapleandcrumb.ca'];
-var si2faMethods=['sms'],si2faMethod='sms',si2faEmail='',si2faDest=null;
-var si2faTimer=null,si2faLeft=0,si2faVerifying=false,si2faVerified=false;
-function stopSi2faTimer(){if(si2faTimer){clearInterval(si2faTimer);si2faTimer=null;}}
-function setSi2faResend(label,disabled){var b=$('si2faResendBtn');if(!b)return;b.textContent=label;b.disabled=disabled;}
-function tickSi2fa(){var b=$('si2faResendBtn');if(!b){stopSi2faTimer();return;}si2faLeft--;if(si2faLeft>0)setSi2faResend('Resend in '+fmtLeft(si2faLeft),true);else{setSi2faResend('Resend code',false);stopSi2faTimer();}}
-function startSi2faCountdown(){stopSi2faTimer();si2faLeft=SMS_WAIT;setSi2faResend('Resend in '+fmtLeft(si2faLeft),true);si2faTimer=setInterval(tickSi2fa,1000);}
-/* the phone number on file, masked — sign-in doesn't reveal it in full */
-function si2faMaskedPhone(){
-  var d=String(S.acctPhone||'').replace(/\D/g,'');
-  if(d.length>=10)return (S.acctPhoneDial||'+1')+' (•••) •••-••'+d.slice(-2);
-  return '+1 (•••) •••-••42';
-}
-var SI2FA_META={
-  sms:{label:'Text me a code',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'},
-  email:{label:'Email me a code',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'},
-  authenticator:{label:'Use my authenticator app',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3"/><path d="M21 14v7h-7"/></svg>'},
-  passkey:{label:'Use my passkey',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>'}
-};
-function renderSi2fa(){
-  var body=$('si2faBody');if(!body)return;
-  stopSi2faTimer();si2faVerifying=false;si2faVerified=false;
-  var CHEV='<svg class="mfa-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
-  var codeRow='<div class="code-row sm" id="si2faCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>';
-  var resendRow='<div class="sms-resend"><span>Didn&rsquo;t get a code?</span> <button type="button" id="si2faResendBtn" disabled>Resend code</button></div>';
-  var head='<button type="button" class="back-link back-top" id="si2faBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>'+
-    '<h1>Verify it&rsquo;s you</h1>';
-  var mid;
-  if(si2faMethod==='sms'){
-    mid='<p class="auth-sub">We texted a 6-digit code to <strong>'+si2faMaskedPhone()+'</strong>. Enter it below.</p>'+
-      codeRow+resendRow+'<div class="sms-status" id="si2faStatus"></div>'+
-      '<button class="btn btn-primary" id="si2faGo" disabled style="margin-top:14px">Continue</button>';
-  }else if(si2faMethod==='email'){
-    mid='<p class="auth-sub">We emailed a 6-digit code to <strong>'+esc(si2faEmail)+'</strong>. Enter it below.</p>'+
-      codeRow+resendRow+'<div class="sms-status" id="si2faStatus"></div>'+
-      '<button class="btn btn-primary" id="si2faGo" disabled style="margin-top:14px">Continue</button>';
-  }else if(si2faMethod==='authenticator'){
-    mid='<p class="auth-sub">Enter the 6-digit code from your authenticator app.</p>'+
-      codeRow+'<div class="sms-status" id="si2faStatus"></div>'+
-      '<button class="btn btn-primary" id="si2faGo" disabled style="margin-top:14px">Continue</button>';
-  }else{
-    mid='<p class="auth-sub">Use Face ID, your fingerprint, or a security key to sign in.</p>'+
-      '<button class="btn btn-primary" id="si2faPasskey">Continue with passkey</button>'+
-      '<div class="sms-status" id="si2faStatus"></div>';
-  }
-  var others=si2faMethods.filter(function(m){return m!==si2faMethod;});
-  var alt=others.length
-    ?'<div class="or-divider or-auth">OR</div><p class="auth-sub" style="margin-bottom:10px">Verify another way</p>'+
-      others.map(function(m){var mt=SI2FA_META[m];return '<div class="mfa-card mfa-card-sm" data-si2fa="'+m+'"><span class="mic">'+mt.icon+'</span><div class="mt">'+mt.label+'</div>'+CHEV+'</div>';}).join('')
-    :'';
-  body.innerHTML=head+mid+alt;
-  $('si2faBack').onclick=function(){
-    stopSi2faTimer();
-    show('auth');
-    $('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');syncAuthButtons();
-  };
-  body.querySelectorAll('[data-si2fa]').forEach(function(card){
-    card.onclick=function(){si2faMethod=card.dataset.si2fa;renderSi2fa();};
-  });
-  if(si2faMethod==='passkey'){
-    $('si2faPasskey').onclick=function(){
-      var b=this;b.disabled=true;b.innerHTML='<span class="spinner" style="width:15px;height:15px;border-width:2px"></span> Waiting for your device&hellip;';
-      setTimeout(function(){if(S.view==='si2fa'&&si2faMethod==='passkey')si2faFinish();},1400);
-    };
-    return;
-  }
-  wireCodeRow($('si2faCode'),function(ok){if(si2faVerifying||si2faVerified)return;clearCodeError('si2faCode','si2faStatus');if(ok)verifySi2faCode();});
-  $('si2faGo').onclick=function(){if(!this.disabled&&si2faVerified)si2faFinish();};
-  var rs=$('si2faResendBtn');
-  if(rs){
-    rs.onclick=function(){
-      if(this.disabled)return;
-      $('si2faCode').classList.remove('err');
-      $('si2faCode').querySelectorAll('input').forEach(function(i){i.value='';i.disabled=false;});
-      $('si2faCode').querySelector('input').focus();
-      $('si2faGo').disabled=true;
-      var st=$('si2faStatus');st.className='sms-status ok';st.textContent='A new code is on its way.';
-      si2faVerifying=false;si2faVerified=false;
-      startSi2faCountdown();
-    };
-    startSi2faCountdown();
-  }
-}
-function verifySi2faCode(){
-  var code=readCode('si2faCode');
-  si2faVerifying=true;
-  var b=$('si2faGo');if(b)b.disabled=true;
-  $('si2faCode').querySelectorAll('input').forEach(function(i){i.disabled=true;});
-  var st=$('si2faStatus');st.className='sms-status';st.innerHTML='<span class="spinner"></span> Verifying&hellip;';
-  setTimeout(function(){
-    if(!si2faVerifying||$('si2faStatus')!==st)return;/* method switch or back cancelled this check */
-    si2faVerifying=false;
-    if(code!==DEMO_CODE){codeError('si2faCode',st);if(b)b.disabled=true;return;}
-    si2faVerified=true;
-    st.className='sms-status ok';
-    st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verified';
-    if(b)b.disabled=false;
-  },1000);
-}
-function si2faFinish(){
-  stopSi2faTimer();
-  var d=si2faDest;si2faDest=null;
-  if(d)d();else show('auth');
-}
 
 /* ============================ MFA setup (optional, after sign-up) ============================ */
 var mfaSent=false;
@@ -6453,15 +6336,6 @@ function personaName(id){
 function personaLabel(id){return personaName(id)+' ('+PERSONAS[id].role+')';}
 function otherActor(){return S.collab.actor==='A'?'B':'A';}
 function stampEdit(k,by){S.collab.meta[k]={by:by,at:Date.now()};}
-function timeAgo(ts){
-  var s=Math.max(0,Math.round((Date.now()-ts)/1000));
-  if(s<8)return 'just now';
-  if(s<60)return s+' seconds ago';
-  var m=Math.round(s/60);
-  if(m<60)return m+' minute'+(m>1?'s':'')+' ago';
-  var h=Math.round(m/60);
-  return h+' hour'+(h>1?'s':'')+' ago';
-}
 
 /* ---- inline audit stamps under standard inputs ---- */
 function stampAnchor(inp){
@@ -6478,7 +6352,8 @@ function injectStamps(){
   });
   refreshAllStamps();
 }
-function stampText(k){return '&#128260; Last edit: '+esc(personaName(S.collab.meta[k].by))+' &bull; '+timeAgo(S.collab.meta[k].at);}
+var STAMP_ICON='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>';
+function stampText(k){return STAMP_ICON+'<span>Last edit: '+esc(personaName(S.collab.meta[k].by))+'</span>';}
 function refreshStamp(k,crossfade){
   document.querySelectorAll('[data-stamp="'+k+'"]').forEach(function(d){
     var m=S.collab.meta[k];
@@ -6534,7 +6409,6 @@ document.addEventListener('focusout',function(e){
 var collabTicks=0;
 function collabTick(){
   collabTicks++;
-  refreshAllStamps();
   if(S.collab.ambient&&!S.submitted&&S.view==='app'&&collabTicks%3===0)ambientStep();
 }
 /* plausible teammate edits — values pre-normalized so the postal/taxId input
@@ -6676,7 +6550,7 @@ function renderHarness(){
     }
   }
   html+='<div class="hz-h">Cheatsheet</div>'+
-    '<div class="hz-cheat"><span>2FA / SMS / MFA code</span><code>123456</code></div>'+
+    '<div class="hz-cheat"><span>SMS / MFA setup code</span><code>123456</code></div>'+
     '<div class="hz-cheat"><span>Registry search demo</span><code>northwind</code></div>'+
     '<div class="hz-cheat"><span>Valid CRA business number</span><code>123456782</code></div>'+
     '<div class="hz-cheat"><span>Password rule</span><code>12+ chars = valid</code></div>'+
@@ -6748,7 +6622,7 @@ function initHarness(){
 
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
-  ['logoAuth','logoChangePw','logoReset','logoSms','logoSi2fa','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoLive','logoInvSim'].forEach(function(id){$(id).innerHTML=LOGO;});
+  ['logoAuth','logoChangePw','logoReset','logoSms','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoLive','logoInvSim'].forEach(function(id){$(id).innerHTML=LOGO;});
   renderAuthMedia();
   initLang();
   fillSelect($('f-entityType'),ENTITIES);
@@ -6967,25 +6841,15 @@ document.addEventListener('DOMContentLoaded',function(){
     siFailCount=0;
     $('siErr').classList.add('hidden');$('siLock').classList.add('hidden');
     var emv=em.value.trim();
-    si2faEmail=emv;
-    /* password accepted → hold the destination until the one-time code verifies */
-    si2faDest=function(){
-      if(emv.toLowerCase()===(S.email||'').toLowerCase()&&S.verified){
-        if(S.activated)show('live');
-        else if(S.submitted){S.approved=true;persist();show('approved');}
-        else show('app');
-      }else{
-        /* a brand-new application starts at the registry lookup */
-        S=freshKeepSettings();S.email=emv;S.verified=true;S.page='who';save();show('app');
-      }
-    };
-    /* SMS is always on file; which other MFA methods this account has enabled is
-       randomized on every sign-in (always at least one of the three) */
-    var extras=['authenticator','email','passkey'].filter(function(){return Math.random()<0.5;});
-    if(!extras.length)extras=[['authenticator','email','passkey'][Math.floor(Math.random()*3)]];
-    si2faMethods=['sms'].concat(extras);
-    si2faMethod='sms';
-    show('si2fa');
+    /* password accepted → straight in (no sign-in MFA step) */
+    if(emv.toLowerCase()===(S.email||'').toLowerCase()&&S.verified){
+      if(S.activated)show('live');
+      else if(S.submitted){S.approved=true;persist();show('approved');}
+      else show('app');
+    }else{
+      /* a brand-new application starts at the registry lookup */
+      S=freshKeepSettings();S.email=emv;S.verified=true;S.page='who';save();show('app');
+    }
   };
 
   /* welcome + continue buttons */
