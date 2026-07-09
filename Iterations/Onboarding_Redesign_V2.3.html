@@ -1309,6 +1309,52 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   /* keep the bottom-left corner minimal on phones (collaborator lives in the page header + welcome) */
   .flow-utils .cofill-side{display:none}
 }
+
+/* ============== collaboration layer + global demo harness (prototype) ============== */
+/* inline audit stamp under a field; cross-fades when the editor changes */
+.stamp{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--gray-400);line-height:1.4;transition:opacity .25s ease}
+.stamp.fading{opacity:0}
+.qfield .stamp{margin-top:6px}
+/* review rows a teammate changed mid-review — soft informational tint after "Keep editing" */
+.rev-row.rev-chg{background:var(--blue-25);box-shadow:inset 3px 0 0 var(--blue-400)}
+[data-theme="dark"] .rev-row.rev-chg{background:rgba(46,144,250,.10)}
+/* floating harness: actor switcher pill + expandable demo-tools panel */
+.hz{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:99;font-family:'DM Mono',monospace}
+.hz-pill{display:flex;align-items:center;gap:10px;background:var(--gray-900);color:#fff;border-radius:999px;padding:7px 8px 7px 12px;box-shadow:0 6px 22px rgba(0,0,0,.30);white-space:nowrap}
+.hz-pill .hz-lbl{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.hz-seg{display:flex;background:rgba(255,255,255,.12);border-radius:999px;padding:2px}
+.hz-seg button{font-family:inherit;font-size:12px;color:rgba(255,255,255,.75);background:none;border:none;border-radius:999px;padding:4px 11px;line-height:1.4}
+.hz-seg button.on{background:var(--brand-500);color:#fff;font-weight:700}
+#hzToggle{font-family:inherit;font-size:12px;color:#fff;background:rgba(255,255,255,.12);border:none;border-radius:999px;padding:5px 12px;display:inline-flex;align-items:center;gap:6px}
+#hzToggle:hover{background:rgba(255,255,255,.2)}
+#hzToggle .chev{transition:transform .16s;display:inline-flex}
+#hzToggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.hz-panel{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:380px;max-width:calc(100vw - 32px);max-height:min(64vh,540px);overflow-y:auto;background:#fff;border:1px solid var(--gray-200);border-radius:14px;box-shadow:var(--shadow-overlay),0 20px 50px rgba(18,25,38,.25);padding:14px 16px 16px;text-align:left}
+.hz-h{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gray-500);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.hz-h:first-child{margin-top:0}
+.hz-h::after{content:'';flex:1;height:1px;background:var(--gray-100)}
+.hz-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2px}
+.hz-act{font-family:inherit;font-size:12.5px;color:var(--gray-700);background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:6px 10px;text-align:left}
+.hz-act:hover:not(:disabled){background:var(--gray-100)}
+.hz-act:disabled{opacity:.45;cursor:not-allowed}
+.hz-act.hz-on{background:var(--brand-25);border-color:var(--brand-200);color:var(--brand-700);font-weight:700}
+.hz-note{font-size:11.5px;color:var(--gray-400);margin:6px 0 0;line-height:1.5;font-family:'DM Sans',sans-serif}
+.hz-cheat{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12px;color:var(--gray-600);padding:4px 0;font-family:'DM Sans',sans-serif}
+.hz-cheat code{font-family:'DM Mono',monospace;font-size:11.5px;background:var(--gray-100);border-radius:5px;padding:1px 6px;color:var(--gray-800);white-space:nowrap}
+[data-theme="dark"] .hz-pill{background:var(--gray-100);box-shadow:0 6px 22px rgba(0,0,0,.5)}
+[data-theme="dark"] .hz-panel{background:var(--gray-50)}
+[data-theme="dark"] .hz-act{background:var(--gray-100);border-color:var(--gray-200)}
+[data-theme="dark"] .hz-act:hover:not(:disabled){background:var(--gray-200)}
+[data-theme="dark"] .hz-cheat code{background:var(--gray-200);color:var(--gray-800)}
+@media (max-width:720px){.hz-pill .hz-lbl{display:none}}
+/* submission-intercept modal: per-field diff cards */
+.ix-row{border:1px solid var(--gray-200);border-radius:10px;padding:12px 14px;margin-top:10px}
+.ix-lbl{font-size:13px;font-weight:700;margin-bottom:6px}
+.ix-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:13.5px}
+.ix-old{color:var(--gray-500);text-decoration:line-through;text-decoration-color:var(--gray-300)}
+.ix-arrow{color:var(--gray-400);flex:0 0 auto}
+.ix-new{font-weight:600}
+.ix-by{font-family:'DM Mono',monospace;font-size:11px;color:var(--gray-400);margin-top:5px}
 </style>
 <script>
 /* set the saved appearance before first paint to avoid a light-mode flash */
@@ -1784,10 +1830,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           </div>
         </div>
 
-        <div class="wr-proto-btn" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--gray-200)">
-          <span class="wr-proto">Prototype</span>
-          <button class="btn btn-secondary btn-sm" id="btnProtoWaitroom" type="button" style="width:auto">Skip to wait room <span>&#8594;</span></button>
-        </div>
       </div>
 
     </div>
@@ -2125,6 +2167,34 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
 </div>
 
+<!-- ================= GLOBAL DEMO HARNESS (prototype) =================
+     Persistent actor switcher + every demo/edge-case control in one place.
+     The main UI carries no prototype buttons; everything lives here. -->
+<div id="harness" class="hz">
+  <div class="hz-panel hidden" id="hzPanel"></div>
+  <div class="hz-pill">
+    <span class="wr-proto">Prototype</span>
+    <span class="hz-lbl">Acting as</span>
+    <div class="hz-seg" id="hzActors"></div>
+    <button type="button" id="hzToggle" aria-expanded="false" aria-controls="hzPanel">Demo tools <span class="chev"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span></button>
+  </div>
+</div>
+
+<!-- submission intercept: teammate edited data while the user was on Review -->
+<div id="ixOverlay" class="hidden" style="position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:96;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ixTitle" style="max-width:520px;width:100%">
+    <div class="m-body">
+      <h3 id="ixTitle">&#9888;&#65039; Review recent changes before submitting</h3>
+      <p class="fhelp" id="ixSub" style="margin:6px 0 4px"></p>
+      <div id="ixList" style="max-height:44vh;overflow-y:auto"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">
+        <button class="btn btn-secondary btn-sm" id="ixKeep" type="button" style="width:auto">Keep editing</button>
+        <button class="btn btn-primary btn-sm" id="ixConfirm" type="button" style="width:auto">Confirm &amp; submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- zxcvbn (Dropbox): holistic password strength — dictionary words, names, pop-culture
      references, keyboard patterns, sequences/repeats, l33t swaps, dates, plus caller
@@ -2327,7 +2397,10 @@ var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',phone:'',website:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',regions:[],hearAbout:'',creditInterest:'',docs:[],docScreenFor:'',certify:false};}
 function freshSetup(){return {open:0,reviewState:'normal',depMethod:'Instant bank connection (Flinks)',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],credit:{stage:'intro',revenue:'',margin:'',profitable:'',debt:'',debtPay:'',revSource:'',payFreq:'',salesChannel:false,docViewed:false,agree:false},accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{},actions:[]};}
 function freshSettings(){return {appearance:'system',lang:'en'};}
-function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collaborators:[],acctPhone:'',acctPhoneDial:'+1',phoneVerified:false,mfaMethod:'',mfaEnabled:false,mfaDone:{},mfaPhone:'',regPrefilled:false,regName:'',regSource:'',bizSub:0,bizGaps:[],regDirectors:[],agreements:{},submitted:false,approved:false,activated:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
+/* collaboration layer: current actor, per-field audit metadata, ambient-edit toggle,
+   and the review-page baseline used to detect teammate edits mid-review */
+function freshCollab(){return {actor:'A',meta:{},ambient:false,reviewBaseline:null};}
+function freshState(){return {view:'auth',email:'',firstName:'',lastName:'',verified:false,page:'welcome',attempted:{},visited:{},f:freshFields(),setup:freshSetup(),collab:freshCollab(),collaborators:[],acctPhone:'',acctPhoneDial:'+1',phoneVerified:false,mfaMethod:'',mfaEnabled:false,mfaDone:{},mfaPhone:'',regPrefilled:false,regName:'',regSource:'',bizSub:0,bizGaps:[],regDirectors:[],agreements:{},submitted:false,approved:false,activated:false,ref:null,submittedAt:null,signName:'',settings:freshSettings()};}
 /* Signing officer and control person were merged into a single "Signing officer" role */
 function migrateRoles(s){
   (s.f&&s.f.individuals||[]).forEach(function(p){
@@ -2696,6 +2769,7 @@ function show(view){
   }
   if(dir&&view!=='app')slideIn($('view-'+view),dir);
   updateChatVisibility();
+  renderHarness();/* demo-tool availability depends on the current view */
   window.scrollTo(0,0);
 }
 
@@ -2758,11 +2832,13 @@ function showPage(id,forceDir){
     if(id==='documents'){startDocScreen();renderDocs();}
     /* reaching review is the moment gaps become visible: from here on, every
        page shows error states for its unfilled mandatory fields */
-    if(id==='review'){PAGE_ORDER.forEach(function(p){S.attempted[p]=true;});persist();renderReview();}
+    if(id==='review'){PAGE_ORDER.forEach(function(p){S.attempted[p]=true;});persist();renderReview();snapshotReview();}
     refreshInvalid(id);
     applyCofillLocks(id);
   }
   if(newPage&&SKEL_PAGES[id])runPageSkeleton(id);
+  injectStamps();/* idempotent: covers fields revealed by page/sub-step renders */
+  renderHarness();
   paintNav();
   window.scrollTo(0,0);
 }
@@ -2862,7 +2938,12 @@ function bindFields(){
       if(k==='taxId')syncTaxIdWarn();
       if(k==='industry')syncSubIndustry();
       if(S.regPrefilled&&(S.bizGaps||[]).indexOf(k)>=0)markRegGaps();
+      /* local edit: attribute to the current actor; a held-back remote edit for
+         this field is now stale (the user kept typing) — drop it */
+      delete pendingRemote[k];
+      stampEdit(k,S.collab.actor);
       save();
+      refreshStamp(k,false);
     };
     inp.addEventListener('input',set);
     inp.addEventListener('change',set);
@@ -2877,6 +2958,7 @@ function hydrateFields(){
   });
   $('f-consent').checked=!!S.f.consent;
   renderAllChips();renderDocs();syncRelBiz();renderRelBizExtra();syncTradeName();syncSubIndustry();syncProvState();renderMsel();syncTaxIdWarn();
+  injectStamps();
 }
 /* CRA business number validation: 9 digits, starts 1/7/8, passes Luhn mod-10 */
 function luhnOk(s){
@@ -4012,7 +4094,9 @@ function kvCard(page,keys){
     if(v)inner='<div class="rv">'+esc(v)+'</div>';
     else if(optional)inner='<div class="rv muted">Not provided</div>';
     else inner=reqLink(page,k);
-    card.appendChild(el('div','rev-row','<div class="rl">'+esc(LABELS[k])+'</div>'+inner));
+    var row=el('div','rev-row','<div class="rl">'+esc(LABELS[k])+'</div>'+inner);
+    row.dataset.rk=k;/* lets the submit intercept target this row for highlights */
+    card.appendChild(row);
   });
   return card;
 }
@@ -4075,6 +4159,7 @@ function renderReview(){
   R.appendChild(revSection('Documents','documents',missingPage('documents'),dCard));
 
   wireGapLinks(R);
+  applyChangeHighlights();
   paintGaps();
 }
 var gapsExpanded=false;
@@ -4127,16 +4212,7 @@ function renderTimeline(){
       '<div class="tlstep"><div class="tl-tt">Apply</div><div class="tl-td">Submitted on '+fmtDate(S.submittedAt||Date.now())+'</div></div>'+
       '<div class="tlstep"><div class="tl-tt">'+rv.tt+'</div><div class="tl-td'+(rv.warn?' warn':'')+'">'+rv.td+'</div></div>'+
       '<div class="tlstep"><div class="tl-tt">Account ready</div><div class="tl-td">Sign your agreements</div></div>'+
-    '</div>'+
-    '<div class="wr-proto-btn" style="margin-top:16px"><span class="wr-proto">Prototype</span>'+
-      Object.keys(REVIEW_STATES).map(function(k){
-        var on=(S.setup.reviewState||'normal')===k;
-        return '<button class="btn-link" data-revstate="'+k+'" style="font-size:13px;padding:4px 0;'+(on?'color:var(--brand-700);font-weight:700':'color:var(--gray-500)')+'">'+REVIEW_STATES[k].label+'</button>';
-      }).join('')+
     '</div>';
-  $('timelineBody').querySelectorAll('[data-revstate]').forEach(function(b){
-    b.onclick=function(){S.setup.reviewState=b.dataset.revstate;persist();renderTimeline();};
-  });
 }
 var NCHECK='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 /* ============================ account agreements (checkbox consent, timestamped) ============================ */
@@ -4262,20 +4338,13 @@ function renderSetup(){
         ?'<button type="button" class="btn btn-secondary btn-sm" data-actidvme="'+x.pi+'" style="width:auto;margin-top:10px">Complete your live verification</button>'
         :'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'+
           '<button type="button" class="btn btn-secondary btn-sm" data-actresend="'+x.pi+':email" style="width:auto">'+(p.idvInvited?'Resend':'Send')+' by email</button>'+
-          '<button type="button" class="btn btn-secondary btn-sm" data-actresend="'+x.pi+':sms" style="width:auto">'+(p.idvInvited?'Resend':'Send')+' by text</button>'+
-          '<button type="button" class="btn-link" data-actidvdone="'+x.pi+'" style="width:auto;font-size:13px;color:var(--gray-500)">Simulate completed</button></div>';
+          '<button type="button" class="btn btn-secondary btn-sm" data-actresend="'+x.pi+':sms" style="width:auto">'+(p.idvInvited?'Resend':'Send')+' by text</button></div>';
       actCard.appendChild(el('div','rev-row act-row','<div class="act-top"><div class="rv">Identity verification &mdash; '+esc(indName(p))+(p.isMe?' (you)':'')+'<span class="req-star">*</span></div><span class="pill amber">Action needed</span></div>'+
         '<div class="rl act-desc">'+(p.isMe?'Your identity verification is still pending.':(p.idvInvited?'Verification link sent'+(p.idvChannel==='sms'?' by text':p.idvChannel==='email'?' by email':'')+' &mdash; awaiting completion.':'No verification request sent yet.'))+'</div>'+
         body));
     });
     list.appendChild(actCard);
   }
-  var protoMand=el('div','wr-proto-btn');
-  protoMand.innerHTML='<span class="wr-proto">Prototype</span>'+
-    '<button class="btn-link" id="actSimDoc" style="font-size:13px;padding:4px 0">Simulate a document request</button>'+
-    '<button class="btn-link" id="actSimCorr" style="font-size:13px;padding:4px 0;margin-left:12px">Simulate a correction request</button>'+
-    (acts.length?'<button class="btn-link" id="actClear" style="font-size:13px;padding:4px 0;margin-left:12px">Clear simulated</button>':'');
-  list.appendChild(protoMand);
   /* mount upload boxes for pending document actions */
   acts.forEach(function(a,ai){
     if(a.done||a.kind!=='doc')return;
@@ -4502,12 +4571,6 @@ function renderSetup(){
     list.appendChild(arBox);
   }
 
-  /* prototype: jump straight to the approval flow */
-  var sim=el('div','wr-proto-btn');
-  sim.style.cssText='margin-top:36px;padding-top:22px;border-top:1px solid var(--gray-200)';
-  sim.innerHTML='<span class="wr-proto">Prototype</span><button class="btn btn-secondary btn-sm" id="simApprove" style="width:auto">Simulate approval <span>&#8594;</span></button>';
-  list.appendChild(sim);
-
   /* wiring */
   list.querySelectorAll('[data-toggle]').forEach(function(h){
     h.onclick=function(){
@@ -4522,18 +4585,7 @@ function renderSetup(){
       if(cur)slideCloseBody(cur,apply);else apply();
     };
   });
-  var sa=$('simApprove');if(sa)sa.onclick=function(){S.approved=true;persist();show('approved');};
-  /* actions table: prototype simulate controls + per-action wiring */
-  var asd=$('actSimDoc');if(asd)asd.onclick=function(){
-    S.setup.actions.push({id:'a'+(S.setup.actions.length+1),kind:'doc',title:'Upload a recent business bank statement',desc:'Our reviewer needs a statement from the last 90 days showing the business name and account number.',file:null,done:false});
-    persist();renderSetup();
-  };
-  var asc=$('actSimCorr');if(asc)asc.onclick=function(){
-    S.setup.actions.push({id:'a'+(S.setup.actions.length+1),kind:'correction',title:'Update your business address',desc:'The address on your application doesn’t match the registry record. Please confirm or correct it.',done:false,
-      fields:[{k:'address1',label:'Address line 1'},{k:'city',label:'City'},{k:'postal',label:'Postal code'}]});
-    persist();renderSetup();
-  };
-  var acl=$('actClear');if(acl)acl.onclick=function(){S.setup.actions=[];persist();renderSetup();};
+  /* actions table: per-action wiring (simulate controls live in the demo harness) */
   list.querySelectorAll('[data-actf]').forEach(function(inp){
     /* persist per keystroke — renderSetup re-renders wholesale, so typing must survive */
     inp.addEventListener('input',function(){
@@ -4553,14 +4605,6 @@ function renderSetup(){
       var parts=b.dataset.actresend.split(':'),p=S.f.individuals[+parts[0]];
       if(!p)return;
       p.idvInvited=true;p.idvChannel=parts[1];
-      persist();renderSetup();
-    };
-  });
-  list.querySelectorAll('[data-actidvdone]').forEach(function(b){
-    b.onclick=function(){
-      var p=S.f.individuals[+b.dataset.actidvdone];
-      if(!p)return;
-      if(p.isMe)p.idv=true;else p.extIdv=true;
       persist();renderSetup();
     };
   });
@@ -5536,6 +5580,7 @@ function renderBizView(){
      manually", or once validation needs to point at a specific address field */
   syncAddrSearch('bizAddrSearch','bizAddrGrid',!S.regPrefilled&&!S.f.address1&&!S.attempted['business']);
   markRegGaps();
+  injectStamps();
 }
 /* ---------- address autocomplete: one field that expands into the full set ---------- */
 var ADDR_BASES=[
@@ -6397,6 +6442,310 @@ function renderInvSim(){
   }
 }
 
+/* ============================ collaboration layer (prototype) ============================ */
+/* Two demo personas. User A takes the signed-in identity; User B is the fixed CFO
+   teammate. Simulated "remote" edits are always made by whoever you are NOT acting as. */
+var PERSONAS={A:{fallback:'Avery Chen',role:'CEO'},B:{fallback:'Jordan Lee',role:'CFO'}};
+function personaName(id){
+  if(id==='A'&&(S.firstName||S.lastName))return (S.firstName+' '+(S.lastName||'')).trim();
+  return PERSONAS[id].fallback;
+}
+function personaLabel(id){return personaName(id)+' ('+PERSONAS[id].role+')';}
+function otherActor(){return S.collab.actor==='A'?'B':'A';}
+function stampEdit(k,by){S.collab.meta[k]={by:by,at:Date.now()};}
+function timeAgo(ts){
+  var s=Math.max(0,Math.round((Date.now()-ts)/1000));
+  if(s<8)return 'just now';
+  if(s<60)return s+' seconds ago';
+  var m=Math.round(s/60);
+  if(m<60)return m+' minute'+(m>1?'s':'')+' ago';
+  var h=Math.round(m/60);
+  return h+' hour'+(h>1?'s':'')+' ago';
+}
+
+/* ---- inline audit stamps under standard inputs ---- */
+function stampAnchor(inp){
+  if(inp.type==='checkbox'||inp.type==='radio'||inp.type==='file')return null;
+  return inp.closest('.field')||inp.closest('.qfield');
+}
+function injectStamps(){
+  document.querySelectorAll('input[data-k],select[data-k],textarea[data-k]').forEach(function(inp){
+    var a=stampAnchor(inp);
+    if(!a||a.querySelector('.stamp'))return;
+    var d=el('div','stamp hidden');
+    d.dataset.stamp=inp.dataset.k;
+    a.appendChild(d);
+  });
+  refreshAllStamps();
+}
+function stampText(k){return '&#128260; Last edit: '+esc(personaName(S.collab.meta[k].by))+' &bull; '+timeAgo(S.collab.meta[k].at);}
+function refreshStamp(k,crossfade){
+  document.querySelectorAll('[data-stamp="'+k+'"]').forEach(function(d){
+    var m=S.collab.meta[k];
+    if(!m||!S.f[k]){d.classList.add('hidden');return;}
+    var wasName=d.dataset.by||'';
+    d.classList.remove('hidden');
+    if(crossfade&&wasName&&wasName!==m.by&&!d.classList.contains('fading')){
+      d.classList.add('fading');
+      setTimeout(function(){d.innerHTML=stampText(k);d.dataset.by=m.by;d.classList.remove('fading');},260);
+    }else{
+      d.innerHTML=stampText(k);d.dataset.by=m.by;
+    }
+  });
+}
+function refreshAllStamps(){
+  document.querySelectorAll('[data-stamp]').forEach(function(d){refreshStamp(d.dataset.stamp,false);});
+}
+
+/* ---- focus isolation: remote edits never touch a field while the user is in it ---- */
+var pendingRemote={};
+function applyRemoteEdit(k,v){
+  var inp=document.querySelector('[data-k="'+k+'"]');
+  if(inp&&document.activeElement===inp){pendingRemote[k]=v;return;}
+  commitRemote(k,v);
+}
+function commitRemote(k,v){
+  delete pendingRemote[k];
+  S.f[k]=v;
+  stampEdit(k,otherActor());
+  persist();
+  var inp=document.querySelector('[data-k="'+k+'"]');
+  if(inp&&inp.tagName!=='DIV'){
+    inp.value=v;
+    var w=inp.closest('.field');
+    if(w)w.classList.toggle('filled',!!v);
+  }
+  refreshStamp(k,true);
+  if(S.view==='app'&&S.page==='review')renderReview();
+}
+document.addEventListener('focusout',function(e){
+  var t=e.target;
+  if(!t||!t.dataset||!t.dataset.k)return;
+  var k=t.dataset.k;
+  if(!(k in pendingRemote))return;
+  setTimeout(function(){
+    if(!(k in pendingRemote))return;/* discarded by a local keystroke in the meantime */
+    if(document.activeElement===t)return;/* focus came back — keep holding */
+    commitRemote(k,pendingRemote[k]);
+  },150);
+});
+
+/* ---- simulated polling: one loop refreshes stamp times and drives ambient edits ---- */
+var collabTicks=0;
+function collabTick(){
+  collabTicks++;
+  refreshAllStamps();
+  if(S.collab.ambient&&!S.submitted&&S.view==='app'&&collabTicks%3===0)ambientStep();
+}
+/* plausible teammate edits — values pre-normalized so the postal/taxId input
+   transforms aren't needed; scalar fields only, never chips/multiselects */
+var AMBIENT_POOL={
+  website:['northwindrobotics.ca','www.northwindrobotics.com','northwind.io'],
+  phone:['416 555 0184','647 555 0009','416 555 2210'],
+  operatingName:['Northwind Robotics','Northwind','NW Robotics'],
+  description:['We design and manufacture warehouse automation robots for mid-size logistics companies.','Industrial robotics: we build and service automated picking systems for Canadian warehouses.'],
+  city:['Toronto','North York','Etobicoke'],
+  address2:['Suite 1500','Unit 12','Floor 3']
+};
+var ambientCursor=0;
+function ambientStep(){
+  var keys=Object.keys(AMBIENT_POOL);
+  var filled=keys.filter(function(k){return !!S.f[k];});
+  var pool=filled.length?filled:keys.slice(0,1);
+  var k=pool[ambientCursor++%pool.length];
+  var opts=AMBIENT_POOL[k].filter(function(v){return v!==S.f[k];});
+  if(opts.length)applyRemoteEdit(k,opts[ambientCursor%opts.length]);
+}
+/* the "chaos button": instantly change 1–2 meaningful fields under the other user's name */
+function chaosEdit(){
+  if(S.submitted)return;
+  applyRemoteEdit('address1','201 King Street West, Suite 1500');
+  applyRemoteEdit('phone','647 555 0128');
+}
+
+/* ---- review-page submission intercept ---- */
+var chgHighlights={};
+function snapshotReview(){
+  var vals={};
+  Object.keys(S.f).forEach(function(k){
+    var v=S.f[k];
+    if(typeof v==='string'||typeof v==='number'||typeof v==='boolean')vals[k]=v;
+  });
+  S.collab.reviewBaseline={at:Date.now(),values:vals};
+  persist();
+}
+function reviewDiff(){
+  var b=S.collab.reviewBaseline;
+  if(!b)return [];
+  var out=[];
+  Object.keys(S.collab.meta).forEach(function(k){
+    var m=S.collab.meta[k];
+    if(m.at<=b.at||m.by===S.collab.actor)return;
+    if(!(k in b.values)||String(b.values[k])===String(S.f[k]))return;
+    out.push({k:k,label:LABELS[k]||k,oldV:b.values[k],newV:S.f[k],by:m.by});
+  });
+  return out;
+}
+function doSubmit(){
+  S.submitted=true;
+  S.submittedAt=Date.now();
+  S.ref='LP-'+String(Date.now()).slice(-6);
+  S.setup=freshSetup();
+  /* they said yes to credit during the application — surface that step first */
+  if(S.f.creditInterest==='Yes')S.setup.open=1;
+  save();show('setup');
+}
+function openIntercept(diff){
+  var by=personaLabel(diff[0].by);
+  $('ixSub').innerHTML='Your teammate <strong>'+esc(by)+'</strong> updated information while you were reviewing. Please confirm these changes are correct:';
+  $('ixList').innerHTML=diff.map(function(d){
+    return '<div class="ix-row"><div class="ix-lbl">'+esc(d.label)+'</div>'+
+      '<div class="ix-line"><span class="ix-old">'+esc(d.oldV||'(empty)')+'</span><span class="ix-arrow">&#9472;&#9472;&#9654;</span><span class="ix-new">'+esc(d.newV)+'</span></div>'+
+      '<div class="ix-by">Updated by '+esc(personaName(d.by))+'</div></div>';
+  }).join('');
+  $('ixOverlay').classList.remove('hidden');
+}
+function closeIntercept(){$('ixOverlay').classList.add('hidden');}
+function applyChangeHighlights(){
+  document.querySelectorAll('#reviewSections .rev-row[data-rk]').forEach(function(r){
+    r.classList.toggle('rev-chg',!!chgHighlights[r.dataset.rk]);
+  });
+}
+
+/* ---- global demo harness: actor switcher + every prototype control ---- */
+var hzOpen=false;
+function setActor(id){
+  if(S.collab.actor===id)return;
+  /* the switch is a perspective change: land any held-back remote edits first */
+  var ae=document.activeElement;
+  if(ae&&ae.dataset&&ae.dataset.k)ae.blur();
+  Object.keys(pendingRemote).forEach(function(k){commitRemote(k,pendingRemote[k]);});
+  S.collab.actor=id;
+  persist();
+  renderHarness();
+}
+function toggleHarness(){hzOpen=!hzOpen;renderHarness();}
+function closeHarness(){if(hzOpen){hzOpen=false;renderHarness();}}
+function hzBtn(id,label,disabled,on){
+  return '<button type="button" class="hz-act'+(on?' hz-on':'')+'" data-hz="'+id+'"'+(disabled?' disabled':'')+'>'+label+'</button>';
+}
+function renderHarness(){
+  var seg=$('hzActors');
+  if(!seg)return;
+  seg.innerHTML=['A','B'].map(function(id){
+    return '<button type="button" data-actor="'+id+'"'+(S.collab.actor===id?' class="on"':'')+'>'+esc(personaLabel(id))+'</button>';
+  }).join('');
+  seg.querySelectorAll('[data-actor]').forEach(function(b){b.onclick=function(){setActor(b.dataset.actor);};});
+  $('hzToggle').setAttribute('aria-expanded',String(hzOpen));
+  var p=$('hzPanel');
+  p.classList.toggle('hidden',!hzOpen);
+  if(!hzOpen)return;
+
+  var inApp=S.view==='app',inSetup=S.view==='setup';
+  var canSim=inApp&&!S.submitted;
+  var html='';
+  html+='<div class="hz-h">Simulate teammate ('+esc(personaLabel(otherActor()))+')</div><div class="hz-row">'+
+    hzBtn('chaos','Simulate background edit by teammate',!canSim)+
+    hzBtn('ambient','Auto background edits: '+(S.collab.ambient?'On':'Off'),!canSim,S.collab.ambient)+
+    '</div>'+
+    '<p class="hz-note">Edits land under '+esc(personaName(otherActor()))+'’s name. A field you’re typing in never changes under you — it updates when you click away. Editing after opening Review arms the submit intercept.</p>';
+  if(inApp){
+    html+='<div class="hz-h">Flow shortcuts</div><div class="hz-row">'+
+      hzBtn('waitroom','Skip to wait room →',!!S.submitted)+
+      hzBtn('invsim','Preview the invitee experience')+
+      '</div>';
+  }
+  if(inSetup){
+    html+='<div class="hz-h">Wait room</div><div class="hz-row">'+
+      hzBtn('approve','Simulate approval →')+
+      hzBtn('simdoc','Simulate a document request')+
+      hzBtn('simcorr','Simulate a correction request')+
+      (S.setup.actions.length?hzBtn('clearsim','Clear simulated'):'')+
+      '</div>';
+    html+='<div class="hz-h">In-review state</div><div class="hz-row">'+
+      Object.keys(REVIEW_STATES).map(function(k){
+        return hzBtn('rev:'+k,REVIEW_STATES[k].label,false,(S.setup.reviewState||'normal')===k);
+      }).join('')+'</div>';
+    var pend=[];
+    S.f.individuals.forEach(function(p,pi){
+      if(!p.isMe&&!p.extIdv&&!p.invitedFill)pend.push({p:p,pi:pi});
+    });
+    if(pend.length){
+      html+='<div class="hz-h">Identity verification</div><div class="hz-row">'+
+        pend.map(function(x){return hzBtn('idv:'+x.pi,'Mark '+esc(indName(x.p))+' verified');}).join('')+'</div>';
+    }
+  }
+  html+='<div class="hz-h">Cheatsheet</div>'+
+    '<div class="hz-cheat"><span>2FA / SMS / MFA code</span><code>123456</code></div>'+
+    '<div class="hz-cheat"><span>Registry search demo</span><code>northwind</code></div>'+
+    '<div class="hz-cheat"><span>Valid CRA business number</span><code>123456782</code></div>'+
+    '<div class="hz-cheat"><span>Password rule</span><code>12+ chars = valid</code></div>'+
+    '<div class="hz-cheat"><span>Accepted upload filenames contain</span><code>incorp, statement, lease, …</code></div>'+
+    '<div class="hz-cheat"><span>Hard reset</span><code>sign in with a new email</code></div>';
+  p.innerHTML=html;
+  p.querySelectorAll('[data-hz]').forEach(function(b){
+    b.onclick=function(){
+      var id=b.dataset.hz;
+      if(id==='chaos')chaosEdit();
+      else if(id==='ambient'){S.collab.ambient=!S.collab.ambient;persist();}
+      else if(id==='waitroom')protoSkipToWaitroom();
+      else if(id==='invsim'){closeHarness();openInvSim();return;}
+      else if(id==='approve')protoApprove();
+      else if(id==='simdoc')protoSimDoc();
+      else if(id==='simcorr')protoSimCorr();
+      else if(id==='clearsim')protoClearActs();
+      else if(id.indexOf('rev:')===0)protoSetReviewState(id.slice(4));
+      else if(id.indexOf('idv:')===0)protoIdvDone(+id.slice(4));
+      renderHarness();
+    };
+  });
+}
+/* prototype shortcuts (bodies moved here from the old in-UI wr-proto buttons) */
+function protoSkipToWaitroom(){
+  S.submitted=true;
+  S.submittedAt=Date.now();
+  S.ref='LP-'+String(Date.now()).slice(-6);
+  S.setup=freshSetup();
+  save();show('setup');
+}
+function protoApprove(){S.approved=true;persist();show('approved');}
+function protoSimDoc(){
+  S.setup.actions.push({id:'a'+(S.setup.actions.length+1),kind:'doc',title:'Upload a recent business bank statement',desc:'Our reviewer needs a statement from the last 90 days showing the business name and account number.',file:null,done:false});
+  persist();renderSetup();
+}
+function protoSimCorr(){
+  S.setup.actions.push({id:'a'+(S.setup.actions.length+1),kind:'correction',title:'Update your business address',desc:'The address on your application doesn’t match the registry record. Please confirm or correct it.',done:false,
+    fields:[{k:'address1',label:'Address line 1'},{k:'city',label:'City'},{k:'postal',label:'Postal code'}]});
+  persist();renderSetup();
+}
+function protoClearActs(){S.setup.actions=[];persist();renderSetup();}
+function protoSetReviewState(k){S.setup.reviewState=k;persist();renderTimeline();}
+function protoIdvDone(pi){
+  var p=S.f.individuals[pi];
+  if(!p)return;
+  if(p.isMe)p.idv=true;else p.extIdv=true;
+  persist();renderSetup();
+}
+function initHarness(){
+  $('hzToggle').onclick=toggleHarness;
+  $('ixKeep').onclick=function(){
+    reviewDiff().forEach(function(d){chgHighlights[d.k]=true;});
+    /* rebase: the user has seen these; only NEW teammate edits re-arm the intercept */
+    snapshotReview();
+    closeIntercept();
+    applyChangeHighlights();
+  };
+  $('ixConfirm').onclick=function(){
+    chgHighlights={};
+    applyChangeHighlights();
+    closeIntercept();
+    doSubmit();
+  };
+  $('ixOverlay').onclick=function(e){if(e.target===$('ixOverlay'))closeIntercept();};
+  renderHarness();
+  setInterval(collabTick,2000);
+}
+
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
   ['logoAuth','logoChangePw','logoReset','logoSms','logoSi2fa','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoLive','logoInvSim'].forEach(function(id){$(id).innerHTML=LOGO;});
@@ -6711,26 +7060,15 @@ document.addEventListener('DOMContentLoaded',function(){
     if(S.page==='review')renderReview();
   });
 
-  /* submit — only a verified key contact with managerial authority can submit */
+  /* submit — only a verified key contact with managerial authority can submit.
+     If a teammate changed data while this user was on Review, block and show
+     the diff modal instead of submitting. */
   $('btnSubmit').onclick=function(){
     S.attempted['review']=true;
     if(allMissing().length||!submitAuthorized()){paintGaps();return;}
-    S.submitted=true;
-    S.submittedAt=Date.now();
-    S.ref='LP-'+String(Date.now()).slice(-6);
-    S.setup=freshSetup();
-    /* they said yes to credit during the application — surface that step first */
-    if(S.f.creditInterest==='Yes')S.setup.open=1;
-    save();show('setup');
-  };
-
-  /* prototype: bypass the application and jump straight to the wait room */
-  $('btnProtoWaitroom').onclick=function(){
-    S.submitted=true;
-    S.submittedAt=Date.now();
-    S.ref='LP-'+String(Date.now()).slice(-6);
-    S.setup=freshSetup();
-    save();show('setup');
+    var d=reviewDiff();
+    if(d.length){openIntercept(d);return;}
+    doSubmit();
   };
 
   /* approved: agreement checkboxes gate activation */
@@ -6742,7 +7080,6 @@ document.addEventListener('DOMContentLoaded',function(){
   /* individuals */
   var bai=$('btnAddInd');if(bai)bai.onclick=function(){openDrawer(-1,'add');};
   var bif=$('btnInviteFill');if(bif)bif.onclick=function(){openDrawer(-1,'invite');};
-  var ivb=$('invSimBtn');if(ivb)ivb.onclick=openInvSim;
   $('invSimClose').onclick=closeInvSim;
   $('drClose').onclick=closeDrawer;
   $('drCancel').onclick=closeDrawer;
@@ -6878,7 +7215,7 @@ document.addEventListener('DOMContentLoaded',function(){
     inp.addEventListener('change',function(){inp.closest('.field').classList.toggle('filled',!!inp.value);});
   });
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){closeNav();closeDrawer();closeCollabModal();closePermissions();closeSettingsMenu();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
+    if(e.key==='Escape'){closeNav();closeDrawer();closeCollabModal();closePermissions();closeSettingsMenu();closeIntercept();closeHarness();$('cofillPanel').classList.add('hidden');updateChatVisibility();}
   });
 
   /* modal */
@@ -6914,6 +7251,9 @@ document.addEventListener('DOMContentLoaded',function(){
     t.addEventListener('mouseenter',place);
     t.addEventListener('focusin',place);
   });
+
+  /* collaboration layer: actor switcher, demo tools, submit intercept, polling loop */
+  initHarness();
 
   /* restore */
   if(S.view==='auth')show('auth');
