@@ -64,17 +64,19 @@ Confirming any of these ends the flow at the rejection screen:
   amber "doesn't look like an accepted document type" warning with a
   "continue anyway" override.
 
-## Demo harness (floating pill, bottom center)
+## Demo harness (hidden top-left menu)
 
-All prototype controls live in the **global demo harness** — the dark
-"Prototype / Acting as" pill fixed to the bottom of every screen. Nothing
+All prototype controls live in the **global demo harness** — hidden by default
+behind a small translucent sliders icon in the top-left corner of every screen
+(it brightens on hover). Clicking it drops the demo-tools menu down from the
+corner, so it never covers the content in the middle of the screen. Nothing
 demo-related remains in the main UI.
 
 - **Acting as** — segmented switcher between **User A (CEO)** (the signed-in
   identity) and **User B (CFO)** ("Jordan Lee"). Whoever is active is credited
   for typing and submissions; simulated background edits always land under the
   *other* user's name.
-- **Demo tools** expands a panel whose sections follow the current screen:
+- The menu's sections follow the current screen:
   - **Simulate teammate** (application, pre-submit) — **Simulate background
     edit by teammate** (instantly changes the business address + phone under
     the other user's name) and an **Auto background edits** toggle (an edit

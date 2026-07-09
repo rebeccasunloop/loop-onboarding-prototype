@@ -1319,18 +1319,18 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* review rows a teammate changed mid-review — soft informational tint after "Keep editing" */
 .rev-row.rev-chg{background:var(--blue-25);box-shadow:inset 3px 0 0 var(--blue-400)}
 [data-theme="dark"] .rev-row.rev-chg{background:rgba(46,144,250,.10)}
-/* floating harness: actor switcher pill + expandable demo-tools panel */
-.hz{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:99;font-family:'DM Mono',monospace}
-.hz-pill{display:flex;align-items:center;gap:10px;background:var(--gray-900);color:#fff;border-radius:999px;padding:7px 8px 7px 12px;box-shadow:0 6px 22px rgba(0,0,0,.30);white-space:nowrap}
-.hz-pill .hz-lbl{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.55)}
-.hz-seg{display:flex;background:rgba(255,255,255,.12);border-radius:999px;padding:2px}
-.hz-seg button{font-family:inherit;font-size:12px;color:rgba(255,255,255,.75);background:none;border:none;border-radius:999px;padding:4px 11px;line-height:1.4}
+/* floating harness: hidden by default behind a small top-left trigger; menu drops down
+   from the corner so it never covers the content in the middle of the screen */
+.hz{position:fixed;top:10px;left:4px;z-index:99;font-family:'DM Mono',monospace}
+.hz-fab{width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--gray-900);color:#fff;border:none;border-radius:7px;opacity:.30;transition:opacity .15s ease;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.hz-fab svg{width:13px;height:13px}
+.hz-fab:hover,.hz-fab:focus-visible,.hz-fab[aria-expanded="true"]{opacity:1}
+.hz-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.hz-head .hz-title{font-size:12px;font-weight:700;letter-spacing:.03em;color:var(--gray-700)}
+.hz-seg{display:flex;background:var(--gray-100);border-radius:999px;padding:2px;width:max-content;margin-bottom:2px}
+.hz-seg button{font-family:inherit;font-size:12px;color:var(--gray-600);background:none;border:none;border-radius:999px;padding:5px 12px;line-height:1.4}
 .hz-seg button.on{background:var(--brand-500);color:#fff;font-weight:700}
-#hzToggle{font-family:inherit;font-size:12px;color:#fff;background:rgba(255,255,255,.12);border:none;border-radius:999px;padding:5px 12px;display:inline-flex;align-items:center;gap:6px}
-#hzToggle:hover{background:rgba(255,255,255,.2)}
-#hzToggle .chev{transition:transform .16s;display:inline-flex}
-#hzToggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.hz-panel{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:380px;max-width:calc(100vw - 32px);max-height:min(64vh,540px);overflow-y:auto;background:#fff;border:1px solid var(--gray-200);border-radius:14px;box-shadow:var(--shadow-overlay),0 20px 50px rgba(18,25,38,.25);padding:14px 16px 16px;text-align:left}
+.hz-panel{position:absolute;top:calc(100% + 8px);left:0;width:380px;max-width:calc(100vw - 32px);max-height:calc(100vh - 64px);overflow-y:auto;background:#fff;border:1px solid var(--gray-200);border-radius:14px;box-shadow:var(--shadow-overlay),0 20px 50px rgba(18,25,38,.25);padding:14px 16px 16px;text-align:left}
 .hz-h{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gray-500);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
 .hz-h:first-child{margin-top:0}
 .hz-h::after{content:'';flex:1;height:1px;background:var(--gray-100)}
@@ -1342,12 +1342,12 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .hz-note{font-size:11.5px;color:var(--gray-400);margin:6px 0 0;line-height:1.5;font-family:'DM Sans',sans-serif}
 .hz-cheat{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12px;color:var(--gray-600);padding:4px 0;font-family:'DM Sans',sans-serif}
 .hz-cheat code{font-family:'DM Mono',monospace;font-size:11.5px;background:var(--gray-100);border-radius:5px;padding:1px 6px;color:var(--gray-800);white-space:nowrap}
-[data-theme="dark"] .hz-pill{background:var(--gray-100);box-shadow:0 6px 22px rgba(0,0,0,.5)}
+[data-theme="dark"] .hz-fab{background:var(--gray-100);box-shadow:0 2px 10px rgba(0,0,0,.5)}
+[data-theme="dark"] .hz-seg{background:var(--gray-200)}
 [data-theme="dark"] .hz-panel{background:var(--gray-50)}
 [data-theme="dark"] .hz-act{background:var(--gray-100);border-color:var(--gray-200)}
 [data-theme="dark"] .hz-act:hover:not(:disabled){background:var(--gray-200)}
 [data-theme="dark"] .hz-cheat code{background:var(--gray-200);color:var(--gray-800)}
-@media (max-width:720px){.hz-pill .hz-lbl{display:none}}
 /* submission-intercept modal: per-field diff cards */
 .ix-row{border:1px solid var(--gray-200);border-radius:10px;padding:12px 14px;margin-top:10px}
 .ix-lbl{font-size:13px;font-weight:700;margin-bottom:6px}
@@ -2163,13 +2163,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
      Persistent actor switcher + every demo/edge-case control in one place.
      The main UI carries no prototype buttons; everything lives here. -->
 <div id="harness" class="hz">
+  <button type="button" class="hz-fab" id="hzToggle" aria-expanded="false" aria-controls="hzPanel" title="Prototype demo tools">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+  </button>
   <div class="hz-panel hidden" id="hzPanel"></div>
-  <div class="hz-pill">
-    <span class="wr-proto">Prototype</span>
-    <span class="hz-lbl">Acting as</span>
-    <div class="hz-seg" id="hzActors"></div>
-    <button type="button" id="hzToggle" aria-expanded="false" aria-controls="hzPanel">Demo tools <span class="chev"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></span></button>
-  </div>
 </div>
 
 <!-- submission intercept: teammate edited data while the user was on Review -->
@@ -2387,7 +2384,7 @@ var K_RELBIZ = ['rbName','rbOwnPct','rbRelType','rbCountry'];
 
 /* ============================ state ============================ */
 function freshFields(){return {legalName:'',hasTradeName:false,operatingName:'',phone:'',website:'',taxId:'',entityType:'',industry:'',subIndustry:'',description:'',country:'Canada',address1:'',address2:'',provState:'',city:'',postal:'',individuals:[],notOwner:false,consent:false,relBiz:'',rbName:'',rbOwnPct:'',rbShares:'',rbRelType:'',rbPhone:'',rbEmail:'',rbFormed:'',rbEntityId:'',rbTaxId:'',rbAltName:'',rbWebsite:'',rbAddress:'',rbCountry:'',relBizExtra:[],cofill:[],intendedUse:[],incomeType:'',regions:[],hearAbout:'',creditInterest:'',docs:[],docScreenFor:'',certify:false};}
-function freshSetup(){return {open:0,reviewState:'normal',depMethod:'Instant bank connection (Flinks)',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],credit:{stage:'intro',revenue:'',margin:'',profitable:'',debt:'',debtPay:'',revSource:'',payFreq:'',salesChannel:false,docViewed:false,agree:false},accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{},actions:[]};}
+function freshSetup(){return {open:-1,reviewState:'normal',depMethod:'Instant bank connection (Flinks)',depositDone:false,depositAnother:null,flinksLinked:false,etAmount:'',invites:[],credit:{stage:'intro',revenue:'',margin:'',profitable:'',debt:'',debtPay:'',revSource:'',payFreq:'',salesChannel:false,docViewed:false,agree:false},accessRequests:[],tfaPhone:'',tfaCodeSent:false,tfaEnabled:false,skipped:{},actions:[]};}
 function freshSettings(){return {appearance:'system',lang:'en'};}
 /* collaboration layer: current actor, per-field audit metadata, ambient-edit toggle,
    and the review-page baseline used to detect teammate edits mid-review */
@@ -5359,7 +5356,7 @@ function renderWhoEligibility(step){
       '<div class="fgrid" style="margin-top:34px;max-width:560px">'+
         RESTRICTED_INDUSTRIES.map(function(l){return eligOpt(l,l);}).join('')+
         eligOpt('none','None of the above')+
-        '<button class="btn btn-primary" id="eligGo" disabled>Continue</button>'+
+        '<button class="btn btn-primary" id="eligGo" disabled style="margin-top:16px">Continue</button>'+
       '</div>';
     wireEligOpts(body,eligIndustry,function(v){eligIndustry=v;});
     $('eligBack').onclick=function(){renderWhoSearch();};
@@ -5374,7 +5371,7 @@ function renderWhoEligibility(step){
       '<div class="fgrid" style="margin-top:34px;max-width:560px">'+
         eligOpt('yes','Yes')+
         eligOpt('no','No')+
-        '<button class="btn btn-primary" id="eligGo" disabled>Continue</button>'+
+        '<button class="btn btn-primary" id="eligGo" disabled style="margin-top:16px">Continue</button>'+
       '</div>';
     wireEligOpts(body,eligQcsp,function(v){eligQcsp=v;});
     $('eligBack').onclick=function(){renderWhoEligibility(0);};
@@ -6465,8 +6462,6 @@ function doSubmit(){
   S.submittedAt=Date.now();
   S.ref='LP-'+String(Date.now()).slice(-6);
   S.setup=freshSetup();
-  /* they said yes to credit during the application — surface that step first */
-  if(S.f.creditInterest==='Yes')S.setup.open=1;
   save();show('setup');
 }
 function openIntercept(diff){
@@ -6504,20 +6499,20 @@ function hzBtn(id,label,disabled,on){
   return '<button type="button" class="hz-act'+(on?' hz-on':'')+'" data-hz="'+id+'"'+(disabled?' disabled':'')+'>'+label+'</button>';
 }
 function renderHarness(){
-  var seg=$('hzActors');
-  if(!seg)return;
-  seg.innerHTML=['A','B'].map(function(id){
-    return '<button type="button" data-actor="'+id+'"'+(S.collab.actor===id?' class="on"':'')+'>'+esc(personaLabel(id))+'</button>';
-  }).join('');
-  seg.querySelectorAll('[data-actor]').forEach(function(b){b.onclick=function(){setActor(b.dataset.actor);};});
-  $('hzToggle').setAttribute('aria-expanded',String(hzOpen));
+  var t=$('hzToggle');
+  if(!t)return;
+  t.setAttribute('aria-expanded',String(hzOpen));
   var p=$('hzPanel');
   p.classList.toggle('hidden',!hzOpen);
   if(!hzOpen)return;
 
   var inApp=S.view==='app',inSetup=S.view==='setup';
   var canSim=inApp&&!S.submitted;
-  var html='';
+  var html='<div class="hz-head"><span class="wr-proto">Prototype</span><span class="hz-title">Demo tools</span></div>';
+  html+='<div class="hz-h">Acting as</div><div class="hz-seg">'+
+    ['A','B'].map(function(id){
+      return '<button type="button" data-actor="'+id+'"'+(S.collab.actor===id?' class="on"':'')+'>'+esc(personaLabel(id))+'</button>';
+    }).join('')+'</div>';
   html+='<div class="hz-h">Simulate teammate ('+esc(personaLabel(otherActor()))+')</div><div class="hz-row">'+
     hzBtn('chaos','Simulate background edit by teammate',!canSim)+
     hzBtn('ambient','Auto background edits: '+(S.collab.ambient?'On':'Off'),!canSim,S.collab.ambient)+
@@ -6557,6 +6552,7 @@ function renderHarness(){
     '<div class="hz-cheat"><span>Accepted upload filenames contain</span><code>incorp, statement, lease, …</code></div>'+
     '<div class="hz-cheat"><span>Hard reset</span><code>sign in with a new email</code></div>';
   p.innerHTML=html;
+  p.querySelectorAll('[data-actor]').forEach(function(b){b.onclick=function(){setActor(b.dataset.actor);};});
   p.querySelectorAll('[data-hz]').forEach(function(b){
     b.onclick=function(){
       var id=b.dataset.hz;
