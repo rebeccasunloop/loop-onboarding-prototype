@@ -501,6 +501,13 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
    filled the page — full column width, no icon */
 .reg-note{margin:18px 0 0;font-size:13px;font-weight:500;color:var(--brand-700);line-height:1.5;background:var(--brand-25);border:1px solid var(--brand-100);border-radius:10px;padding:12px 16px}
 [data-theme="dark"] .reg-note{border-color:var(--brand-50)}
+/* MVP: document-autofill card at the top of Business information */
+.autofill-box{display:flex;align-items:center;gap:14px;border:1px dashed var(--gray-300);border-radius:12px;background:var(--gray-25);padding:14px 16px;margin-top:18px}
+.autofill-box .af-t{font-weight:600;font-size:14px}
+.autofill-box .af-d{font-size:12.5px;color:var(--gray-500);margin-top:2px;line-height:1.45}
+.autofill-box>svg{flex:0 0 20px;color:var(--gray-500)}
+[data-theme="dark"] .autofill-box{background:var(--gray-50)}
+#page-business .autofill-box:not(.hidden)~.pagebody{margin-top:18px}
 /* only tighten the gap when the note is actually showing */
 #page-business .reg-note:not(.hidden)~.pagebody{margin-top:18px}
 
@@ -1492,12 +1499,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <div class="skel-wstep"><div class="sk" style="flex:0 0 40px;height:40px;border-radius:11px"></div><div style="flex:1"><div class="sk sk-line" style="width:170px;height:15px;margin-top:2px"></div><div class="sk sk-line" style="width:72%"></div></div><div class="sk sk-line" style="width:52px;margin:8px 0 0 auto"></div></div>
             <div class="skel-wstep"><div class="sk" style="flex:0 0 40px;height:40px;border-radius:11px"></div><div style="flex:1"><div class="sk sk-line" style="width:230px;height:15px;margin-top:2px"></div><div class="sk sk-line" style="width:58%"></div></div><div class="sk sk-line" style="width:52px;margin:8px 0 0 auto"></div></div>
           </div>
-          <div style="margin-top:36px;padding:30px 0;border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200)">
-            <div class="sk" style="height:18px;width:270px"></div>
-            <div class="sk sk-line" style="width:88%;margin-top:14px"></div>
-            <div class="sk sk-line" style="width:56%"></div>
-            <div class="sk sk-pill" style="height:38px;width:190px;border-radius:10px;margin-top:18px"></div>
-          </div>
           <div style="margin-top:34px;max-width:420px">
             <div class="sk sk-label" style="width:220px"></div>
             <div class="sk sk-input"></div>
@@ -1517,24 +1518,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           <div class="wstep"><div class="num"><img src="../Business%20Info.png" alt=""></div><div><div class="wt">Business information</div><div class="wd">Who the business is, what it does, and where it operates.</div></div><div class="tm">~5 min</div></div>
           <div class="wstep"><div class="num"><img src="../Business%20Contacts.png" alt=""></div><div><div class="wt">Business contacts</div><div class="wd">Directors, owners of 25% or more, related businesses, and identity verification.</div></div><div class="tm">~5 min</div></div>
           <div class="wstep"><div class="num"><img src="../Documents.png" alt=""></div><div><div class="wt">Usage, documents, and review</div><div class="wd">How you'll use Loop, any documents our screening asks for, and a final check before you submit.</div></div><div class="tm">~5 min</div></div>
-        </div>
-        <div class="welcome-collab">
-          <h2>Working on this with someone?</h2>
-          <p class="cc-sub">Invite a collaborator to fill the application with you. They'll get an email link to fill the whole application — you can scope access to a single page or change who has access anytime from the sidebar.</p>
-          <div id="collabList"></div>
-          <button class="btn btn-secondary btn-sm" id="btnAddCollab" style="width:auto" aria-expanded="false" aria-controls="collabInvite"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button>
-          <div class="collab-invite hidden" id="collabInvite">
-            <div class="field">
-              <input id="wcEmail" type="email" autocomplete="off" placeholder="teammate@company.com">
-              <label for="wcEmail">Collaborator's email</label>
-              <span class="err-dot">!</span>
-            </div>
-            <p class="fhelp">They'll be invited to fill the whole application. Change their access anytime from the sidebar.</p>
-            <div class="collab-invite-actions">
-              <button class="btn btn-primary btn-sm" id="wcSend" style="width:auto">Send invite</button>
-              <button class="btn-link" type="button" id="wcCancel" style="width:auto;text-decoration:none;color:var(--gray-600)">Cancel</button>
-            </div>
-          </div>
         </div>
         <!-- asked up front: top-of-mind at entry, feeds campaign attribution -->
         <div class="field" style="margin-top:34px;max-width:420px"><select data-k="hearAbout" id="f-hearAbout"></select><label for="f-hearAbout">How did you hear about Loop? <span class="opt">(optional)</span></label><span class="chev">&#9662;</span></div>
@@ -1556,8 +1539,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="page-skel" aria-hidden="true">
           <div class="skel-head">
             <div style="flex:1;min-width:0"><div class="sk sk-h1" style="width:340px;max-width:80%"></div><div class="sk sk-line" style="width:230px"></div></div>
-            <div class="sk sk-pill" style="height:38px;width:186px;border-radius:10px"></div>
-          </div>
+            </div>
           <!-- business shows one sub-page at a time ("Page 1 of 3"), so the skeleton mirrors just the first section -->
           <div style="margin-top:36px">
             <div class="skel-fsec" style="margin-top:0">
@@ -1571,9 +1553,15 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           </div>
           <div style="display:flex;gap:12px;margin-top:56px"><div class="sk sk-btn" style="width:120px"></div><div class="sk sk-btn"></div></div>
         </div>
-        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Business information</h1><div class="sub-ticks" id="bizTicks"></div></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="business"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button></div>
+        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Business information</h1><div class="sub-ticks" id="bizTicks"></div></div></div>
         <!-- full column width so it spans the same frame as the sections below -->
         <p class="reg-note hidden" id="regNote"></p>
+        <!-- MVP: no registry lookup — a document upload autofills what it can -->
+        <div class="autofill-box" id="bizAutofill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div style="flex:1;min-width:0"><div class="af-t">Autofill with a document</div><div class="af-d">Upload a certificate or articles of incorporation, a registration, or a recent invoice &mdash; we&rsquo;ll fill in what we can.</div></div>
+          <label class="btn btn-secondary btn-sm" style="width:auto;cursor:pointer">Upload document<input type="file" id="bizAutofillInput" accept=".pdf,.png,.jpg,.jpeg" hidden></label>
+        </div>
         <div class="pagebody">
 
           <div class="fsec">
@@ -1629,7 +1617,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
       <!-- PAGE 2: BUSINESS CONTACTS -->
       <div id="page-contacts" class="appage hidden">
-        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Business contacts</h1></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="contacts"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button></div>
+        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Business contacts</h1></div></div>
         <div class="pagebody">
 
           <div class="fsec">
@@ -1663,8 +1651,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="page-skel" aria-hidden="true">
           <div class="skel-head">
             <div style="flex:1;min-width:0"><div class="sk sk-h1" style="width:290px;max-width:70%"></div></div>
-            <div class="sk sk-pill" style="height:38px;width:186px;border-radius:10px"></div>
-          </div>
+            </div>
           <div style="margin-top:36px">
             <div class="sk sk-h2" style="width:160px"></div>
             <div class="sk sk-line" style="width:460px;max-width:90%;margin:0"></div>
@@ -1683,7 +1670,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           </div>
           <div style="display:flex;gap:12px;margin-top:56px"><div class="sk sk-btn" style="width:120px"></div><div class="sk sk-btn"></div></div>
         </div>
-        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Expected usage</h1></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="usage"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button></div>
+        <div class="page-head"><div class="page-head-main"><h1 class="page-h">Expected usage</h1></div></div>
         <div class="pagebody">
 
           <div class="fsec">
@@ -1716,7 +1703,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <!-- PAGE 4: DOCUMENTS -->
       <div id="page-documents" class="appage hidden">
         <div class="page-head"><div class="page-head-main"><h1 class="page-h">Documents</h1>
-        <p class="page-sub">Our system screens your application and tells you exactly what to upload. No guesswork.</p></div><button class="btn btn-secondary btn-sm page-delegate" type="button" data-delegate="documents"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Add a collaborator</button></div>
+        <p class="page-sub">Our system screens your application and tells you exactly what to upload. No guesswork.</p></div></div>
         <div class="pagebody">
           <div class="fsec">
             <h2>Application screening</h2>
@@ -1793,9 +1780,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     </div>
   </main>
 
-  <div class="flow-utils">
-    <button class="cofill-side" id="cofillSideBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Add a collaborator</span><span class="cnt hidden" id="cofillCnt"></span></button>
-  </div>
 </div>
 
 <!-- ================= SETUP HUB (in review) ================= -->
@@ -1949,17 +1933,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         </div>
         <div class="field"><input id="d-occupation"><label for="d-occupation">Occupation<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         <div class="field"><input id="d-linkedin" type="url" autocapitalize="off" spellcheck="false" placeholder="https://linkedin.com/in/yourname"><label for="d-linkedin">LinkedIn profile <span class="opt">(optional)</span><span class="info-tip" tabindex="0">?<span class="tipbox">We collect this information to help us identify you or your company.</span></span></label></div>
-      </div>
-    </div>
-
-    <div class="dr-sec hidden" id="inviteAcctWrap">
-      <div class="chips-wrap">
-        <div class="chips-label">Invite this person to create a Loop account? <span class="req-star">*</span><span class="info-tip" tabindex="0">?<span class="tipbox">With an account, this person will be able to access the Loop dashboard immediately after the account is approved and live.</span></span></div>
-        <div class="chips" id="inviteAcctSeg">
-          <label class="chip" data-invacct="Yes"><span>Yes</span></label>
-          <label class="chip" data-invacct="No"><span>No</span></label>
-        </div>
-        <p class="fhelp" style="margin-top:10px">If yes, an invitation will be sent immediately after the application has been approved.</p>
       </div>
     </div>
 
@@ -2388,7 +2361,6 @@ function settingsMenuHTML(showPerm){
       '<div class="settings-sub hidden" data-submenu="appearance">'+settingsOpt('appearance','system','System')+settingsOpt('appearance','light','Light')+settingsOpt('appearance','dark','Dark')+'</div></div>'+
     '<div class="settings-row has-sub" data-sub="language"><span class="ic">'+SVGI.globe+'</span><span class="lbl">Language</span><span class="val">'+lgL+'</span><span class="arrow">'+SVGI.chevR+'</span>'+
       '<div class="settings-sub hidden" data-submenu="language">'+settingsOpt('language','en','English')+settingsOpt('language','fr','Français')+'</div></div>'+
-    (showPerm?'<div class="settings-row" data-act="permissions"><span class="ic">'+SVGI.users+'</span><span class="lbl">Permissions</span></div>':'')+
     '<div class="settings-row" data-act="docs"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="lbl">Documents</span></div>'+
     '<div class="settings-row" data-act="help"><span class="ic">'+SVGI.help+'</span><span class="lbl">Help</span></div>'+
     '<div class="settings-sep"></div>'+
@@ -2748,7 +2720,7 @@ function showPage(id,forceDir){
     out.addEventListener('animationend',function(){out.classList.add('hidden');out.classList.remove('slide-out-fwd','slide-out-back');},{once:true});
   }
   if(id==='who'){renderWho();}
-  else if(id==='welcome'){$('stepMeta').textContent='Getting started';renderCollabList();var ci=$('collabInvite');if(ci){ci.classList.add('hidden');$('wcEmail').value='';$('btnAddCollab').setAttribute('aria-expanded','false');}}
+  else if(id==='welcome'){$('stepMeta').textContent='Getting started';}
   else{
     S.visited[id]=true;persist();
     $('stepMeta').textContent='Step '+(PAGE_ORDER.indexOf(id)+1)+' of '+PAGE_ORDER.length;
@@ -3647,24 +3619,8 @@ function renderIdvInvite(){
   var first=$('d-firstName').value.trim();
   box.innerHTML='<p class="desc">We will email a secure verification link to <strong>'+esc(email)+'</strong> when you save this contact.</p>'+
     '<div class="field" style="margin-top:14px"><textarea id="d-idvNote" rows="2" placeholder="e.g. Hi '+esc(first)+' \u2014 Loop needs a quick ID check for our business account.">'+esc(drIdvNote)+'</textarea><label for="d-idvNote">Add a personal note</label></div>'+
-    '<div class="chips-wrap" id="idvWantsWrap" style="margin-top:18px">'+
-      '<div class="chips-label">Invite this person to create a Loop account? <span class="req-star">*</span></div>'+
-      '<div class="chips" id="idvWantsSeg">'+['Yes','No'].map(function(v){
-        return '<label class="chip'+(drWants===v?' on':'')+'" data-dridvwa="'+v+'"><span>'+v+'</span></label>';
-      }).join('')+'</div>'+
-      '<p class="fhelp" style="margin-top:8px">If yes, they will be offered account creation right after this application is approved.</p>'+
-    '</div>';
-  box.querySelectorAll('[data-dridvwa]').forEach(function(c){
-    c.addEventListener('click',function(){
-      drWants=c.dataset.dridvwa;
-      box.querySelectorAll('[data-dridvwa]').forEach(function(x){x.classList.toggle('on',x.dataset.dridvwa===drWants);});
-      $('idvWantsWrap').classList.remove('invalid');
-    });
-  });
+    '';
   var note=$('d-idvNote');if(note)note.addEventListener('input',function(){drIdvNote=note.value;});
-}
-function paintInviteAcct(){
-  document.querySelectorAll('#inviteAcctSeg .chip').forEach(function(c){c.classList.toggle('on',c.dataset.invacct===drWants);});
 }
 function syncDrMode(){
   var invite=drMode==='invite',editing=editIdx>=0;
@@ -3679,8 +3635,6 @@ function syncDrMode(){
   $('d-occupation').closest('.field').classList.toggle('hidden',invite);
   $('d-linkedin').closest('.field').classList.toggle('hidden',invite);
   if(invite)$('dobErr').classList.add('hidden');
-  $('inviteAcctWrap').classList.toggle('hidden',!invite);
-  if(invite)paintInviteAcct();
   $('drTitle').textContent=invite?(editing?'Edit invitation':'Invite a related person to fill'):(editing?'Edit related person':'Add related person');
   $('drSub').textContent=invite?'They complete and verify their own entry':'All signing officers (3 max), directors, and beneficial owners';
   $('drSave').textContent=invite?(editing?'Save invitation':'Send invitation'):(editing?'Save changes':'Add related person');
@@ -3779,9 +3733,8 @@ function saveDrawer(){
       if(bad){ok2=false;firstBad2=firstBad2||inp.closest('.field');}
     });
     if(drRoles.indexOf('Beneficial owner')>=0&&!$('d-ownPct').value){$('d-ownPct').closest('.field').classList.add('invalid');ok2=false;firstBad2=firstBad2||$('d-ownPct').closest('.field');}
-    if(!drWants){$('inviteAcctWrap').querySelector('.chips-wrap').classList.add('invalid');ok2=false;firstBad2=firstBad2||$('inviteAcctWrap');}
     if(!ok2){drError('Add their role, full name, email, and whether they should get a Loop account.',firstBad2);return;}
-    var inv={invitedFill:true,roles:drRoles.slice(),ownPct:$('d-ownPct').value,firstName:$('d-firstName').value.trim(),lastName:$('d-lastName').value.trim(),email:$('d-email').value.trim(),isMe:false,idv:false,wantsAccount:drWants};
+    var inv={invitedFill:true,roles:drRoles.slice(),ownPct:$('d-ownPct').value,firstName:$('d-firstName').value.trim(),lastName:$('d-lastName').value.trim(),email:$('d-email').value.trim(),isMe:false,idv:false,wantsAccount:''};
     if(editIdx>=0)S.f.individuals[editIdx]=inv;else S.f.individuals.push(inv);
     personsChanged();save();closeDrawer();renderIndividuals();
     return;
@@ -3801,15 +3754,6 @@ function saveDrawer(){
   }
   if(drRoles.indexOf('Beneficial owner')>=0&&!$('d-ownPct').value){$('d-ownPct').closest('.field').classList.add('invalid');ok=false;firstBad=firstBad||$('d-ownPct').closest('.field');}
   if(drIsBO()&&!drTaxRes){$('taxResWrap').classList.add('invalid');ok=false;firstBad=firstBad||$('taxResWrap');}
-  /* the account-invite question is mandatory for anyone who isn't the applicant
-     and hasn't already verified — it lives on the verification page, so it only
-     applies when the IDV rules give this person that page at all */
-  var needsWants=!$('d-isMe').checked&&drNeedsIdv()&&!(editIdx>=0&&S.f.individuals[editIdx]&&S.f.individuals[editIdx].extIdv);
-  if(needsWants&&!drWants){
-    var ww=$('idvWantsWrap');
-    if(ww){ww.classList.add('invalid');firstBad=firstBad||ww;}
-    ok=false;
-  }
   if(!ok){
     drJumpToBad(firstBad);
     drError('Please complete the highlighted fields below.',firstBad);
@@ -3826,7 +3770,7 @@ function saveDrawer(){
   p.idvChannel=isMe?drIdvChan:'email';
   p.idvNote=isMe?'':drIdvNote;
   p.idvPhone=drIdvPhone;
-  p.wantsAccount=isMe?'':drWants;
+  p.wantsAccount='';
   if(editIdx>=0){
     var old=S.f.individuals[editIdx];
     p.extIdv=!!old.extIdv;
@@ -4103,16 +4047,12 @@ function paintGaps(){
 }
 
 /* ============================ setup hub ============================ */
-/* everyone queued for a Loop account at approval: manually added teammate emails
-   plus related persons opted in (from the contacts drawer or the wait-room button) */
-function optedInPeople(){return S.f.individuals.filter(function(p){return !p.isMe&&p.wantsAccount==='Yes';});}
-function optedInCount(){return (S.setup.invites||[]).length+optedInPeople().length;}
 function setupDone(){
-  return [S.setup.depositDone,S.setup.credit.stage==='done',S.setup.tfaEnabled,optedInCount()>0];
+  return [S.setup.depositDone,S.setup.credit.stage==='done',S.setup.tfaEnabled];
 }
 var kcIdvTimers={};
 /* the "enable MFA" optional task only applies if they didn't set it up at sign-up */
-function optionalApplicable(){return {deposit:true,credit:true,mfa:!S.mfaEnabled,team:true};}
+function optionalApplicable(){return {deposit:true,credit:true,mfa:!S.mfaEnabled};}
 /* prototype-simulated review states: how the In review milestone reads while waiting */
 var REVIEW_STATES={
   normal:{label:'Normal',tt:'In review',dot:'cur',td:'Approx. 3 to 6 business days',warn:false},
@@ -4222,8 +4162,8 @@ function slideCloseBody(b,then){
 function renderSetup(){
   var d=setupDone();
   var appl=optionalApplicable();
-  var applKeys=['deposit','credit','mfa','team'].filter(function(k){return appl[k];});
-  var doneCount=(d[0]?1:0)+(d[1]?1:0)+(appl.mfa&&d[2]?1:0)+(d[3]?1:0);
+  var applKeys=['deposit','credit','mfa'].filter(function(k){return appl[k];});
+  var doneCount=(d[0]?1:0)+(d[1]?1:0)+(appl.mfa&&d[2]?1:0);
   $('setupCount').textContent='';
   var open=S.setup.open;
   var list=$('setupList');list.innerHTML='';
@@ -4423,34 +4363,6 @@ function renderSetup(){
   list.appendChild(it4);
   }
 
-  /* 4 — opt teammates into a Loop account: emails are queued, not sent — the invitations
-     go out automatically the moment the application is approved and signed */
-  var invs=S.setup.invites||(S.setup.invites=[]);
-  var optPeople=optedInPeople();
-  var itT=el('div','setup-item',setupHead(3,'Opt your teammates into a Loop account',d[3],d[3]?optedInCount()+' teammate'+(optedInCount()>1?'s':'')+' queued':'',appl.mfa?4:3));
-  if(open===3){
-    var MAILIC='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gray-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>';
-    var bT=el('div','setup-body');
-    bT.innerHTML='<p class="desc">The moment your application is approved and signed, each teammate will automatically get an email invitation to onboard into your Loop dashboard.</p>'+
-      ((invs.length||optPeople.length)?'<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">'+
-        invs.map(function(em,ii){
-          return '<div class="team-row">'+MAILIC+
-            '<span class="em3">'+esc(em)+'</span><span class="pill gray">Will be invited on approval</span>'+
-            '<button class="icobtn" data-teamrm="'+ii+'" aria-label="Remove teammate"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
-        }).join('')+
-        optPeople.map(function(p){
-          return '<div class="team-row">'+MAILIC+
-            '<span class="em3">'+esc(indName(p))+(p.email?' &middot; '+esc(p.email):'')+'</span><span class="pill gray">Will be invited on approval</span>'+
-            '<span class="kc-fine">Opted in from Business contacts</span></div>';
-        }).join('')+
-      '</div>':'')+
-      '<div class="invite-row" style="grid-template-columns:1fr auto"><div class="qfield"><input id="teamEmail" type="email" autocomplete="off" placeholder="teammate@company.com"></div>'+
-      '<button class="btn btn-secondary btn-sm" id="teamAdd">Add teammate</button></div>'+
-      '<p class="fhelp" style="margin-top:10px">No emails go out until your account is live &mdash; you can remove anyone before then.</p>';
-    itT.appendChild(bT);
-  }
-  list.appendChild(itT);
-
   /* key contacts — IDV status */
   list.appendChild(el('div','setup-count','Manage related persons'));
   var kcCard=el('div','rev-card');
@@ -4467,18 +4379,13 @@ function renderSetup(){
         :(p.isMe||p.idvInvited)
         ?['amber','Waiting to complete']
         :['gray','Not yet invited to verify'];
-      var preview=(p.isMe||p.invitedFill)?'':'<button class="btn-link" data-invitee="'+pi+'" style="font-size:12.5px;padding:4px 0 0;color:var(--gray-500)">Preview their invite experience &#8599;</button>';
+      var preview='';
       var rolesLine=p.invitedFill?('Invited to fill their own details &middot; '+esc(p.email||'')):esc(p.roles.join(' · '));
       var resend=(!p.isMe&&!p.invitedFill&&idvReq&&!verified)
         ?'<button type="button" class="btn btn-secondary btn-sm" data-kcresend="'+pi+'" style="width:auto">'+(p.idvInvited?'Resend IDV request':'Send IDV request')+'</button>':'';
-      var opt=p.isMe
-        ?'<span class="kc-fine">Account holder</span>'
-        :(p.wantsAccount==='Yes'
-          ?'<span class="kc-fine">Opted into a Loop account &mdash; invited once the account is approved</span>'
-          :'<button type="button" class="btn btn-secondary btn-sm" data-kcopt="'+pi+'" style="width:auto">Opt into a Loop account</button>');
       kcCard.appendChild(el('div','rev-row kc-row',
         '<div class="kc-info"><div class="rv" style="font-weight:600">'+esc(indName(p))+(p.isMe?' &middot; You':'')+'</div><div class="rl">'+rolesLine+'</div>'+preview+'</div>'+
-        '<span class="pill '+st[0]+'">'+st[1]+'</span>'+resend+opt));
+        '<span class="pill '+st[0]+'">'+st[1]+'</span>'+resend));
     });
   }else{
     kcCard.appendChild(el('div','rev-row','<div class="rl">No key contacts on this application</div>'));
@@ -4621,9 +4528,6 @@ function renderSetup(){
       },5000);
     };
   });
-  list.querySelectorAll('[data-kcopt]').forEach(function(b){
-    b.onclick=function(){var p=S.f.individuals[+b.dataset.kcopt];if(!p)return;p.wantsAccount='Yes';persist();renderSetup();};
-  });
   /* credit application: gate on the Flinks bank connection, then redirect out of
      onboarding — the redirect changes no prototype state */
   var cab=$('creditApplyBtn');if(cab)cab.onclick=function(){
@@ -4635,23 +4539,6 @@ function renderSetup(){
     var nb=$('setupList').querySelector('.setup-body');
     if(nb){slideOpenBody(nb);nb.closest('.setup-item').scrollIntoView({behavior:'smooth',block:'center'});}
   };
-  /* teammate invites: queue emails, send only at activation */
-  var tAdd=$('teamAdd');if(tAdd){
-    var tEm=$('teamEmail');
-    var teamDoAdd=function(){
-      var v=tEm.value.trim().toLowerCase();
-      if(!validEmail(v)){tEm.style.borderColor='var(--error-600)';tEm.focus();return;}
-      if(S.setup.invites.indexOf(v)<0)S.setup.invites.push(v);
-      persist();renderSetup();
-      var ne=$('teamEmail');if(ne)ne.focus();
-    };
-    tAdd.onclick=teamDoAdd;
-    tEm.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();teamDoAdd();}});
-    tEm.addEventListener('input',function(){tEm.style.borderColor='';});
-  }
-  list.querySelectorAll('[data-teamrm]').forEach(function(b){
-    b.onclick=function(){S.setup.invites.splice(+b.dataset.teamrm,1);persist();renderSetup();};
-  });
   list.querySelectorAll('[data-tfam]').forEach(function(b){
     b.onclick=function(){S.setup.tfaMethod=b.dataset.tfam;persist();renderSetup();};
   });
@@ -4687,8 +4574,6 @@ function renderLive(){
     ?'<div class="live-row">'+ic+'<span>Your deposit'+(S.setup.etAmount?' of $'+esc(S.setup.etAmount):'')+' via '+esc(S.setup.depMethod)+' has been credited to your CAD account</span></div>'
     :'<div class="live-row">'+ic+'<span>Make your first deposit from the dashboard to start transacting</span></div>';
   if(S.setup.credit.stage==='done')rows+='<div class="live-row">'+ic+'<span>Your credit limit application is in review'+(S.setup.credit.salesChannel?' · PayPal connected to verify revenue':'')+'</span></div>';
-  var liveInv=S.setup.invites.concat(optedInPeople().map(function(p){return p.email||indName(p);}));
-  if(liveInv.length)rows+='<div class="live-row">'+ic+'<span>'+liveInv.length+' team invitation'+(liveInv.length>1?'s':'')+' sent to '+esc(liveInv.join(', '))+' &mdash; they&rsquo;re being onboarded into your dashboard</span></div>';
   rows+='<div class="live-row">'+ic+'<span>Two-factor authentication is '+(S.setup.tfaEnabled?'on':'off, you can enable it in security settings')+'</span></div>';
   $('liveRows').innerHTML=rows;
 }
@@ -5270,135 +5155,7 @@ function applyRegistryPrefill(r){
   hydrateFields();save();
 }
 var whoRec=null,whoMode='name';/* runtime only — the record being confirmed + name/upload mode */
-function renderWho(){renderWhoSearch();}
-function whoBack(){return '<button type="button" class="back-link back-top" id="whoBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back to search</button>';}
-/* one screen: the name type-ahead is primary; below a divider the user can flip the
-   input into a document upload (and back), or skip the lookup entirely. A selection
-   swaps the input area for a removable record card. */
-function renderWhoSearch(){
-  var body=$('whoBody');if(!body)return;
-  var mid;
-  if(whoRec){
-    mid='<div class="who-card"><div class="wc-head"><div><div class="wc-name">'+esc(whoRec.name)+'</div><div class="wc-meta">'+regMeta(whoRec)+'</div></div>'+
-      '<button class="icobtn" id="whoClear" aria-label="Remove this business and search again"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
-      '<div class="who-kv"><span class="k">Tax ID</span><span class="v">'+esc(whoRec.taxId)+'</span></div>'+
-      '<div class="who-kv"><span class="k">Incorporated</span><span class="v">'+whoRec.founded+' &mdash; '+esc(whoRec.entity)+'</span></div>'+
-      '<div class="who-kv"><span class="k">Registered office</span><span class="v">'+esc(whoRec.city)+', '+esc(whoRec.prov)+'</span></div>'+
-      '<div class="who-kv"><span class="k">Industry</span><span class="v">'+esc(whoRec.industry)+'</span></div></div>'+
-      '<button class="btn btn-primary" id="whoConfirm" style="margin-top:10px">This is my business</button>';
-  }else{
-    mid='<div class="field who-field">'+
-      '<input id="whoQ" autocomplete="off" spellcheck="false" placeholder="Legal business name or Tax ID">'+
-      '<label for="whoQ">Legal business name or Tax ID</label>'+
-      '<div class="who-menu hidden" id="whoMenu"><div class="who-list" id="whoList"></div>'+
-      '<button type="button" class="who-nf" id="whoNF"><span>I can&rsquo;t find my business</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>'+
-      '</div>'+
-      '<button class="btn btn-primary" id="whoConfirm" style="margin-top:10px" disabled>This is my business</button>';
-  }
-  body.innerHTML='<h1 class="page-h">Find your business</h1>'+
-    '<p class="page-sub">Find your business and we&rsquo;ll autofill your application.</p>'+
-    '<div class="fgrid" style="margin-top:34px">'+mid+'</div>'+
-    '<div class="fgrid" style="margin-top:26px">'+
-      '<button type="button" class="btn-link who-skip" id="whoSkip">Skip this step and enter my details manually</button>'+
-    '</div>';
-  /* manual entry passes through the two eligibility questions before the website step */
-  $('whoSkip').onclick=function(){whoRec=null;eligIndustry='';eligQcsp='';renderWhoEligibility(0);};
-  var cf=$('whoConfirm');
-  if(cf)cf.onclick=function(){
-    if(this.disabled||!whoRec)return;
-    renderWhoPull();
-  };
-  if(whoRec){
-    $('whoClear').onclick=function(){whoRec=null;renderWhoSearch();var q=$('whoQ');if(q)q.focus();};
-    return;
-  }
-  var q=$('whoQ'),menu=$('whoMenu'),list=$('whoList');
-  var results=[];
-  function paint(){
-    var v=q.value.trim();
-    if(v.length<2){menu.classList.add('hidden');return;}
-    results=regSearch(v);
-    list.innerHTML=results.length
-      ?results.map(function(r,i){return regOptRow(i,r);}).join('')
-      :'<div class="who-empty">No registered businesses match that name or tax ID.</div>';
-    list.querySelectorAll('[data-who]').forEach(function(b){
-      b.onclick=function(){whoRec=results[+b.dataset.who];whoMode='name';renderWhoSearch();};
-    });
-    menu.classList.remove('hidden');
-  }
-  q.addEventListener('input',function(){q.closest('.field').classList.toggle('filled',!!q.value);paint();});
-  q.addEventListener('focus',paint);
-  document.addEventListener('click',function(e){if(!e.target.closest('.who-field')){menu.classList.add('hidden');}});
-  $('whoNF').onclick=function(){renderWhoNotFound();};
-  q.focus();
-}
-/* the registry could not confirm the business: upload a document to autofill instead */
-function renderWhoNotFound(){
-  var body=$('whoBody');if(!body)return;
-  body.innerHTML=whoBack()+'<h1 class="page-h">Upload documents to autofill</h1>'+
-    '<p class="page-sub">We were unable to confirm your business from the registry search. However, you can upload a recent business document that we can use to autofill parts of your application.</p>'+
-    '<div class="fgrid" style="margin-top:34px">'+
-      '<label class="upload sm" id="whoDocUpload"><input type="file" id="whoDocInput" accept=".pdf,.png,.jpg,.jpeg" hidden>'+
-        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#697586" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+
-        '<div class="u1">Upload a business document</div><div class="u2">Certificate or articles of incorporation, registration, or a recent invoice</div></label>'+
-      '<div class="sms-status hidden" id="whoStatus" style="margin-top:0"></div>'+
-      '<button class="btn btn-primary" id="whoDocGo" disabled>Continue</button>'+
-    '</div>'+
-    '<p class="who-foot"><a href="#" id="whoManual">Proceed and enter your details manually</a></p>';
-  $('whoBack').onclick=function(){whoRec=null;renderWhoSearch();};
-  var picked='';
-  $('whoDocInput').addEventListener('change',function(){
-    var f=this.files&&this.files[0];if(!f)return;
-    picked=f.name;
-    var st=$('whoStatus');
-    st.className='sms-status ok';
-    st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> '+esc(picked)+' ready';
-    $('whoDocGo').disabled=false;
-  });
-  $('whoDocGo').onclick=function(){if(this.disabled||!picked)return;this.disabled=true;runWhoDocExtract(picked);};
-  /* manual entry passes through the two eligibility questions before the website step */
-  $('whoManual').onclick=function(e){e.preventDefault();whoRec=null;eligIndustry='';eligQcsp='';renderWhoEligibility(0);};
-}
-/* a document doesn't search the registry — it IS the source: read it, then show the
-   extracted record on the confirmation card for the user to accept */
-function runWhoDocExtract(name){
-  var st=$('whoStatus');
-  var up=$('whoDocUpload');if(up)up.style.pointerEvents='none';
-  if(st){st.className='sms-status';st.innerHTML='<span class="spinner"></span> Reading '+esc(name)+' and extracting your details&hellip;';}
-  setTimeout(function(){
-    var r={};for(var k in REGISTRY[0])r[k]=REGISTRY[0][k];
-    whoRec=r;whoMode='name';
-    renderWhoSearch();
-  },1600);
-}
-/* short registry pull once the business is confirmed, then ask for the website
-   manually. (The registry can't provide emails or reliable websites, so nothing
-   is suggested — the user types it or skips.) */
-function renderWhoPull(){
-  var body=$('whoBody');if(!body||!whoRec)return;
-  var CHECK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-  var steps=['Confirming registration with the corporate registry','Pulling corporate details and business number'];
-  body.innerHTML='<h1 class="page-h">Setting things up</h1>'+
-    '<p class="page-sub">Pulling the registry record for '+esc(whoRec.name)+'&hellip;</p>'+
-    '<div class="reg-panel" style="max-width:560px;margin-top:30px">'+
-    steps.map(function(t,i){return '<div class="reg-row" id="whoStep'+i+'"><span class="ic"></span><span class="t">'+t+'</span></div>';}).join('')+
-    '</div>';
-  var i=0;
-  function step(){
-    if(!$('whoStep0'))return;/* user navigated away mid-pull */
-    if(i>0){var prev=$('whoStep'+(i-1));if(prev){prev.classList.add('done');prev.querySelector('.ic').innerHTML=CHECK;}}
-    if(i>=steps.length){
-      /* the pulled record is checked before anything is prefilled: a Quebec sole
-         proprietorship or a restricted industry ends the flow with a soft decline */
-      var rz=recIneligibleReason(whoRec);
-      if(rz){renderWhoDeclined(rz);return;}
-      renderWhoWebsite();return;
-    }
-    var row=$('whoStep'+i);if(row)row.querySelector('.ic').innerHTML='<span class="spinner"></span>';
-    i++;setTimeout(step,i===1?700:800);
-  }
-  step();
-}
+function renderWho(){renderWhoEligibility(0);}/* MVP: no registry lookup — straight to eligibility */
 /* ============================ eligibility gate ============================ */
 /* Loop can't yet serve Quebec sole proprietorships or restricted industries
    (cannabis, gambling, crypto). A confirmed registry record is checked directly;
@@ -5427,7 +5184,7 @@ function wireEligOpts(body,current,set){
 function renderWhoEligibility(step){
   var body=$('whoBody');if(!body)return;
   if(step===0){
-    body.innerHTML=eligBackBtn('Back to search')+
+    body.innerHTML=
       '<h1 class="page-h">What industry does your business operate in?</h1>'+
       '<div class="fgrid" style="margin-top:34px;max-width:560px">'+
         RESTRICTED_INDUSTRIES.map(function(l){return eligOpt(l,l);}).join('')+
@@ -5435,7 +5192,6 @@ function renderWhoEligibility(step){
         '<button class="btn btn-primary" id="eligGo" disabled>Continue</button>'+
       '</div>';
     wireEligOpts(body,eligIndustry,function(v){eligIndustry=v;});
-    $('eligBack').onclick=function(){renderWhoSearch();};
     $('eligGo').onclick=function(){
       if(this.disabled)return;
       if(eligIndustry!=='none')renderWhoDeclined('industry');
@@ -5454,7 +5210,7 @@ function renderWhoEligibility(step){
     $('eligGo').onclick=function(){
       if(this.disabled)return;
       if(eligQcsp==='yes')renderWhoDeclined('qcsp');
-      else renderWhoWebsite();
+      else showPage('welcome');
     };
   }
 }
@@ -5468,38 +5224,8 @@ function renderWhoDeclined(reason){
       '<a class="btn btn-secondary" href="https://www.bankonloop.com" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Return to bankonloop.com</a>'+
     '</div>'+
     '<p class="who-foot"><a href="#" id="declRestart">Selected the wrong business or answer? Go back and review</a></p>';
-  $('declRestart').onclick=function(e){e.preventDefault();eligIndustry='';eligQcsp='';renderWhoSearch();};
+  $('declRestart').onclick=function(e){e.preventDefault();eligIndustry='';eligQcsp='';renderWhoEligibility(0);};
 }
-function renderWhoWebsite(){
-  var body=$('whoBody');if(!body)return;
-  body.innerHTML='<h1 class="page-h">Add your business website</h1>'+
-    '<p class="page-sub">Having this information helps us understand what your business does.</p>'+
-    '<div class="fgrid" style="margin-top:34px">'+
-      '<div class="field"><input id="whoWebInput" type="url" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="https://yourbusiness.ca"><label for="whoWebInput">Business website</label></div>'+
-      '<button class="btn btn-primary" id="whoWebGo" disabled>Continue</button>'+
-    '</div>'+
-    '<p class="who-foot"><a href="#" id="whoWebSkip">Skip, we don&rsquo;t have a business website</a></p>';
-  var inp=$('whoWebInput'),btn=$('whoWebGo');
-  var pre=(whoRec&&whoRec.website)||'';
-  if(pre){inp.value=pre;inp.closest('.field').classList.add('filled');btn.disabled=false;}
-  inp.addEventListener('input',function(){inp.closest('.field').classList.toggle('filled',!!inp.value);btn.disabled=!inp.value.trim();});
-  /* with a confirmed record the website rides into the registry prefill; on the
-     manual path it lands straight in the application's website field */
-  function done(v){
-    if(whoRec){whoRec.website=v;whoFinish();}
-    else{S.f.website=v;hydrateFields();save();showPage('welcome');}
-  }
-  btn.onclick=function(){if(this.disabled)return;done(inp.value.trim());};
-  $('whoWebSkip').onclick=function(e){e.preventDefault();done('');};
-  inp.focus();
-}
-function whoFinish(){
-  applyRegistryPrefill(whoRec);/* carries the website entered on the previous screen */
-  hydrateFields();save();
-  whoRec=null;
-  showPage('welcome');
-}
-
 /* ============================ business page: three steps of input fields ============================ */
 /* The page is one classic form split into three steps — General overview, Business
    details, Primary business address. A registry match or parsed document autofills
@@ -5524,6 +5250,7 @@ function markRegGaps(){
 }
 function renderBizView(){
   syncBizPrefill();
+  var af=$('bizAutofill');if(af)af.classList.toggle('hidden',!!S.regPrefilled||(S.bizSub||0)>0);
   var note=$('regNote');
   if(note&&S.regPrefilled)note.innerHTML='We&rsquo;ve auto-filled this page from your '+(S.regSource==='document'?'document':'registry record')+'. Please double-check everything and complete any fields marked in red.';
   var sub=S.bizSub||0;
@@ -5958,6 +5685,9 @@ var FR_APP={
   'Postal code':'Code postal',
   'We’ve auto-filled this page from your registry record. Please double-check everything and complete any fields marked in red.':'Nous avons rempli automatiquement cette page à partir de votre dossier au registre. Veuillez tout vérifier et remplir les champs marqués en rouge.',
   'We’ve auto-filled this page from your document. Please double-check everything and complete any fields marked in red.':'Nous avons rempli automatiquement cette page à partir de votre document. Veuillez tout vérifier et remplir les champs marqués en rouge.',
+  'Autofill with a document':'Remplissage automatique avec un document',
+  'Upload a certificate or articles of incorporation, a registration, or a recent invoice — we’ll fill in what we can.':'Téléversez un certificat ou des statuts constitutifs, une immatriculation ou une facture récente — nous remplirons ce que nous pouvons.',
+  'Upload document':'Téléverser le document',
   'Corporation (federal)':'Société par actions (fédérale)',
   'Corporation (provincial)':'Société par actions (provinciale)',
   'Sole proprietorship':'Entreprise individuelle',
@@ -6452,18 +6182,20 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!sm.classList.contains('hidden')&&!sm.contains(e.target)&&!e.target.closest('.settings-trigger'))closeSettingsMenu();
   });
 
-  /* manage collaborator access (sidebar) */
-  $('cofillSideBtn').onclick=function(e){
-    e.stopPropagation();
-    var cp=$('cofillPanel');
-    if(cp.classList.contains('hidden'))openCofillPanel();
-    else cp.classList.add('hidden');
-  };
-  /* per-page "Invite a collaborator" header buttons → panel pre-scoped to that page */
-  document.querySelectorAll('[data-delegate]').forEach(function(b){
-    b.onclick=function(e){e.stopPropagation();openCofillPanel({scope:'page',page:b.dataset.delegate});};
+
+  /* document autofill (MVP): reads the upload, then prefills the business page */
+  var bai=$('bizAutofillInput');
+  if(bai)bai.addEventListener('change',function(){
+    var f=this.files&&this.files[0];if(!f)return;
+    var box=$('bizAutofill');
+    box.innerHTML='<span class="spinner"></span><div style="flex:1;min-width:0"><div class="af-t">Reading '+esc(f.name)+'&hellip;</div><div class="af-d">Extracting your business details</div></div>';
+    setTimeout(function(){
+      var r={};for(var k in REGISTRY[0])r[k]=REGISTRY[0][k];
+      applyRegistryPrefill(r);
+      S.regSource='document';persist();
+      renderBizView();
+    },1600);
   });
-  updateCofillBadge();
 
   /* auth */
   $('toSignin').onclick=function(e){e.preventDefault();$('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');syncAuthButtons();};
@@ -6642,26 +6374,6 @@ document.addEventListener('DOMContentLoaded',function(){
   /* welcome + continue buttons */
   $('btnStart').onclick=function(){showPage('business');};
 
-  /* collaborators (welcome) — reveal an inline email field below the button.
-     (the sidebar button still opens the global manage-access panel.) */
-  var wcInvite=$('collabInvite'),wcEmail=$('wcEmail');
-  function wcSetOpen(open){
-    wcInvite.classList.toggle('hidden',!open);
-    $('btnAddCollab').setAttribute('aria-expanded',open?'true':'false');
-    if(open){wcEmail.focus();}
-    else{wcEmail.value='';wcEmail.closest('.field').classList.remove('invalid');}
-  }
-  function wcDoSend(){
-    var v=wcEmail.value.trim();
-    if(!v||v.indexOf('@')<1){wcEmail.closest('.field').classList.add('invalid');wcEmail.focus();return;}
-    sendCofillInvite(v,'full');
-    wcSetOpen(false);
-  }
-  $('btnAddCollab').onclick=function(){wcSetOpen(wcInvite.classList.contains('hidden'));};
-  $('wcCancel').onclick=function(){wcSetOpen(false);};
-  $('wcSend').onclick=wcDoSend;
-  wcEmail.addEventListener('input',function(){wcEmail.closest('.field').classList.remove('invalid');});
-  wcEmail.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();wcDoSend();}});
   $('collabCancel').onclick=closeCollabModal;
   $('collabOverlay').onclick=function(e){if(e.target===$('collabOverlay'))closeCollabModal();};
   $('collabEmail').addEventListener('input',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');});
@@ -6791,13 +6503,6 @@ document.addEventListener('DOMContentLoaded',function(){
   ['d-firstName','d-lastName'].forEach(function(id){$(id).addEventListener('input',checkNameSelf);});
   document.querySelectorAll('#isYouSeg .chip').forEach(function(c){
     c.addEventListener('click',function(){answerIsYou(c.dataset.isyou);});
-  });
-  document.querySelectorAll('#inviteAcctSeg .chip').forEach(function(c){
-    c.addEventListener('click',function(){
-      drWants=c.dataset.invacct;
-      paintInviteAcct();
-      $('inviteAcctWrap').querySelector('.chips-wrap').classList.remove('invalid');
-    });
   });
   /* home-address autofill: typing a street suggests full addresses */
   (function(){
