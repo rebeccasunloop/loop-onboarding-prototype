@@ -1,7 +1,7 @@
 # Onboarding Prototype — Demo Cheatsheet
 
 Magic inputs and special-cased values for demoing edge cases. Written against
-`Iterations/Onboarding_Redesign_V2.3.html`; earlier iterations share most of these.
+`Iterations/Onboarding_Redesign_V2.5.html`; earlier iterations share most of these.
 
 ## Sign in / sign up
 
@@ -72,32 +72,44 @@ behind a small translucent sliders icon in the top-left corner of every screen
 corner, so it never covers the content in the middle of the screen. Nothing
 demo-related remains in the main UI.
 
-- **Acting as** — segmented switcher between **User A (CEO)** (the signed-in
-  identity) and **User B (CFO)** ("Jordan Lee"). Whoever is active is credited
-  for typing and submissions; simulated background edits always land under the
-  *other* user's name.
 - The menu's sections follow the current screen:
-  - **Simulate teammate** (application, pre-submit) — **Simulate background
-    edit by teammate** (instantly changes the business address + phone under
-    the other user's name) and an **Auto background edits** toggle (an edit
-    every ~6 s; off by default). Fields you're focused in never change under
-    you — held-back edits apply on blur. Editing after the Review page is
-    open arms the **submit intercept**: Submit is blocked by a diff modal
-    (Keep editing → blue row highlights; Confirm & submit → wait room).
-  - **Flow shortcuts** (application) — Skip to wait room, invitee-experience
-    preview.
+  - **Collaboration** (application, pre-submit) — **Preview the collaborator
+    experience** (the invite email → scoped view → send-back loop; completing
+    it really returns the pages), plus a **Simulate [name] returning [pages]**
+    button per outstanding assignment. Assignments are asynchronous: a page
+    out with a teammate is read-only for the owner (banner with Remind /
+    Take back) until it comes back, then shows a green "review their answers"
+    banner. There is no simultaneous editing.
+  - **Flow shortcuts** (application) — Skip to wait room.
   - **Wait room** (post-submit) — Simulate approval / document request /
     correction request / clear, the in-review state switcher
-    (Normal / Delayed / Material requested), and per-person
-    "mark verified" for pending identity checks.
+    (Normal / Delayed / Material requested), a per-person invitee-IDV
+    preview, and per-person "mark verified" for pending identity checks.
   - **Cheatsheet** — the magic values from this file, always visible.
-- Every filled field shows a low-profile **"✎ Last edit: [name]"** stamp
-  underneath (pencil vector icon), cross-fading when a background update
-  changes the editor.
+
+## Collaborators (V2.5 model)
+
+- **Assign pages, not access.** "Assign this page" in a page header (or the
+  sidebar / welcome buttons) opens one modal: teammate email + page checkboxes
+  + what they can see (only their pages, or the whole application view-only).
+- One assignee per page; a teammate can hold several pages. Already-assigned
+  pages show "With [name]" and are disabled in the modal.
+- Full access is never grantable — the only full-control affordance is the
+  quiet **Transfer ownership…** link at the bottom of the modal (pending until
+  the other person accepts; cancellable).
+- No account opt-ins anywhere: related persons only ever get an IDV link, and
+  the wait room only lets the owner check IDV status and resend links.
+
+## Approval (V2.5)
+
+- Approval lands on a decision screen: **Review and sign agreements** (primary)
+  or **Finish optional setup first** (returns to the hub, which shows a green
+  "approved — everything below is optional" banner with a "Go to agreements"
+  button).
 
 ## Notes
 
 - The chat widget is canned: quick-reply buttons have answers; free text always
   gets the same "team will get back to you" reply. No magic strings.
-- State persists in `localStorage` (`loop-onboarding-app-v9`). To hard-reset a
+- State persists in `localStorage` (`loop-onboarding-app-v10`). To hard-reset a
   demo, sign in with a different email or clear site data.
