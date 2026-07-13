@@ -360,6 +360,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .qfield input{padding-right:14px}
 .qfield{position:relative}
 .qfield select:focus,.qfield input:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.12)}
+/* an incomplete (red-labeled) field keeps an error-red focus ring, not the green one */
+.q.invalid .qfield input:focus,.q.invalid .qfield select:focus{border-color:var(--error-600);box-shadow:0 0 0 4px rgba(227,27,84,.14)}
 .qfield .chev{position:absolute;right:16px;bottom:17px;pointer-events:none;color:var(--gray-500)}
 .q.invalid .q-label{color:var(--error-600)}
 .q.invalid .qfield select,.q.invalid .qfield input{border-color:var(--error-600)}
@@ -685,6 +687,13 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* modal */
 .modal{background:#fff;border-radius:14px;box-shadow:var(--shadow-overlay);width:100%;max-width:480px;overflow:hidden}
 .modal .m-body{padding:30px 32px 26px}
+/* assign modal: cap height and scroll the body cleanly — no visible scrollbar, no
+   overscroll spring-back past the ends */
+.as-modal{max-height:calc(100vh - 40px);display:flex;flex-direction:column}
+.as-modal .m-body{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none}
+.as-modal .m-body::-webkit-scrollbar{width:0;height:0;display:none}
+/* single-line visibility options (no subtext): center the radio to the label */
+#asSee .opt{align-items:center;padding:12px}
 .modal h3{font-size:20px;font-weight:600;letter-spacing:-.2px;margin-bottom:10px}
 .modal p{font-size:14.5px;color:var(--gray-600);line-height:1.6}
 .modal .m-foot{border-top:1px solid var(--gray-200);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
@@ -721,7 +730,9 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .setup-head .ttl{font-weight:500;font-size:15.5px;flex:1;color:var(--gray-600);transition:color .18s ease,font-weight .18s ease}
 .setup-head.open .n{background:var(--brand-25);border-color:var(--brand-25);color:var(--brand-700)}
 .setup-head.open .ttl{color:var(--gray-900);font-weight:600}
-.setup-head.done .n{background:var(--success-500);border-color:var(--success-500);color:#fff}
+.setup-head.done .n{background:var(--brand-500);border-color:var(--brand-500);color:#fff}
+/* the task card clips overflow, so tooltips inside it open to the right of the icon */
+.setup-item .info-tip .tipbox{bottom:auto;top:50%;left:calc(100% + 9px);transform:translateY(-50%);width:300px}
 .setup-head.done .ttl{color:var(--gray-900);font-weight:600}
 .setup-head .meta{font-size:12.5px;color:var(--gray-500)}
 /* right padding mirrors the 64px left inset so body content reads centered */
@@ -757,9 +768,45 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .invited .iv-em{flex:1;font-weight:600;word-break:break-all}
 .invited .iv-role{font-size:12.5px;color:var(--gray-500)}
 /* waiting-room credit application */
+.dep-meth-h2{font-size:16.5px;font-weight:600;color:var(--gray-900);margin:4px 0 12px}
 .credit-sec-h{font-size:14.5px;font-weight:700;margin:24px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--gray-100)}
 .credit-boost{border:1px solid var(--gray-200);border-radius:14px;padding:18px 20px;margin-top:16px;background:var(--gray-25)}
 .credit-boost h4{font-size:14.5px;font-weight:600;margin-bottom:4px}
+/* ---------- credit application: its own page off the waiting room ---------- */
+.credit-form .q{margin:0 0 4px;max-width:420px}
+.credit-form .fhelp{margin:6px 0 20px}
+.cr-money .qfield input{padding-left:30px}
+.cr-money .curpfx{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gray-500);font-size:14.5px;pointer-events:none}
+.cr-pct .qfield input{padding-right:34px}
+.cr-pct .pctsfx{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--gray-500);font-size:14.5px;pointer-events:none}
+/* submitted state: centered check + headline, then the get-approved-faster card */
+.credit-done{max-width:860px;margin:0 auto;text-align:center}
+.cd-check{width:54px;height:54px;border-radius:50%;border:3px solid var(--success-500);color:var(--success-600);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.cd-card{display:flex;flex-wrap:wrap;border:1px solid var(--gray-200);border-radius:18px;margin-top:34px;text-align:left;overflow:hidden;background:#fff;box-shadow:var(--shadow-sm)}
+.cd-visual{flex:1 1 300px;background:var(--gray-25);padding:24px;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--gray-100)}
+.cd-art{width:100%;max-width:320px;border-radius:14px;padding:22px 22px 18px;background:
+  repeating-radial-gradient(circle at 110% -10%,rgba(255,255,255,.35) 0 2px,transparent 2px 26px),
+  linear-gradient(135deg,#e3f4e8,#c8e9d4)}
+.cd-cc{background:linear-gradient(135deg,#8fd3a8,#045b3f);border-radius:12px;padding:14px 16px 12px;color:#fff;box-shadow:0 6px 18px rgba(1,23,16,.18)}
+.cd-cc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+.cd-cc-logo{display:block;line-height:0}
+.cd-cc-logo img{height:15px;width:auto;display:block}
+.cd-cc-badge{font-size:9.5px;font-weight:600;background:rgba(255,255,255,.85);color:var(--gray-700);border-radius:20px;padding:2px 8px}
+.cd-cc-bot{display:flex;align-items:flex-end;justify-content:space-between}
+.cd-cc-l{font-size:9.5px;opacity:.85}
+.cd-cc-v{font-size:20px;font-weight:700;line-height:1.15}
+.cd-cc-visa{font-size:15px;font-weight:800;font-style:italic;letter-spacing:.5px}
+.cd-stem{width:1.5px;height:14px;background:rgba(4,91,63,.35);margin:0 auto}
+.cd-tiles{display:flex;gap:10px}
+.cd-tile{flex:1;background:#fff;border-radius:9px;overflow:hidden;box-shadow:0 3px 10px rgba(1,23,16,.10)}
+.cd-tile .tb{height:16px;background:var(--brand-600,#087443)}
+.cd-tile .tl{height:26px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;font-style:italic;color:#0a2e6e}
+.cd-boost{flex:1 1 300px;padding:30px 32px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:0}
+.cd-boost h4{font-size:17px;font-weight:700;margin-bottom:8px}
+.cd-boost p{font-size:14px;color:var(--gray-600);line-height:1.6;margin-bottom:18px}
+[data-theme="dark"] .cd-card{background:var(--gray-50)}
+[data-theme="dark"] .cd-visual{background:var(--gray-100)}
+[data-theme="dark"] .cd-tile{background:#fff}
 .credit-boost p{font-size:13px;color:var(--gray-600);line-height:1.55;margin-bottom:12px}
 /* timeline card */
 /* horizontal application timeline above the tasks: one continuous full-width
@@ -792,6 +839,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .sub-card.sub-card-hover:hover{box-shadow:0 20px 44px -10px rgba(18,25,38,.24),0 8px 16px -6px rgba(18,25,38,.12)}
 [data-theme="dark"] .sub-card.sub-card-hover:hover{box-shadow:0 20px 48px -10px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.05)}
 .sub-check{width:60px;height:60px;border-radius:50%;background:var(--success-50);display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+/* approved screen: the company name sits quietly under the headline */
+.ap-biz{font-size:14px;font-weight:500;color:var(--gray-500);margin:8px 0 2px}
 .sub-card h1{font-size:30px;font-weight:500;letter-spacing:-.5px;margin-bottom:8px}
 .sub-card .ref{font-size:13.5px;color:var(--gray-500);margin-bottom:8px}
 .sub-card .lead{font-size:15px;color:var(--gray-600);margin-bottom:10px}
@@ -984,6 +1033,18 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .welcome-collab h2{font-size:20px;font-weight:600;letter-spacing:-.2px;margin-bottom:6px}
 .welcome-collab .cc-sub{font-size:14.5px;color:var(--gray-600);line-height:1.55;max-width:560px;margin-bottom:16px}
 .welcome-collab #collabList:not(:empty){margin-bottom:14px}
+/* presence: overlapping initials avatars, left-aligned; a leaving avatar fades out,
+   then collapses so the ones to its right slide left */
+.collab-presence{display:flex;align-items:center}
+.collab-presence:not(:empty){margin:2px 0 14px}
+.cp-pav{position:relative;width:46px;height:46px;border-radius:50%;color:#fff;font-weight:700;font-size:15px;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;border:2.5px solid #fff;box-shadow:0 1px 3px rgba(16,24,40,.18);margin-right:-10px;flex:0 0 auto;white-space:nowrap;transition:opacity .5s ease,width .3s ease .45s,margin-right .3s ease .45s,border-width .3s ease .45s}
+.cp-pav.leaving{opacity:0;width:0;margin-right:0;border-width:0}
+/* hover: the collaborator's full name floats above the avatar */
+.cp-pav::after{content:attr(data-name);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--gray-900);color:#fff;font-size:12px;font-weight:600;line-height:1;padding:6px 10px;border-radius:7px;white-space:nowrap;opacity:0;visibility:hidden;transition:opacity .12s;pointer-events:none;z-index:60}
+.cp-pav:hover::after{opacity:1;visibility:visible}
+.cp-pav.leaving::after{display:none}
+[data-theme="dark"] .cp-pav{border-color:var(--gray-50)}
+[data-theme="dark"] .cp-pav::after{background:var(--gray-200);color:var(--gray-900)}
 /* divider between the collaborator section and the Start application button */
 #page-welcome .continue-wrap{margin-top:36px}
 /* inline invite form, revealed by the welcome "Add a collaborator" button */
@@ -1256,6 +1317,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* ---- bottom-left utility cluster ---- */
 .flow-utils{position:fixed;left:22px;bottom:18px;z-index:55;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .flow-utils .cofill-side{order:2;width:auto;margin:0;border-radius:999px;padding:8px 14px;background:#fff}
+/* presence avatars sit directly above the assign pill */
+.flow-utils .collab-presence{order:2;margin:0 0 2px}
 .flow-utils .cofill-side .cnt{margin-left:4px}
 .flow-utils .settings-trigger{order:1;width:auto;background:#fff;border:1px solid var(--gray-200);border-radius:999px;padding:7px 13px;box-shadow:var(--shadow-sm)}
 .flow-utils .settings-trigger:hover{background:var(--gray-50)}
@@ -1302,7 +1365,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   .flow-utils{left:14px;bottom:12px}
   .flow-utils .settings-trigger .em{max-width:140px}
   /* keep the bottom-left corner minimal on phones (collaborator lives in the page header + welcome) */
-  .flow-utils .cofill-side{display:none}
+  .flow-utils .cofill-side,.flow-utils .collab-presence{display:none}
 }
 
 /* ============== collaboration layer + global demo harness (prototype) ============== */
@@ -1418,7 +1481,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   <div class="auth-media"></div>
 </div>
 
-<!-- ================= MFA SETUP (optional) ================= -->
 <!-- ================= PHONE VERIFICATION (mandatory SMS) ================= -->
 <div id="view-sms" class="auth-shell hidden">
   <div class="auth-pane">
@@ -1429,6 +1491,15 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <p class="auth-sub">We texted a 6-digit code to <strong id="smsTo">your phone</strong>. Enter it below to continue your journey.</p>
       <div id="smsBody"></div>
     </div>
+  </div>
+  <div class="auth-media"></div>
+</div>
+
+<!-- ================= SIGN-IN VERIFICATION (MFA challenge after password) ================= -->
+<div id="view-si2fa" class="auth-shell hidden">
+  <div class="auth-pane">
+    <div class="auth-brand"><span class="logo" id="logoSi2fa"></span></div>
+    <div class="auth-inner"><div id="si2faBody"></div></div>
   </div>
   <div class="auth-media"></div>
 </div>
@@ -1510,15 +1581,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
       <!-- WELCOME -->
       <div id="page-welcome" class="appage hidden">
-        <!-- skeleton: mirrors heading, the 3 wsteps, collaborator block, select, and needcard -->
+        <!-- skeleton: mirrors heading, collaborator block, select, and needcard -->
         <div class="page-skel" aria-hidden="true">
           <div class="sk sk-h1" style="width:46%"></div>
           <div class="sk sk-line" style="width:74%"></div>
-          <div style="margin:34px 0 8px">
-            <div class="skel-wstep"><div class="sk" style="flex:0 0 40px;height:40px;border-radius:11px"></div><div style="flex:1"><div class="sk sk-line" style="width:190px;height:15px;margin-top:2px"></div><div class="sk sk-line" style="width:64%"></div></div><div class="sk sk-line" style="width:52px;margin:8px 0 0 auto"></div></div>
-            <div class="skel-wstep"><div class="sk" style="flex:0 0 40px;height:40px;border-radius:11px"></div><div style="flex:1"><div class="sk sk-line" style="width:170px;height:15px;margin-top:2px"></div><div class="sk sk-line" style="width:72%"></div></div><div class="sk sk-line" style="width:52px;margin:8px 0 0 auto"></div></div>
-            <div class="skel-wstep"><div class="sk" style="flex:0 0 40px;height:40px;border-radius:11px"></div><div style="flex:1"><div class="sk sk-line" style="width:230px;height:15px;margin-top:2px"></div><div class="sk sk-line" style="width:58%"></div></div><div class="sk sk-line" style="width:52px;margin:8px 0 0 auto"></div></div>
-          </div>
           <div style="margin-top:36px;padding:30px 0;border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200)">
             <div class="sk" style="height:18px;width:270px"></div>
             <div class="sk sk-line" style="width:88%;margin-top:14px"></div>
@@ -1540,15 +1606,12 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         </div>
         <h1 class="page-h">Let's open your account</h1>
         <p class="page-sub">Most businesses finish in about 15 minutes, and our team reviews every application before the account opens.</p>
-        <div class="wsteps">
-          <div class="wstep"><div class="num"><img src="../Business%20Info.png" alt=""></div><div><div class="wt">Business information</div><div class="wd">Who the business is, what it does, and where it operates.</div></div><div class="tm">~5 min</div></div>
-          <div class="wstep"><div class="num"><img src="../Business%20Contacts.png" alt=""></div><div><div class="wt">Business contacts</div><div class="wd">Directors, owners of 25% or more, related businesses, and identity verification.</div></div><div class="tm">~5 min</div></div>
-          <div class="wstep"><div class="num"><img src="../Documents.png" alt=""></div><div><div class="wt">Usage, documents, and review</div><div class="wd">How you'll use Loop, any documents our screening asks for, and a final check before you submit.</div></div><div class="tm">~5 min</div></div>
-        </div>
-        <div class="welcome-collab">
+        <div class="welcome-collab" style="margin-top:34px">
           <h2>Working on this with someone?</h2>
-          <p class="cc-sub">Assign a page to a teammate — the business details to your co-founder, the documents to your bookkeeper. They fill in just their part and send it back; you stay the owner and submit.</p>
+          <p class="cc-sub">Assign parts of the application to a teammate. Scope their view to the entire application or just their assigned page.</p>
           <div id="collabList"></div>
+          <!-- who's on the application right now: one avatar per collaborator still filling -->
+          <div class="collab-presence" id="collabPresence" aria-label="Teammates currently working on this application"></div>
           <button class="btn btn-secondary btn-sm" id="btnAddCollab" style="width:auto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Assign pages to a teammate</button>
         </div>
         <!-- asked up front: top-of-mind at entry, feeds campaign attribution -->
@@ -1805,6 +1868,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </main>
 
   <div class="flow-utils">
+    <!-- presence: teammates currently filling, shown wherever the assign pill is -->
+    <div class="collab-presence" id="collabPresenceSide" aria-label="Teammates currently working on this application"></div>
     <button class="cofill-side" id="cofillSideBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>Assign pages to a teammate</span><span class="cnt hidden" id="cofillCnt"></span></button>
   </div>
 </div>
@@ -1832,6 +1897,18 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
 </div>
 
+<!-- ================= CREDIT APPLICATION (own flow, reached from the waiting room) ================= -->
+<div id="view-credit" class="hidden">
+  <div class="topbar">
+    <span class="logo" id="logoCredit"></span>
+    <div class="sp"></div>
+  </div>
+  <div class="setup-wrap" style="padding-top:22px">
+    <button type="button" class="back-link" id="creditReturn" style="margin:0 0 26px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Return to waiting room</button>
+    <div id="creditBody"></div>
+  </div>
+</div>
+
 <!-- ================= INVITEE PREVIEW (key contact experience) ================= -->
 <div id="view-invitee" class="auth-wrap hidden">
   <div class="auth-card" style="max-width:520px">
@@ -1846,9 +1923,9 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 <div id="view-approved" class="sub-wrap hidden">
   <div class="sub-brand"><span class="logo" id="logoApproved"></span></div>
   <div class="sub-card sub-card-hover" id="apChoice">
-    <div class="sub-check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
     <h1 id="apTitle">You're approved</h1>
-    <p class="lead" id="apLead"><strong id="apBizName">Your business</strong>'s application has been approved. Sign your account agreements to open the account &mdash; it only takes a minute.</p>
+    <p class="ap-biz" id="apBizName">Your business</p>
+    <p class="lead" id="apLead">Your application has been approved. Sign your account agreements to open the account. It only takes a minute.</p>
     <button class="btn btn-primary" id="apToSign" style="margin-top:22px">Review and sign agreements</button>
     <button class="btn btn-secondary" id="apToSetup" style="margin-top:10px">Finish optional setup first</button>
     <p class="smallprint" id="apOptHint" style="margin-top:16px"></p>
@@ -1856,11 +1933,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   </div>
   <div class="sub-card sub-card-hover hidden" id="apSign">
     <h1>Sign your agreements</h1>
-    <p class="lead">One last step. Agree to the account agreements to activate the account.</p>
+    <p class="lead">Last step before your account is live.</p>
     <p class="cert" style="margin:24px 0 20px">As an authorized signing officer of <strong id="apBiz">the business</strong>, I have read and agree to the agreements below on its behalf.</p>
-    <!-- checkbox consent replaces the DocuSign-style signature; each agreement records a timestamp -->
+    <!-- checkbox consent replaces the DocuSign-style signature -->
     <div id="agreeList" style="text-align:left"></div>
-    <p class="smallprint">Only signing officers can agree to these on the company&rsquo;s behalf. Each consent is recorded with a timestamp, copies are emailed to <span id="apEmail"></span>, and you can review them anytime under Settings &rarr; Documents.</p>
+    <p class="smallprint">Only authorized signing officers can agree to the agreements on the company&rsquo;s behalf. You will receive a confirmation email after activating the account.</p>
     <button class="btn btn-primary" id="btnActivate" disabled style="margin-top:6px">Activate account</button>
     <div class="sub-out"><button id="apBackChoice">Back</button><button id="apSignOut2">Sign out</button></div>
   </div>
@@ -2084,11 +2161,18 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 <!-- ================= PERMISSIONS MODAL ================= -->
 <!-- Settings → Documents: signed agreements with timestamps -->
+<!-- 2FA setup modal (waiting room): content per method is rendered into the body -->
+<div id="tfaOverlay" class="hidden" style="position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:95;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="modal" style="max-width:460px;width:100%;max-height:calc(100vh - 40px);overflow-y:auto">
+    <div class="m-body" id="tfaModalBody"></div>
+  </div>
+</div>
+
 <div id="agreeDocsOverlay" class="hidden" style="position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:95;display:flex;align-items:center;justify-content:center;padding:20px">
   <div class="modal" style="max-width:520px;width:100%">
     <div class="m-body">
       <h3>Documents</h3>
-      <p class="fhelp" style="margin:4px 0 12px">Company agreements and when they were signed. Signed copies are also emailed to you.</p>
+      <p class="fhelp" style="margin:4px 0 12px">Company agreements you have signed. Signed copies are also emailed to you.</p>
       <div class="rev-card" id="agreeDocsList"></div>
       <div style="display:flex;justify-content:flex-end;margin-top:16px">
         <button class="btn btn-secondary btn-sm" id="agreeDocsClose" style="width:auto">Close</button>
@@ -2487,13 +2571,34 @@ function renderPermissions(){
       }));
     });
   }else body.appendChild(el('div','perm-empty','No collaborators yet. Assign a page from a page header or the sidebar.'));
+
+  /* ownership transfer lives here now — the only path to full control, pending until accepted */
+  body.appendChild(el('div','perm-group-h','Ownership'));
   if(S.transfer){
-    body.appendChild(el('div','perm-group-h','Ownership'));
-    var tr=el('div','perm-empty','Transfer to '+esc(S.transfer.to)+' is pending their acceptance.');
-    body.appendChild(tr);
+    var pend=el('div','as-transfer-pending','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Ownership transfer to <strong>'+esc(S.transfer.to)+'</strong> is waiting for their acceptance. You stay the owner until they accept.</span><button type="button" id="permTransferCancel">Cancel</button>');
+    body.appendChild(pend);
+    pend.querySelector('#permTransferCancel').onclick=cancelTransfer;
+  }else if(permTransferMode){
+    var form=el('div','as-transfer-form','<p>Transferring makes them the owner: they control access, editing, and submission, and you become a collaborator. This takes effect only once they accept.</p>'+
+      '<div class="field" style="margin:10px 0"><input id="permTransferEmail" type="email" autocapitalize="off"><label for="permTransferEmail">New owner&rsquo;s email</label></div>'+
+      '<div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" id="permTransferGo" style="width:auto">Request transfer</button><button class="btn-link" id="permTransferBack" style="width:auto;color:var(--gray-600)">Cancel</button></div>');
+    body.appendChild(form);
+    var i=form.querySelector('#permTransferEmail');
+    i.addEventListener('input',function(){i.closest('.field').classList.toggle('filled',!!i.value);i.closest('.field').classList.remove('invalid');});
+    form.querySelector('#permTransferGo').onclick=function(){
+      if(!validEmail(i.value)){i.closest('.field').classList.add('invalid');i.focus();return;}
+      requestTransfer(i.value.trim());
+    };
+    form.querySelector('#permTransferBack').onclick=function(){permTransferMode=false;renderPermissions();};
+    i.focus();
+  }else{
+    var open=el('div','as-transfer','<button type="button" class="btn-link" id="permTransferOpen" style="font-size:12.5px;color:var(--gray-500)">Need to hand this application off entirely? Transfer ownership&hellip;</button>');
+    body.appendChild(open);
+    open.querySelector('#permTransferOpen').onclick=function(){permTransferMode=true;renderPermissions();};
   }
 }
-function openPermissions(){renderPermissions();$('permOverlay').classList.remove('hidden');updateChatVisibility();}
+var permTransferMode=false;
+function openPermissions(){permTransferMode=false;renderPermissions();$('permOverlay').classList.remove('hidden');updateChatVisibility();}
 function closePermissions(){$('permOverlay').classList.add('hidden');updateChatVisibility();}
 function doSignOut(){
   S.view='auth';persist();
@@ -2647,7 +2752,7 @@ function requiredTotal(){
 /* ============================ views ============================ */
 function closeNav(){document.body.classList.remove('nav-open');var t=$('navToggle');if(t)t.setAttribute('aria-expanded','false');}
 /* directional transitions: entrance-only slide+fade on real view/page changes (never intra-view re-renders) */
-var VIEW_SEQ=['auth','changepw','reset','sms','mfa','app','setup','approved','live'];
+var VIEW_SEQ=['auth','changepw','reset','sms','mfa','app','setup','credit','approved','live'];
 var prevView=null,prevPage=null;/* runtime only — never persisted */
 function slideIn(elm,dir){
   if(!elm)return;
@@ -2669,12 +2774,15 @@ function show(view){
   closeSettingsMenu();
   if(view!=='sms')stopSmsTimer();
   if(view!=='mfa')stopMfaTimer();
-  ['view-auth','view-changepw','view-reset','view-sms','view-mfa','app','view-setup','view-approved','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
+  if(view!=='si2fa')stopSi2faTimer();
+  ['view-auth','view-changepw','view-reset','view-sms','view-si2fa','view-mfa','app','view-setup','view-credit','view-approved','view-live','view-invitee'].forEach(function(id){$(id).classList.add('hidden');});
   if(view==='auth'){$('view-auth').classList.remove('hidden');syncAuthButtons();}
   else if(view==='changepw'){$('view-changepw').classList.remove('hidden');renderChangePw();}
   else if(view==='reset'){$('view-reset').classList.remove('hidden');renderReset();}
   else if(view==='sms'){$('view-sms').classList.remove('hidden');renderSms();}
+  else if(view==='si2fa'){$('view-si2fa').classList.remove('hidden');renderSi2fa();}
   else if(view==='mfa'){$('view-mfa').classList.remove('hidden');renderMfa();}
+  else if(view==='credit'){$('view-credit').classList.remove('hidden');renderCredit();}
   else if(view==='setup'){
     $('view-setup').classList.remove('hidden');
     $('setupEmail').textContent=S.email;
@@ -3819,6 +3927,7 @@ var ASSIGN_PAGES=[{page:'business',title:'Business information'},{page:'contacts
 function pageTitle(p){var m=ASSIGN_PAGES.filter(function(x){return x.page===p;})[0];return m?m.title:p;}
 function collabByEmail(em){em=(em||'').trim().toLowerCase();return (S.collaborators||[]).filter(function(c){return (c.email||'').toLowerCase()===em;})[0]||null;}
 /* the collaborator holding a page, if any (pages: {pageId:'waiting'|'done'}) */
+var collabSeq=0;/* tiebreaker so two adds in the same millisecond never share an id */
 function pageAssignee(pageId){return (S.collaborators||[]).filter(function(c){return c.pages&&c.pages[pageId];})[0]||null;}
 function collabPageList(c){return ASSIGN_PAGES.filter(function(p){return c.pages&&c.pages[p.page];}).map(function(p){return p.title;}).join(' · ');}
 function scopeLabel(c){return c.visibility==='viewer'?'Sees the whole application (view only)':'Sees only their pages';}
@@ -3839,7 +3948,7 @@ function updatePageDelegateBtn(pageId){
    (already-assigned pages are disabled in the modal) */
 function sendAssignment(emV,pages,visibility){
   var c=collabByEmail(emV);
-  if(!c){c={id:'cb'+Date.now(),email:emV,pages:{},visibility:visibility};S.collaborators.push(c);}
+  if(!c){c={id:'cb'+Date.now()+'-'+(collabSeq++),email:emV,pages:{},visibility:visibility};S.collaborators.push(c);}
   c.visibility=visibility;
   pages.forEach(function(p){c.pages[p]='waiting';});
   save();
@@ -3890,12 +3999,12 @@ var ASSIGN_FILL={
   usage:{intendedUse:['Receive payments from customers','Pay suppliers and vendors'],incomeType:'Product sales',regions:['Canada','United States']}
 };
 /* ---- ownership transfer: the only path to full control; pending until accepted ---- */
-function requestTransfer(emV){S.transfer={to:emV,at:Date.now()};save();renderAssignModal();if(!$('permOverlay').classList.contains('hidden'))renderPermissions();}
-function cancelTransfer(){S.transfer=null;save();if(!$('assignOverlay').classList.contains('hidden'))renderAssignModal();if(!$('permOverlay').classList.contains('hidden'))renderPermissions();}
+function requestTransfer(emV){S.transfer={to:emV,at:Date.now()};permTransferMode=false;save();if(!$('permOverlay').classList.contains('hidden'))renderPermissions();}
+function cancelTransfer(){S.transfer=null;permTransferMode=false;save();if(!$('permOverlay').classList.contains('hidden'))renderPermissions();}
 /* ---- assign modal (single surface: welcome, sidebar, and page headers all open it) ---- */
-var asDraft={email:'',pages:{},visibility:'assigned',transferMode:false};
+var asDraft={email:'',pages:{},visibility:'assigned'};
 function openAssignModal(presetPage){
-  asDraft={email:'',pages:{},visibility:'assigned',transferMode:false};
+  asDraft={email:'',pages:{},visibility:'assigned'};
   if(presetPage&&!pageAssignee(presetPage))asDraft.pages[presetPage]=true;
   closeNav();
   renderAssignModal();
@@ -3907,10 +4016,8 @@ function closeAssignModal(){$('assignOverlay').classList.add('hidden');updateCha
 function renderAssignModal(){
   var box=$('assignBox');if(!box)return;
   var collabs=S.collaborators||[];
-  var USER='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
   var html='<button class="as-x" type="button" id="asClose" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'+
     '<h3>Assign pages to a teammate</h3>'+
-    '<p class="as-sub">They fill in just what you assign and send it back. You stay the owner, and only you can submit.</p>'+
     '<div class="field'+(asDraft.email?' filled':'')+'" style="margin:18px 0 4px"><input id="asEmail" type="email" autocapitalize="off" value="'+esc(asDraft.email)+'"><label for="asEmail">Teammate&rsquo;s email<span class="req-star">*</span></label><span class="err-dot">!</span></div>'+
     '<div class="as-h">Pages they&rsquo;ll fill</div>'+
     ASSIGN_PAGES.map(function(p){
@@ -3922,11 +4029,11 @@ function renderAssignModal(){
     }).join('')+
     '<div class="as-h" style="margin-top:16px">What they can see</div>'+
     '<div class="cp-access" id="asSee">'+
-      '<label class="opt'+(asDraft.visibility==='assigned'?' on':'')+'" data-assee="assigned"><span class="ar"></span><span><b>Only the pages you assign</b><span class="ad">Everything else stays private to you.</span></span></label>'+
-      '<label class="opt'+(asDraft.visibility==='viewer'?' on':'')+'" data-assee="viewer"><span class="ar"></span><span><b>The whole application &mdash; view only</b><span class="ad">Helpful context; they can still only fill their pages.</span></span></label>'+
+      '<label class="opt'+(asDraft.visibility==='assigned'?' on':'')+'" data-assee="assigned"><span class="ar"></span><span><b>View assigned pages</b></span></label>'+
+      '<label class="opt'+(asDraft.visibility==='viewer'?' on':'')+'" data-assee="viewer"><span class="ar"></span><span><b>View entire application</b></span></label>'+
     '</div>'+
-    '<button class="btn btn-primary" id="asSend" style="margin-top:6px">Send assignment</button>'+
-    '<div class="cofill-track" style="margin-top:12px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 13px;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>For compliance, Loop records who filled and edited every field, whoever contributes.</span></div>';
+    '<button class="btn btn-primary" id="asSend" style="margin-top:6px">Invite teammate</button>'+
+    '<div class="cofill-track" style="margin-top:12px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 13px;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>For compliance, Loop records who filled and edited every field.</span></div>';
   if(collabs.length){
     html+='<div class="as-h" style="margin-top:20px">People with access</div>';
     collabs.forEach(function(c){
@@ -3938,18 +4045,6 @@ function renderAssignModal(){
         '<button type="button" data-asremove="'+esc(c.id)+'">Remove</button></div>';
     });
   }
-  /* transfer ownership: deliberately quiet — a footnote affordance, not a peer option */
-  html+='<div class="as-transfer">';
-  if(S.transfer){
-    html+='<div class="as-transfer-pending">'+USER+'<span>Ownership transfer to <strong>'+esc(S.transfer.to)+'</strong> is waiting for their acceptance. You stay the owner until they accept.</span><button type="button" id="asTransferCancel">Cancel</button></div>';
-  }else if(asDraft.transferMode){
-    html+='<div class="as-transfer-form"><p>Transferring makes them the owner: they control access, editing, and submission, and you become a collaborator. This takes effect only once they accept.</p>'+
-      '<div class="field" style="margin:10px 0"><input id="asTransferEmail" type="email" autocapitalize="off"><label for="asTransferEmail">New owner&rsquo;s email</label></div>'+
-      '<div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" id="asTransferGo" style="width:auto">Request transfer</button><button class="btn-link" id="asTransferBack" style="width:auto;color:var(--gray-600)">Cancel</button></div></div>';
-  }else{
-    html+='<button type="button" class="btn-link" id="asTransferOpen" style="font-size:12.5px;color:var(--gray-500)">Need to hand this application off entirely? Transfer ownership&hellip;</button>';
-  }
-  html+='</div>';
   box.innerHTML=html;
   /* wiring */
   $('asClose').onclick=closeAssignModal;
@@ -3971,21 +4066,12 @@ function renderAssignModal(){
     if(!validEmail(asDraft.email)){em.closest('.field').classList.add('invalid');em.focus();return;}
     if(!pages.length){box.querySelector('[data-aspage]').style.outline='2px solid var(--error-500)';setTimeout(function(){var r=box.querySelector('[data-aspage]');if(r)r.style.outline='';},1200);return;}
     sendAssignment(asDraft.email.trim(),pages,asDraft.visibility);
-    asDraft={email:'',pages:{},visibility:'assigned',transferMode:false};
+    asDraft={email:'',pages:{},visibility:'assigned'};
     renderAssignModal();
   };
   box.querySelectorAll('[data-asremove]').forEach(function(b){
     b.onclick=function(){removeCollaborator(b.dataset.asremove);};
   });
-  var to=$('asTransferOpen');if(to)to.onclick=function(){asDraft.transferMode=true;renderAssignModal();var i=$('asTransferEmail');if(i)i.focus();};
-  var tb=$('asTransferBack');if(tb)tb.onclick=function(){asDraft.transferMode=false;renderAssignModal();};
-  var tg=$('asTransferGo');if(tg)tg.onclick=function(){
-    var i=$('asTransferEmail');
-    if(!validEmail(i.value)){i.closest('.field').classList.add('invalid');i.focus();return;}
-    requestTransfer(i.value.trim());
-  };
-  var ti=$('asTransferEmail');if(ti)ti.addEventListener('input',function(){ti.closest('.field').classList.toggle('filled',!!ti.value);ti.closest('.field').classList.remove('invalid');});
-  var tc=$('asTransferCancel');if(tc)tc.onclick=cancelTransfer;
 }
 /* a page out with a teammate is read-only for the owner until it comes back:
    asynchronous hand-off, one editor at a time — never two people in the same field */
@@ -4166,8 +4252,12 @@ function setupDone(){
   return [S.setup.depositDone,S.setup.credit.stage==='done',S.setup.tfaEnabled];
 }
 var kcIdvTimers={};
-/* the "enable MFA" optional task only applies if they didn't set it up at sign-up */
-function optionalApplicable(){return {deposit:true,credit:true,mfa:!S.mfaEnabled};}
+/* 2FA methods still available to add: whatever wasn't set up at sign-up (the
+   mandatory SMS phone check doesn't count as an MFA method) */
+function tfaAvailable(){var done=S.mfaDone||{};return ['passkey','email','authenticator'].filter(function(k){return !done[k];});}
+/* the "enable MFA" task shows only while there's a method left to add (or one was
+   just added here); the credit application only if they said they're interested */
+function optionalApplicable(){return {deposit:true,credit:S.f.creditInterest==='Yes',mfa:S.setup.tfaEnabled||tfaAvailable().length>0};}
 /* prototype-simulated review states: how the In review milestone reads while waiting */
 var REVIEW_STATES={
   normal:{label:'Normal',tt:'In review',dot:'cur',td:'Approx. 3 to 6 business days',warn:false},
@@ -4214,11 +4304,10 @@ function renderApproved(){
     var n=pendingOptionalCount();
     $('apToSetup').classList.toggle('hidden',!n);
     $('apOptHint').innerHTML=n
-      ?'You have '+n+' optional setup item'+(n>1?'s':'')+' waiting &mdash; like the credit application or your first deposit. Do them now, or anytime after your account is live.'
-      :'All optional setup is done &mdash; signing is the only step left.';
+      ?'You have '+n+' optional setup item'+(n>1?'s':'')+' waiting, like the credit application or your first deposit. Do them now or anytime after your account is live.'
+      :'All optional setup is done. Signing is the only step left.';
   }else{
     $('apBiz').textContent=S.f.legalName||'the business';
-    $('apEmail').textContent=S.email;
     renderAgreements();
   }
 }
@@ -4241,15 +4330,15 @@ function renderAgreements(){
   var box=$('agreeList');if(!box)return;
   S.agreements=S.agreements||{};
   box.innerHTML=AGREEMENTS.map(function(a){
-    var ts=S.agreements[a.k];
-    return '<label class="consent" style="margin:0 0 14px"><input type="checkbox" data-agree="'+a.k+'"'+(ts?' checked':'')+'>'+
+    var on=S.agreements[a.k];
+    return '<label class="consent" style="margin:0 0 14px"><input type="checkbox" data-agree="'+a.k+'"'+(on?' checked':'')+'>'+
       '<span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'+
-      '<span>I have read and agree to the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">'+a.t+'&nbsp;&#8599;</a>'+
-      (ts?'<span class="agree-ts">Agreed '+new Date(ts).toLocaleString()+'</span>':'')+'</span></label>';
+      '<span>I have read and agree to the <a href="https://www.bankonloop.com/legal" target="_blank" rel="noopener">'+a.t+'&nbsp;&#8599;</a></span></label>';
   }).join('');
   box.querySelectorAll('[data-agree]').forEach(function(cb){
     cb.addEventListener('change',function(){
-      if(cb.checked)S.agreements[cb.dataset.agree]=Date.now();
+      /* consent is a yes/no on file — no per-signature timestamp is kept */
+      if(cb.checked)S.agreements[cb.dataset.agree]=true;
       else delete S.agreements[cb.dataset.agree];
       persist();renderAgreements();
     });
@@ -4257,11 +4346,11 @@ function renderAgreements(){
   var act=$('btnActivate');
   if(act)act.disabled=AGREEMENTS.some(function(a){return !S.agreements[a.k];});
 }
-/* Settings → Documents: what's been signed, when */
+/* Settings → Documents: what's been signed (consents are kept without timestamps) */
 function openAgreeDocs(){
   var rows=AGREEMENTS.map(function(a){
     var ts=(S.agreements||{})[a.k];
-    return '<div class="rev-row" style="display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div class="rv" style="font-weight:600">'+a.t+'</div><div class="rl">'+(ts?'Signed '+new Date(ts).toLocaleString():'&mdash;')+'</div></div>'+
+    return '<div class="rev-row" style="display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div class="rv" style="font-weight:600">'+a.t+'</div><div class="rl">'+(ts?'Signed':'&mdash;')+'</div></div>'+
       (ts?'<span class="pill green">Signed</span>':'<span class="pill gray">Not signed</span>')+'</div>';
   });
   if(S.setup&&S.setup.credit&&S.setup.credit.agree){
@@ -4315,7 +4404,7 @@ function renderSetup(){
   var d=setupDone();
   var appl=optionalApplicable();
   var applKeys=['deposit','credit','mfa'].filter(function(k){return appl[k];});
-  var doneCount=(d[0]?1:0)+(d[1]?1:0)+(appl.mfa&&d[2]?1:0);
+  var doneCount=(d[0]?1:0)+(appl.credit&&d[1]?1:0)+(appl.mfa&&d[2]?1:0);
   $('setupCount').textContent='';
   var open=S.setup.open;
   var list=$('setupList');list.innerHTML='';
@@ -4375,7 +4464,7 @@ function renderSetup(){
   list.appendChild(el('div','wr-section-sub',S.approved?'All optional — do them now or after your account is live.':'Set these up now so everything is ready the moment you are approved.'));
 
   /* 1 — deposit */
-  var it1=el('div','setup-item',setupHead(0,'Make your first deposit',d[0],d[0]?'Deposit on its way':''));
+  var it1=el('div','setup-item',setupHead(0,'Schedule your first deposit',d[0],d[0]?'Deposit on its way':''));
   if(open===0){
     var b1=el('div','setup-body');
     if(S.setup.depositDone&&!S.setup.depositAnother){
@@ -4392,17 +4481,17 @@ function renderSetup(){
       var DEP_CHECKS={
         'Instant bank connection (Flinks)':[
           'Funds are credited the moment your account opens',
-          'Instant bank account verification &mdash; no statements, no micro-deposits',
+          'Instant bank account verification - no statements, no micro-deposits',
           'Makes you eligible for a Loop credit limit application'
         ],
         'Interac e-Transfer':[
           'Funds are credited the moment your account opens',
-          'Autodeposit is enabled &mdash; the reference matches your transfer instantly',
+          'Autodeposit is enabled - the reference matches your transfer instantly',
           'To be eligible for a Loop credit limit application, use Instant bank connection rather than Interac e-Transfer'
         ],
         'EFT deposit':[
           'Funds are credited the moment your account opens',
-          'Set up directly from your current bank &mdash; pre-authorized debit or direct deposit',
+          'Set up directly from your current bank - pre-authorized debit or direct deposit',
           'To be eligible for a Loop credit limit application, use Instant bank connection rather than EFT'
         ]
       };
@@ -4415,10 +4504,7 @@ function renderSetup(){
           '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount</div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
           '<button class="btn btn-primary btn-sm" id="depDoneBtn">I’ve sent the e-Transfer</button>';
       }else if(m==='Instant bank connection (Flinks)'){
-        body='<p class="desc" style="margin:14px 0">Connect your business account at another bank directly through <strong>Flinks</strong>. Your bank account is verified instantly and we pull your first deposit into Loop the moment your account opens.</p>'+
-          '<div class="q" style="margin:0 0 16px;max-width:240px"><div class="q-label">Amount</div><div class="qfield"><input id="etAmount" inputmode="decimal" placeholder="0.00" value="'+esc(S.setup.etAmount)+'"></div></div>'+
-          '<button class="btn btn-primary btn-sm" id="flinksBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Connect bank with Flinks</button>'+
-          '<p class="fhelp" style="margin-top:10px" id="flinksHint">You’ll sign in to your bank through Flinks’ secure window. (Simulated in this prototype.)</p>';
+        body='<button class="btn btn-primary btn-sm" id="flinksBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Connect bank with Flinks</button>';
       }else{
         body='<p class="desc" style="margin:14px 0">Set up an EFT (pre-authorized debit or direct deposit) from your current bank using these account details:</p>'+
           '<div class="dep-box">'+
@@ -4431,7 +4517,8 @@ function renderSetup(){
       }
       b1.innerHTML=
         (S.setup.depositAnother?'<div class="done-banner" style="margin-bottom:14px"><span>Your first deposit'+(S.setup.depositAnother.a?' of $'+esc(S.setup.depositAnother.a):'')+' via '+esc(S.setup.depositAnother.m)+' is on its way. Pick a method for your next deposit below.</span></div>':'')+
-        '<div class="dep-meth-h">Deposit method &mdash; <strong>'+esc(m)+'</strong>'+(m==='Instant bank connection (Flinks)'?' &middot; Recommended':'')+'</div>'+
+        '<div class="dep-meth-h2">'+esc(m.replace(' (Flinks)',''))+
+          (m==='Instant bank connection (Flinks)'?' <span class="info-tip">?<span class="tipbox">No money moves today. Your deposit is collected once your account opens.</span></span>':'')+'</div>'+
         '<ul class="accepts" style="margin-bottom:16px">'+DEP_CHECKS[m].map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>'+
         body+
         '<div class="or-divider" style="margin:24px 0 16px">OR</div>'+
@@ -4444,67 +4531,57 @@ function renderSetup(){
   }
   list.appendChild(it1);
 
-  /* 2 — credit application (optional while the application is in review) */
+  /* 2 — credit application (only offered when they said they're interested on the
+     Expected usage page; the form itself is its own page — this dropdown just lists
+     the perks and hands off to the flow) */
+  if(appl.credit){
   var cr=S.setup.credit;
-  var it3=el('div','setup-item',setupHead(1,'Apply for a Loop credit limit',d[1],d[1]?'Application in review':(S.f.creditInterest==='Yes'?'You told us you&rsquo;re interested':'')));
+  var it3=el('div','setup-item',setupHead(1,'Apply for a Loop credit limit',d[1],d[1]?'Application in review':''));
   if(open===1){
     var b3=el('div','setup-body');
     if(cr.stage==='done'){
-      b3.innerHTML='<div class="done-banner"><span>Application submitted! We’ve received your credit application and will review it shortly.</span></div>';
+      b3.innerHTML='<div class="done-banner"><span>Application submitted! We’ve received your credit application and will review it shortly. A representative may reach out to you through email.</span></div>';
     }else{
-      /* two steps: a compliance gate (bank connected via Flinks through the deposit task),
-         then a redirect — the credit application itself lives outside this onboarding */
-      var bankReady=S.setup.depositDone&&S.setup.flinksLinked;
-      b3.innerHTML='<p class="desc">Get access to flexible credit for your business with no FX fees, no annual fees, and up to 55 days interest-free.</p>'+
-        '<div class="credit-steps">'+
-          '<div class="cstep'+(bankReady?' done':'')+'"><span class="cn">'+(bankReady?NCHECK:'1')+'</span><div>'+
-            '<div class="ct">Connect your bank account</div>'+
-            '<div class="cd">A compliance requirement before we can open a credit application. Complete the <strong>Make your first deposit</strong> task using <strong>Instant bank connection (Flinks)</strong>.</div>'+
-            (bankReady
-              ?'<div class="cd" style="color:var(--success-700);font-weight:600">RBC Business Chequing &bull;&bull;4521 is connected through Flinks.</div>'
-              :'<button type="button" class="btn btn-secondary btn-sm" id="creditGoDeposit" style="width:auto;margin-top:10px">Go to Make your first deposit</button>')+
-          '</div></div>'+
-          '<div class="cstep"><span class="cn">2</span><div>'+
-            '<div class="ct">Complete the credit application</div>'+
-            '<div class="cd">We&rsquo;ll redirect you to the credit application in your Loop dashboard &mdash; it lives outside this onboarding.</div>'+
-          '</div></div>'+
-        '</div>'+
-        '<button class="btn btn-primary btn-sm" id="creditApplyBtn"'+(bankReady?'':' disabled')+'>Continue to credit application <span>&#8599;</span></button>'+
-        (bankReady?'':'<p class="fhelp" style="margin-top:10px">Connect your bank account first to unlock the application.</p>');
+      /* the application only opens once a bank account is connected via Flinks */
+      var bankReady=!!S.setup.flinksLinked;
+      b3.innerHTML='<ul class="accepts" style="margin:4px 0 18px">'+
+          '<li><span>Spend and repay in CAD, USD, GBP, and EUR - save when you spend globally</span></li>'+
+          '<li><span>Get approved faster based on your revenue with no impact on personal credit</span></li>'+
+          '<li><span>No annual fee, no FX fees, no minimum spend</span></li>'+
+        '</ul>'+
+        '<button class="btn btn-primary btn-sm" id="creditApplyBtn"'+(bankReady?'':' disabled')+'>Start credit application</button>'+
+        (bankReady?'':'<p class="fhelp" style="margin-top:10px">Connect your bank account to unlock the credit application, as per compliance requirements.</p>');
     }
     it3.appendChild(b3);
   }
   list.appendChild(it3);
+  }
 
-  /* 3 — 2FA (only shown if they didn't enable it at sign-up) */
+  /* 3 — 2FA: only the methods NOT set up at sign-up are offered; passkey leads as
+     the default and the rest sit under an OR divider. Each option opens a modal. */
   if(appl.mfa){
   var it4=el('div','setup-item',setupHead(2,'Enable two-factor authentication',d[2],d[2]?'On':''));
   if(open===2){
     var b4=el('div','setup-body');
     var tm=S.setup.tfaMethod||'';
-    var TFA_CODE_ROW='<div class="code-row sm" id="tfaCodeRow"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>';
-    var TFA_BACK='<div style="margin-top:14px"><button class="btn-link" id="tfaBack" style="padding:4px 0;font-size:13.5px;color:var(--gray-500)">Use a different method</button></div>';
     if(S.setup.tfaEnabled){
       var doneTxt=tm==='passkey'?'Two-factor authentication is on. We’ll ask for your passkey each time you sign in.'
         :tm==='auth'?'Two-factor authentication is on. We’ll ask for a code from your authenticator app each time you sign in.'
         :'Two-factor authentication is on. We’ll email a code to <strong>'+esc(S.email)+'</strong> each time you sign in.';
       b4.innerHTML='<div class="done-banner"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>'+doneTxt+'</span></div>';
-    }else if(!tm){
-      b4.innerHTML='<p class="desc">Protect the account before there’s money in it. Choose how you’ll verify each sign-in.</p>'+
-        '<div class="dep-switch">'+
-          [['email','Email'],['passkey','Passkey'],['auth','Authenticator app']].map(function(o){
-            return '<button type="button" class="btn btn-secondary" data-tfam="'+o[0]+'" style="flex:1;width:auto">'+o[1]+'</button>';
-          }).join('')+
-        '</div>';
-    }else if(tm==='passkey'){
-      b4.innerHTML='<p class="desc">Use Face ID, your fingerprint, or a security key to sign in.</p>'+
-        '<button class="btn btn-primary btn-sm" id="tfaPasskey" style="width:auto">Create a passkey</button>'+TFA_BACK;
     }else{
-      b4.innerHTML='<p class="desc">'+(tm==='auth'
-          ?'Enter the 6-digit code your app shows.'
-          :'We emailed a six-digit code to <strong>'+esc(S.email)+'</strong>. Enter it below.')+'</p>'+
-        TFA_CODE_ROW+
-        '<button class="btn btn-primary btn-sm" id="tfaEnable" disabled style="margin-top:12px">Enable 2FA</button>'+TFA_BACK;
+      var avail=tfaAvailable();
+      var TFA_LABELS={email:'Email',authenticator:'Authenticator'};
+      var hasPk=avail.indexOf('passkey')>=0;
+      var rest=avail.filter(function(k){return k!=='passkey';});
+      b4.innerHTML='<p class="desc">We recommend adding at least one authentication method to protect your account</p>'+
+        (hasPk?'<button type="button" class="btn btn-primary btn-sm" data-tfaopen="passkey" style="width:auto">Add a passkey</button>':'')+
+        (rest.length
+          ?(hasPk?'<div class="or-divider" style="margin:20px 0 16px">OR</div>':'')+
+           '<div class="dep-switch">'+rest.map(function(k){
+             return '<button type="button" class="btn btn-secondary" data-tfaopen="'+k+'" style="flex:1;width:auto">'+TFA_LABELS[k]+'</button>';
+           }).join('')+'</div>'
+          :'');
     }
     it4.appendChild(b4);
   }
@@ -4630,40 +4707,203 @@ function renderSetup(){
       },5000);
     };
   });
-  /* credit application: gate on the Flinks bank connection, then redirect out of
-     onboarding — the redirect changes no prototype state */
-  var cab=$('creditApplyBtn');if(cab)cab.onclick=function(){
-    if(this.disabled)return;
-    window.open('https://app.bankonloop.com','_blank','noopener');
-  };
-  var cgd=$('creditGoDeposit');if(cgd)cgd.onclick=function(){
-    S.setup.open=0;persist();renderSetup();
-    var nb=$('setupList').querySelector('.setup-body');
-    if(nb){slideOpenBody(nb);nb.closest('.setup-item').scrollIntoView({behavior:'smooth',block:'center'});}
-  };
-  list.querySelectorAll('[data-tfam]').forEach(function(b){
-    b.onclick=function(){S.setup.tfaMethod=b.dataset.tfam;persist();renderSetup();};
+  /* credit application: opens the flow's own page */
+  var cab=$('creditApplyBtn');if(cab)cab.onclick=function(){if(this.disabled)return;show('credit');window.scrollTo(0,0);};
+  list.querySelectorAll('[data-tfaopen]').forEach(function(b){
+    b.onclick=function(){openTfaModal(b.dataset.tfaopen);};
   });
-  var tbk=$('tfaBack');if(tbk)tbk.onclick=function(){S.setup.tfaMethod='';persist();renderSetup();};
-  var tpk=$('tfaPasskey');if(tpk)tpk.onclick=function(){
-    tpk.disabled=true;
-    tpk.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Waiting for your device…';
-    setTimeout(function(){S.setup.tfaEnabled=true;persist();renderSetup();},1200);
-  };
-  var tcr=$('tfaCodeRow');
-  if(tcr){
-    var cis=Array.prototype.slice.call(tcr.querySelectorAll('input'));
-    cis.forEach(function(inp,i){
-      inp.addEventListener('input',function(){
-        inp.value=inp.value.replace(/\D/g,'').slice(0,1);
-        if(inp.value&&i<5)cis[i+1].focus();
-        $('tfaEnable').disabled=!cis.every(function(c){return c.value;});
-      });
-      inp.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!inp.value&&i>0)cis[i-1].focus();});
-    });
-    cis[0].focus();
+}
+
+/* ============================ 2FA setup modal (waiting room) ============================ */
+/* Each remaining method opens its own modal; verifying (or creating the passkey)
+   enables 2FA and records the method both on the task and on the account. */
+function tfaModalDone(method){
+  S.setup.tfaEnabled=true;
+  S.setup.tfaMethod=method==='authenticator'?'auth':method;
+  S.mfaDone=S.mfaDone||{};S.mfaDone[method]=true;S.mfaEnabled=true;
+  persist();
+  $('tfaOverlay').classList.add('hidden');
+  renderSetup();
+}
+function closeTfaModal(){$('tfaOverlay').classList.add('hidden');}
+function openTfaModal(method){
+  var body=$('tfaModalBody');if(!body)return;
+  var XBTN='<button type="button" class="icobtn" id="tfaModalX" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+  var head='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><h3>Add Two-Factor Authentication</h3>'+XBTN+'</div>';
+  var foot=function(primary){return '<div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px"><button type="button" class="btn btn-secondary btn-sm" id="tfaModalCancel" style="width:auto">Cancel</button>'+primary+'</div>';};
+  var codeBlock='<div class="q" style="margin:18px 0 0"><div class="q-label">Verification Code</div><div class="qfield"><input id="tfaModalCode" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code"></div></div>'+
+    '<div class="sms-status" id="tfaModalStatus" style="margin-top:8px"></div>';
+  if(method==='authenticator'){
+    body.innerHTML=head+
+      '<p class="fhelp" style="margin:6px 0 0">Scan the QR code with your authenticator app and enter the verification code below.</p>'+
+      '<div style="display:flex;justify-content:center;margin:18px 0">'+qrSvg(S.email+'-tfa').replace(/width="\d+" height="\d+"/,'width="190" height="190"')+'</div>'+
+      '<div style="border:1px solid var(--gray-200);border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.6">'+
+        '<div style="font-weight:700">Note</div>'+
+        '<div style="color:var(--gray-600)">If you can&rsquo;t scan the QR code, you can manually enter this code in your authenticator app:</div>'+
+        '<code style="display:block;margin-top:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;word-break:break-all">'+esc(MFA_SECRET)+'</code>'+
+      '</div>'+
+      codeBlock+
+      foot('<button type="button" class="btn btn-primary btn-sm" id="tfaModalGo" disabled style="width:auto">Verify &amp; Enable</button>');
+  }else if(method==='email'){
+    body.innerHTML=head+
+      '<p class="fhelp" style="margin:6px 0 0">We emailed a six-digit code to <strong>'+esc(S.email)+'</strong>. Enter it below.</p>'+
+      codeBlock+
+      foot('<button type="button" class="btn btn-primary btn-sm" id="tfaModalGo" disabled style="width:auto">Verify &amp; Enable</button>');
+  }else{
+    body.innerHTML=head+
+      '<p class="fhelp" style="margin:6px 0 0">Use Face ID, your fingerprint, or a security key to sign in.</p>'+
+      foot('<button type="button" class="btn btn-primary btn-sm" id="tfaModalGo" style="width:auto">Create a passkey</button>');
   }
-  var tfe=$('tfaEnable');if(tfe)tfe.onclick=function(){S.setup.tfaEnabled=true;persist();renderSetup();};
+  $('tfaModalX').onclick=closeTfaModal;
+  $('tfaModalCancel').onclick=closeTfaModal;
+  var code=$('tfaModalCode'),go=$('tfaModalGo');
+  if(code){
+    code.addEventListener('input',function(){
+      code.value=code.value.replace(/\D/g,'').slice(0,6);
+      go.disabled=code.value.length!==6;
+      var st=$('tfaModalStatus');if(st){st.className='sms-status';st.textContent='';}
+    });
+    go.onclick=function(){
+      if(this.disabled)return;
+      var st=$('tfaModalStatus');
+      if(code.value!==DEMO_CODE){
+        st.className='sms-status err';
+        st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> That code isn&rsquo;t right &mdash; check it and enter it again.';
+        return;
+      }
+      tfaModalDone(method);
+    };
+    code.focus();
+  }else{
+    go.onclick=function(){
+      go.disabled=true;
+      go.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Waiting for your device&hellip;';
+      setTimeout(function(){tfaModalDone(method);},1200);
+    };
+  }
+  $('tfaOverlay').classList.remove('hidden');
+}
+
+/* ============================ credit application (own flow off the waiting room) ============================ */
+/* Questions and options mirror the production CreditApplicationForm
+   (pages-credit-creditapplicationform in Loop's Storybook). Answers persist in
+   S.setup.credit; submitting flips stage to 'done', which also marks the
+   waiting-room task complete. */
+/* white Loop wordmark (icon cropped out) for the card graphic on the submitted screen */
+var LOGO_WORDMARK_WHITE='data:image/png;base64,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';
+var CREDIT_REV_SOURCES=['B2B (One-Time Purchases)','B2B (Recurring & Contracted)','B2B (Recurring, Not Contracted)','B2C (One-Time Purchases)','B2C (Subscriptions)'];
+var CREDIT_PAY_FREQ=['12 Months (Always)','9-12 Months','3-9 Months','0-3 Months'];
+function renderCredit(){
+  var body=$('creditBody');if(!body)return;
+  /* only reachable when they expressed interest on Expected usage AND connected
+     their bank via Flinks (unless the application is already submitted) */
+  if(S.f.creditInterest!=='Yes'||(S.setup.credit.stage!=='done'&&!S.setup.flinksLinked)){show('setup');return;}
+  var cr=S.setup.credit;
+  if(cr.stage==='done'){renderCreditDone(body,cr);return;}
+  function crMoney(id,label,help,ph,val){
+    return '<div class="q cr-money" id="q-'+id+'"><div class="q-label">'+label+'</div><div class="qfield"><span class="curpfx">$</span><input id="'+id+'" inputmode="decimal" placeholder="'+ph+'" value="'+esc(val)+'"></div></div>'+
+      '<p class="fhelp">'+help+'</p>';
+  }
+  function crSelect(id,label,help,placeholder,opts,val){
+    return '<div class="q" id="q-'+id+'"><div class="q-label">'+label+'</div><div class="qfield"><select id="'+id+'"><option value="">'+esc(placeholder)+'</option>'+
+      opts.map(function(o){return '<option value="'+esc(o)+'"'+(val===o?' selected':'')+'>'+esc(o)+'</option>';}).join('')+
+      '</select><span class="chev">&#9662;</span></div></div>'+
+      '<p class="fhelp">'+help+'</p>';
+  }
+  body.innerHTML='<div class="setup-main credit-form" style="max-width:560px">'+
+    '<h1 class="page-h">Apply for Credit</h1>'+
+    '<p class="page-sub">Tell us about your business to get approved for up to $1M in credit</p>'+
+    '<div class="credit-sec-h" style="margin-top:34px">Business Revenue</div>'+
+    crMoney('cr-revenue','Total Annual Business Revenue','Your total revenue over the last 12 months','e.g. 100000.00',cr.revenue)+
+    '<div class="q cr-pct" id="q-cr-margin" style="max-width:240px"><div class="q-label">Average Gross Profit Margin</div><div class="qfield"><input id="cr-margin" inputmode="numeric" placeholder="e.g. 35" maxlength="3" value="'+esc(cr.margin)+'"><span class="pctsfx">%</span></div></div>'+
+    '<p class="fhelp">Revenue minus cost of goods sold, as a percentage</p>'+
+    '<div class="chips-wrap" id="crProfitWrap" style="margin:0 0 8px"><div class="chips-label" style="font-size:14.5px">Is your business currently profitable?</div><div class="chips">'+
+      ['Yes','No'].map(function(o){var on=cr.profitable===o;return '<label class="chip'+(on?' on':'')+'"><input type="radio" name="crprofit"'+(on?' checked':'')+' data-crprofit="'+o+'"><span>'+o+'</span></label>';}).join('')+
+    '</div></div>'+
+    '<div class="credit-sec-h">Debt &amp; Payments</div>'+
+    crMoney('cr-debt','Current Total Debt Outstanding','Total business debt including loans, credit lines, etc.','e.g. 25000.00',cr.debt)+
+    crMoney('cr-debtPay','Average Monthly Debt Payments','Average amount you pay toward debt each month','e.g. 2500.00',cr.debtPay)+
+    '<div class="credit-sec-h">Revenue &amp; Payment Patterns</div>'+
+    crSelect('cr-revSource','Primary Source of Revenue','Choose the option that best describes your main revenue stream','Select your primary revenue source',CREDIT_REV_SOURCES,cr.revSource)+
+    crSelect('cr-payFreq','How often do you pay your credit card balance in full?','Based on the last 12 months','Select frequency',CREDIT_PAY_FREQ,cr.payFreq)+
+    '<button class="btn btn-primary" id="creditSubmitBtn" style="margin-top:26px;width:auto">Submit Application</button>'+
+  '</div>';
+  /* persist per keystroke so nothing is lost leaving and returning */
+  [['cr-revenue','revenue'],['cr-margin','margin'],['cr-debt','debt'],['cr-debtPay','debtPay']].forEach(function(pair){
+    var inp=$(pair[0]);if(!inp)return;
+    inp.addEventListener('input',function(){
+      if(pair[0]==='cr-margin')inp.value=inp.value.replace(/\D/g,'').slice(0,3);
+      else inp.value=inp.value.replace(/[^0-9.,]/g,'');
+      S.setup.credit[pair[1]]=inp.value;persist();
+      if(inp.value)inp.closest('.q').classList.remove('invalid');
+    });
+  });
+  [['cr-revSource','revSource'],['cr-payFreq','payFreq']].forEach(function(pair){
+    var sel=$(pair[0]);if(!sel)return;
+    sel.addEventListener('change',function(){
+      S.setup.credit[pair[1]]=sel.value;persist();
+      if(sel.value)sel.closest('.q').classList.remove('invalid');
+    });
+  });
+  body.querySelectorAll('input[data-crprofit]').forEach(function(r){
+    r.addEventListener('change',function(){
+      S.setup.credit.profitable=r.dataset.crprofit;persist();
+      $('crProfitWrap').querySelectorAll('.chip').forEach(function(c){
+        c.classList.toggle('on',c.querySelector('input').dataset.crprofit===r.dataset.crprofit);
+      });
+      $('crProfitWrap').classList.remove('invalid');
+    });
+  });
+  $('creditSubmitBtn').onclick=function(){
+    var c=S.setup.credit,ok=true,firstBad=null;
+    [['cr-revenue','revenue'],['cr-margin','margin'],['cr-debt','debt'],['cr-debtPay','debtPay'],['cr-revSource','revSource'],['cr-payFreq','payFreq']].forEach(function(pair){
+      var bad=!c[pair[1]];
+      var q=$('q-'+pair[0]);
+      q.classList.toggle('invalid',bad);
+      if(bad){ok=false;firstBad=firstBad||q;}
+    });
+    var pBad=!c.profitable;
+    $('crProfitWrap').classList.toggle('invalid',pBad);
+    if(pBad){ok=false;firstBad=firstBad||$('crProfitWrap');}
+    if(!ok){if(firstBad)firstBad.scrollIntoView({behavior:'smooth',block:'center'});return;}
+    c.stage='done';persist();
+    window.scrollTo(0,0);
+    renderCredit();
+  };
+}
+/* submitted: green check + confirmation, then the get-approved-faster card
+   (sales-channel connect) and a way back to the waiting room */
+function renderCreditDone(body,cr){
+  body.innerHTML='<div class="credit-done">'+
+    '<div class="cd-check"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'+
+    '<h1 class="page-h">Application Submitted!</h1>'+
+    '<p class="page-sub" style="margin-top:8px">We&rsquo;ve received your credit application and will review it shortly.</p>'+
+    '<div class="cd-card">'+
+      '<div class="cd-visual"><div class="cd-art">'+
+        '<div class="cd-cc"><div class="cd-cc-top"><span class="cd-cc-logo"><img src="'+LOGO_WORDMARK_WHITE+'" alt="Loop"></span><span class="cd-cc-badge">Virtual</span></div>'+
+        '<div class="cd-cc-bot"><div><div class="cd-cc-l">Credit Limit</div><div class="cd-cc-v">$0</div></div><span class="cd-cc-visa">VISA</span></div></div>'+
+        '<div class="cd-stem"></div>'+
+        '<div class="cd-tiles">'+'<div class="cd-tile"><div class="tb"></div><div class="tl"></div></div>'.repeat(3)+'</div>'+
+      '</div></div>'+
+      '<div class="cd-boost">'+
+        '<h4>Get approved faster</h4>'+
+        '<p>Connect a sales channel to verify your revenue. This helps us approve your credit limit quickly&mdash;the more revenue sources you connect, the higher your potential limit.</p>'+
+        (cr.salesChannel
+          ?'<div class="done-banner" style="margin:0"><span>PayPal is connected. We&rsquo;ll use it to verify your revenue.</span></div>'
+          :'<button class="btn btn-primary" id="creditChannelBtn" style="width:auto">Connect Sales Channel</button>')+
+      '</div>'+
+    '</div>'+
+    '<button class="btn btn-secondary" id="creditDoneReturn" style="width:auto;margin-top:30px">Return to waiting room</button>'+
+  '</div>';
+  var ccb=$('creditChannelBtn');if(ccb)ccb.onclick=function(){
+    ccb.disabled=true;
+    ccb.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Connecting&hellip;';
+    setTimeout(function(){
+      S.setup.credit.salesChannel=true;persist();
+      if(S.view==='credit')renderCredit();
+    },1200);
+  };
+  $('creditDoneReturn').onclick=function(){show('setup');window.scrollTo(0,0);};
 }
 
 /* ============================ live ============================ */
@@ -4677,7 +4917,7 @@ function renderLive(){
     :'<div class="live-row">'+ic+'<span>Make your first deposit from the dashboard to start transacting</span></div>';
   if(S.setup.credit.stage==='done')rows+='<div class="live-row">'+ic+'<span>Your credit limit application is in review'+(S.setup.credit.salesChannel?' · PayPal connected to verify revenue':'')+'</span></div>';
   rows+='<div class="live-row">'+ic+'<span>Invite teammates to your dashboard anytime from Settings &rarr; Team</span></div>';
-  rows+='<div class="live-row">'+ic+'<span>Two-factor authentication is '+(S.setup.tfaEnabled?'on':'off, you can enable it in security settings')+'</span></div>';
+  rows+='<div class="live-row">'+ic+'<span>Two-factor authentication is '+((S.setup.tfaEnabled||S.mfaEnabled)?'on':'off, you can enable it in security settings')+'</span></div>';
   $('liveRows').innerHTML=rows;
 }
 
@@ -4850,11 +5090,121 @@ function verifySmsCode(){
   },1000);
 }
 
-/* ============================ sign-in (no MFA step: password goes straight in) ============================ */
+/* ============================ sign-in verification (MFA challenge after password) ============================ */
+/* After a correct email + password, the user completes sign-in with one of the MFA
+   methods enabled on their account — the chooser lists exactly those. SMS codes are
+   temporarily not offered at sign-in, so the verified phone is never among the
+   options. The demo account has all three remaining methods enabled: passkey,
+   authenticator app, and email. The demo code verifies, same as everywhere else. */
 /* wrong-password tracking: five consecutive misses prompt a reset */
 var siFailCount=0,SI_FAIL_LIMIT=5;
 /* demo: emails already tied to a group business account — sign-up redirects to sign in */
 var EXISTING_ACCOUNT_EMAILS=['rebecca@mapleandcrumb.ca'];
+var si2faMethods=[],si2faMethod='',si2faEmail='',si2faDest=null;
+var si2faTimer=null,si2faLeft=0,si2faVerifying=false,si2faVerified=false;
+function stopSi2faTimer(){if(si2faTimer){clearInterval(si2faTimer);si2faTimer=null;}}
+function setSi2faResend(label,disabled){var b=$('si2faResendBtn');if(!b)return;b.textContent=label;b.disabled=disabled;}
+function tickSi2fa(){var b=$('si2faResendBtn');if(!b){stopSi2faTimer();return;}si2faLeft--;if(si2faLeft>0)setSi2faResend('Resend in '+fmtLeft(si2faLeft),true);else{setSi2faResend('Resend code',false);stopSi2faTimer();}}
+function startSi2faCountdown(){stopSi2faTimer();si2faLeft=SMS_WAIT;setSi2faResend('Resend in '+fmtLeft(si2faLeft),true);si2faTimer=setInterval(tickSi2fa,1000);}
+var SI2FA_META={
+  passkey:{label:'Use my passkey',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>'},
+  authenticator:{label:'Use my authenticator app',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3"/><path d="M21 14v7h-7"/></svg>'},
+  email:{label:'Email me a code',icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'}
+};
+function renderSi2fa(){
+  var body=$('si2faBody');if(!body)return;
+  if(!si2faMethods.length){show('auth');return;}/* e.g. reload mid-challenge: back to sign-in */
+  stopSi2faTimer();si2faVerifying=false;si2faVerified=false;
+  var CHEV='<svg class="mfa-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+  var codeRow='<div class="code-row sm" id="si2faCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>';
+  var resendRow='<div class="sms-resend"><span>Didn&rsquo;t get a code?</span> <button type="button" id="si2faResendBtn" disabled>Resend code</button></div>';
+  var head='<button type="button" class="back-link back-top" id="si2faBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>'+
+    '<h1>Verify it&rsquo;s you</h1>';
+  function mCard(m){var mt=SI2FA_META[m];return '<div class="mfa-card mfa-card-sm" data-si2fa="'+m+'"><span class="mic">'+mt.icon+'</span><div class="mt">'+mt.label+'</div>'+CHEV+'</div>';}
+  /* no method picked yet: the chooser lists every method enabled on the account */
+  if(!si2faMethod){
+    body.innerHTML=head+
+      '<p class="auth-sub">Choose how you&rsquo;d like to verify your identity to finish signing in.</p>'+
+      si2faMethods.map(mCard).join('')+
+      '<p class="auth-foot" style="text-align:left;margin-top:18px">Text message (SMS) verification is temporarily unavailable.</p>';
+    $('si2faBack').onclick=function(){
+      show('auth');
+      $('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');syncAuthButtons();
+    };
+    body.querySelectorAll('[data-si2fa]').forEach(function(card){
+      card.onclick=function(){si2faMethod=card.dataset.si2fa;renderSi2fa();};
+    });
+    return;
+  }
+  var mid;
+  if(si2faMethod==='email'){
+    mid='<p class="auth-sub">We emailed a 6-digit code to <strong>'+esc(si2faEmail)+'</strong>. Enter it below.</p>'+
+      codeRow+resendRow+'<div class="sms-status" id="si2faStatus"></div>'+
+      '<button class="btn btn-primary" id="si2faGo" disabled style="margin-top:14px">Continue</button>';
+  }else if(si2faMethod==='authenticator'){
+    mid='<p class="auth-sub">Enter the 6-digit code from your authenticator app.</p>'+
+      codeRow+'<div class="sms-status" id="si2faStatus"></div>'+
+      '<button class="btn btn-primary" id="si2faGo" disabled style="margin-top:14px">Continue</button>';
+  }else{
+    mid='<p class="auth-sub">Use Face ID, your fingerprint, or a security key to sign in.</p>'+
+      '<button class="btn btn-primary" id="si2faPasskey">Continue with passkey</button>'+
+      '<div class="sms-status" id="si2faStatus"></div>';
+  }
+  var others=si2faMethods.filter(function(m){return m!==si2faMethod;});
+  var alt=others.length
+    ?'<div class="or-divider or-auth">OR</div><p class="auth-sub" style="margin-bottom:10px">Verify another way</p>'+others.map(mCard).join('')
+    :'';
+  body.innerHTML=head+mid+alt;
+  /* back returns to the method chooser */
+  $('si2faBack').onclick=function(){stopSi2faTimer();si2faMethod='';renderSi2fa();};
+  body.querySelectorAll('[data-si2fa]').forEach(function(card){
+    card.onclick=function(){si2faMethod=card.dataset.si2fa;renderSi2fa();};
+  });
+  if(si2faMethod==='passkey'){
+    $('si2faPasskey').onclick=function(){
+      var b=this;b.disabled=true;b.innerHTML='<span class="spinner" style="width:15px;height:15px;border-width:2px"></span> Waiting for your device&hellip;';
+      setTimeout(function(){if(S.view==='si2fa'&&si2faMethod==='passkey')si2faFinish();},1400);
+    };
+    return;
+  }
+  wireCodeRow($('si2faCode'),function(ok){if(si2faVerifying||si2faVerified)return;clearCodeError('si2faCode','si2faStatus');if(ok)verifySi2faCode();});
+  $('si2faGo').onclick=function(){if(!this.disabled&&si2faVerified)si2faFinish();};
+  var rs=$('si2faResendBtn');
+  if(rs){
+    rs.onclick=function(){
+      if(this.disabled)return;
+      $('si2faCode').classList.remove('err');
+      $('si2faCode').querySelectorAll('input').forEach(function(i){i.value='';i.disabled=false;});
+      $('si2faCode').querySelector('input').focus();
+      $('si2faGo').disabled=true;
+      var st=$('si2faStatus');st.className='sms-status ok';st.textContent='A new code is on its way.';
+      si2faVerifying=false;si2faVerified=false;
+      startSi2faCountdown();
+    };
+    startSi2faCountdown();
+  }
+}
+function verifySi2faCode(){
+  var code=readCode('si2faCode');
+  si2faVerifying=true;
+  var b=$('si2faGo');if(b)b.disabled=true;
+  $('si2faCode').querySelectorAll('input').forEach(function(i){i.disabled=true;});
+  var st=$('si2faStatus');st.className='sms-status';st.innerHTML='<span class="spinner"></span> Verifying&hellip;';
+  setTimeout(function(){
+    if(!si2faVerifying||$('si2faStatus')!==st)return;/* method switch or back cancelled this check */
+    si2faVerifying=false;
+    if(code!==DEMO_CODE){codeError('si2faCode',st);if(b)b.disabled=true;return;}
+    si2faVerified=true;
+    st.className='sms-status ok';
+    st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verified';
+    if(b)b.disabled=false;
+  },1000);
+}
+function si2faFinish(){
+  stopSi2faTimer();
+  var d=si2faDest;si2faDest=null;si2faMethod='';
+  if(d)d();else show('auth');
+}
 
 /* ============================ MFA setup (optional, after sign-up) ============================ */
 var mfaSent=false;
@@ -4881,7 +5231,7 @@ var MFA_SECRET='LOOP K4F2 9XQ7 ZM3T';
 function mfaFinish(){stopMfaTimer();S.verified=true;S.page='who';save();show('app');}
 var mfaVerifying=false,mfaVerified=false;
 function backLink(){return '<button type="button" class="back-link back-top" id="mfaBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>';}
-function wireMfaBack(){var b=$('mfaBack');if(b)b.onclick=function(){stopMfaTimer();S.mfaMethod='';mfaSent=false;mfaVerifying=false;mfaVerified=false;persist();renderMfa();};}
+function wireMfaBack(){['mfaBack','mfaCancel'].forEach(function(id){var b=$(id);if(b)b.onclick=function(){stopMfaTimer();S.mfaMethod='';mfaSent=false;mfaVerifying=false;mfaVerified=false;persist();renderMfa();};});}
 /* router: the chooser and each method now live on their own page within view-mfa */
 function renderMfa(){
   var body=$('mfaBody');if(!body)return;
@@ -4925,6 +5275,7 @@ function renderMfaPasskey(body){
   body.innerHTML=backLink()+'<h1>Set up a passkey</h1>'+
     '<p class="auth-sub">Use Face ID, your fingerprint, or a security key to sign in.</p>'+
     '<button class="btn btn-primary" id="mfaPasskey">Create a passkey</button>'+
+    '<button class="btn btn-secondary" id="mfaCancel" style="margin-top:10px">Cancel</button>'+
     '<div class="sms-status" id="mfaStatus"></div>';
   $('mfaPasskey').onclick=function(){
     var b=$('mfaPasskey');b.disabled=true;b.innerHTML='<span class="spinner" style="width:15px;height:15px;border-width:2px"></span> Waiting for your device&hellip;';
@@ -4950,6 +5301,7 @@ function renderMfaAuth(body){
       '<div class="code-row sm" id="mfaCode"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"></div>'+
       '<div class="sms-status" id="mfaStatus"></div>'+
       '<button class="btn btn-primary" id="mfaVerify" disabled>Verify and enable</button>'+
+      '<button class="btn btn-secondary" id="mfaCancel">Cancel</button>'+
     '</div>';
   /* 6-box code entry (same format as phone verification); auto-checks on the 6th digit, Verify unlocks once it passes */
   wireCodeRow($('mfaCode'),function(ok){if(mfaVerifying||mfaVerified)return;clearCodeError('mfaCode','mfaStatus');if(ok)verifyMfaCode();});
@@ -4966,6 +5318,7 @@ function renderMfaEmail(body){
       '<div class="sms-resend" style="margin:4px 0 0"><span>Didn&rsquo;t get the code?</span> <button type="button" id="mfaResendBtn" disabled>Resend code</button></div>'+
       '<div class="sms-status" id="mfaStatus" style="margin-top:0"></div>'+
       '<button class="btn btn-primary" id="mfaVerify" disabled>Verify and enable</button>'+
+      '<button class="btn btn-secondary" id="mfaCancel">Cancel</button>'+
     '</div>';
   wireCodeRow($('mfaCode'),function(ok){if(mfaVerifying||mfaVerified)return;clearCodeError('mfaCode','mfaStatus');if(ok)verifyMfaCode();});
   $('mfaVerify').onclick=function(){if(!this.disabled&&mfaVerified)mfaMethodDone();};
@@ -5094,7 +5447,16 @@ function applyRegistryPrefill(r){
   S.bizGaps=missingPage('business').slice();
   hydrateFields();save();
 }
-var whoRec=null,whoMode='name';/* runtime only — the record being confirmed + name/upload mode */
+var whoRec=null,whoMode='name',whoTyped='';/* runtime only — the record being confirmed + the search text captured when the user can't find their business */
+/* "I can't find my business": whatever they typed is real data, not a failed query —
+   digits land in the application's tax-ID field, anything else in legal business name */
+function applyWhoTyped(){
+  if(!whoTyped)return;
+  var digits=whoTyped.replace(/[\s-]/g,'');
+  if(/^\d{3,}$/.test(digits))S.f.taxId=digits;
+  else S.f.legalName=whoTyped;
+  hydrateFields();save();
+}
 function renderWho(){renderWhoSearch();}
 function whoBack(){return '<button type="button" class="back-link back-top" id="whoBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back to search</button>';}
 /* one screen: the name type-ahead is primary; below a divider the user can flip the
@@ -5121,13 +5483,14 @@ function renderWhoSearch(){
       '<button class="btn btn-primary" id="whoConfirm" style="margin-top:10px" disabled>This is my business</button>';
   }
   body.innerHTML='<h1 class="page-h">Find your business</h1>'+
-    '<p class="page-sub">Find your business and we&rsquo;ll autofill your application.</p>'+
+    '<p class="page-sub">We use business registry information to autofill parts of your application.</p>'+
     '<div class="fgrid" style="margin-top:34px">'+mid+'</div>'+
     '<div class="fgrid" style="margin-top:26px">'+
       '<button type="button" class="btn-link who-skip" id="whoSkip">Skip this step and enter my details manually</button>'+
     '</div>';
-  /* manual entry passes through the two eligibility questions before the website step */
-  $('whoSkip').onclick=function(){whoRec=null;eligIndustry='';eligQcsp='';renderWhoEligibility(0);};
+  /* skipping the lookup goes straight to the website question; the two eligibility
+     questions follow it on the manual path */
+  $('whoSkip').onclick=function(){whoRec=null;eligIndustry='';eligQcsp='';renderWhoWebsite();};
   var cf=$('whoConfirm');
   if(cf)cf.onclick=function(){
     if(this.disabled||!whoRec)return;
@@ -5154,14 +5517,16 @@ function renderWhoSearch(){
   q.addEventListener('input',function(){q.closest('.field').classList.toggle('filled',!!q.value);paint();});
   q.addEventListener('focus',paint);
   document.addEventListener('click',function(e){if(!e.target.closest('.who-field')){menu.classList.add('hidden');}});
-  $('whoNF').onclick=function(){renderWhoNotFound();};
+  $('whoNF').onclick=function(){whoTyped=q.value.trim();renderWhoNotFound();};
   q.focus();
 }
-/* the registry could not confirm the business: upload a document to autofill instead */
+/* the registry could not confirm the business: the typed name or tax ID carries into
+   the application fields, and a document can be uploaded to help verification —
+   documents no longer autofill anything */
 function renderWhoNotFound(){
   var body=$('whoBody');if(!body)return;
-  body.innerHTML=whoBack()+'<h1 class="page-h">Upload documents to autofill</h1>'+
-    '<p class="page-sub">We were unable to confirm your business from the registry search. However, you can upload a recent business document that we can use to autofill parts of your application.</p>'+
+  body.innerHTML=whoBack()+'<h1 class="page-h">Upload a business document</h1>'+
+    '<p class="page-sub">We were unable to confirm your business from the registry search. The business name or tax ID you entered will be saved to your application, and you can upload a recent business document to help us verify your details.</p>'+
     '<div class="fgrid" style="margin-top:34px">'+
       '<label class="upload sm" id="whoDocUpload"><input type="file" id="whoDocInput" accept=".pdf,.png,.jpg,.jpeg" hidden>'+
         '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#697586" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+
@@ -5180,21 +5545,10 @@ function renderWhoNotFound(){
     st.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> '+esc(picked)+' ready';
     $('whoDocGo').disabled=false;
   });
-  $('whoDocGo').onclick=function(){if(this.disabled||!picked)return;this.disabled=true;runWhoDocExtract(picked);};
-  /* manual entry passes through the two eligibility questions before the website step */
-  $('whoManual').onclick=function(e){e.preventDefault();whoRec=null;eligIndustry='';eligQcsp='';renderWhoEligibility(0);};
-}
-/* a document doesn't search the registry — it IS the source: read it, then show the
-   extracted record on the confirmation card for the user to accept */
-function runWhoDocExtract(name){
-  var st=$('whoStatus');
-  var up=$('whoDocUpload');if(up)up.style.pointerEvents='none';
-  if(st){st.className='sms-status';st.innerHTML='<span class="spinner"></span> Reading '+esc(name)+' and extracting your details&hellip;';}
-  setTimeout(function(){
-    var r={};for(var k in REGISTRY[0])r[k]=REGISTRY[0][k];
-    whoRec=r;whoMode='name';
-    renderWhoSearch();
-  },1600);
+  /* either exit saves the typed input and continues to the website question; the
+     eligibility questions follow it on the manual path */
+  $('whoDocGo').onclick=function(){if(this.disabled||!picked)return;whoRec=null;eligIndustry='';eligQcsp='';applyWhoTyped();renderWhoWebsite();};
+  $('whoManual').onclick=function(e){e.preventDefault();whoRec=null;eligIndustry='';eligQcsp='';applyWhoTyped();renderWhoWebsite();};
 }
 /* short registry pull once the business is confirmed, then ask for the website
    manually. (The registry can't provide emails or reliable websites, so nothing
@@ -5227,8 +5581,8 @@ function renderWhoPull(){
 /* ============================ eligibility gate ============================ */
 /* Loop can't yet serve Quebec sole proprietorships or restricted industries
    (cannabis, gambling, crypto). A confirmed registry record is checked directly;
-   the manual path asks two up-front questions instead. Either way, an ineligible
-   business lands on the soft-decline screen and the flow ends there. */
+   the manual path asks two questions after the website step instead. Either way,
+   an ineligible business lands on the soft-decline screen and the flow ends there. */
 var RESTRICTED_INDUSTRIES=['Cannabis','Gambling or casinos','Cryptocurrency or digital assets'];
 function recIneligibleReason(r){
   if(!r)return '';
@@ -5252,7 +5606,7 @@ function wireEligOpts(body,current,set){
 function renderWhoEligibility(step){
   var body=$('whoBody');if(!body)return;
   if(step===0){
-    body.innerHTML=eligBackBtn('Back to search')+
+    body.innerHTML=eligBackBtn('Back')+
       '<h1 class="page-h">What industry does your business operate in?</h1>'+
       '<div class="fgrid" style="margin-top:34px;max-width:560px">'+
         RESTRICTED_INDUSTRIES.map(function(l){return eligOpt(l,l);}).join('')+
@@ -5260,7 +5614,7 @@ function renderWhoEligibility(step){
         '<button class="btn btn-primary" id="eligGo" disabled style="margin-top:16px">Continue</button>'+
       '</div>';
     wireEligOpts(body,eligIndustry,function(v){eligIndustry=v;});
-    $('eligBack').onclick=function(){renderWhoSearch();};
+    $('eligBack').onclick=function(){renderWhoWebsite();};
     $('eligGo').onclick=function(){
       if(this.disabled)return;
       if(eligIndustry!=='none')renderWhoDeclined('industry');
@@ -5279,7 +5633,7 @@ function renderWhoEligibility(step){
     $('eligGo').onclick=function(){
       if(this.disabled)return;
       if(eligQcsp==='yes')renderWhoDeclined('qcsp');
-      else renderWhoWebsite();
+      else showPage('welcome');
     };
   }
 }
@@ -5305,14 +5659,15 @@ function renderWhoWebsite(){
     '</div>'+
     '<p class="who-foot"><a href="#" id="whoWebSkip">Skip, we don&rsquo;t have a business website</a></p>';
   var inp=$('whoWebInput'),btn=$('whoWebGo');
-  var pre=(whoRec&&whoRec.website)||'';
+  var pre=whoRec?(whoRec.website||''):(S.f.website||'');
   if(pre){inp.value=pre;inp.closest('.field').classList.add('filled');btn.disabled=false;}
   inp.addEventListener('input',function(){inp.closest('.field').classList.toggle('filled',!!inp.value);btn.disabled=!inp.value.trim();});
   /* with a confirmed record the website rides into the registry prefill; on the
-     manual path it lands straight in the application's website field */
+     manual path it lands in the application's website field and the two
+     eligibility questions follow */
   function done(v){
     if(whoRec){whoRec.website=v;whoFinish();}
-    else{S.f.website=v;hydrateFields();save();showPage('welcome');}
+    else{S.f.website=v;hydrateFields();save();renderWhoEligibility(0);}
   }
   btn.onclick=function(){if(this.disabled)return;done(inp.value.trim());};
   $('whoWebSkip').onclick=function(e){e.preventDefault();done('');};
@@ -5445,6 +5800,55 @@ function renderCollabList(){
       '<button class="icobtn" data-collabdel aria-label="Remove collaborator"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>');
     row.querySelector('[data-collabdel]').onclick=function(){removeCollaborator(c.id);};
     box.appendChild(row);
+  });
+  syncCollabPresence();
+}
+
+/* ---- presence avatars (welcome page) ---- */
+/* A collaborator is "on the document" while they still hold a page to fill. Their
+   initials avatar joins the row; when they return their pages, sign out, or are
+   removed, the avatar fades out and the row closes up to the left. Avatars are
+   synced in place (not re-rendered) so the fade-out can play. */
+var CP_COLORS=['#045b3f','#087443','#17B26A','#475467'];/* brand greens + a neutral — no off-brand accents */
+function collabOnline(c){return Object.keys(c.pages||{}).some(function(p){return c.pages[p]==='waiting';});}
+/* full name: the legal name they entered on their side, else derived from the email */
+function collabFullName(c){
+  if(c.fullName)return c.fullName;
+  return cofillName(c.email).split(/\s+/).map(function(w){return w?w.charAt(0).toUpperCase()+w.slice(1):w;}).join(' ');
+}
+function collabInitials(c){
+  var parts=collabFullName(c).split(/\s+/).filter(Boolean);
+  return (((parts[0]||'').charAt(0))+(parts[1]?parts[1].charAt(0):'')).toUpperCase()||'?';
+}
+function syncCollabPresence(){
+  syncPresenceBox($('collabPresence'));/* welcome page block */
+  syncPresenceBox($('collabPresenceSide'));/* floating assign pill, all app pages */
+}
+function syncPresenceBox(box){
+  if(!box)return;
+  var byId={};
+  (S.collaborators||[]).forEach(function(c){if(collabOnline(c))byId[c.id]=c;});
+  Array.prototype.slice.call(box.querySelectorAll('.cp-pav')).forEach(function(av){
+    var c=byId[av.dataset.cid];
+    if(c){
+      /* keep in place, but refresh the name in case they've entered their legal name */
+      av.dataset.name=collabFullName(c);av.textContent=collabInitials(c);
+      delete byId[av.dataset.cid];av.classList.remove('leaving');return;
+    }
+    if(av.classList.contains('leaving'))return;
+    av.classList.add('leaving');
+    setTimeout(function(){if(av.parentNode)av.parentNode.removeChild(av);},850);
+  });
+  Object.keys(byId).forEach(function(id){
+    var c=byId[id];
+    var av=document.createElement('span');
+    av.className='cp-pav';
+    av.dataset.cid=id;
+    av.dataset.name=collabFullName(c);
+    av.textContent=collabInitials(c);
+    var h=0,s=String(c.email||'');for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;
+    av.style.background=CP_COLORS[h%CP_COLORS.length];
+    box.appendChild(av);
   });
 }
 
@@ -5614,6 +6018,8 @@ var FR={
   'That code isn’t right — check it and enter it again.':'Ce code n’est pas valide — vérifiez-le et entrez-le de nouveau.',
   /* sign-in verification */
   'Verify it’s you':'Vérifiez votre identité',
+  'Choose how you’d like to verify your identity to finish signing in.':'Choisissez comment vous souhaitez vérifier votre identité pour terminer l’ouverture de session.',
+  'Text message (SMS) verification is temporarily unavailable.':'La vérification par texto (SMS) est temporairement indisponible.',
   '. Enter it below.':'. Entrez-le ci-dessous.',
   'We emailed a 6-digit code to':'Nous avons envoyé un code à 6 chiffres par courriel à',
   'Enter the 6-digit code from your authenticator app.':'Entrez le code à 6 chiffres de votre application d’authentification.',
@@ -5683,7 +6089,7 @@ var FR_APP={
   'Getting started':'Pour commencer',
   /* find your business */
   'Find your business':'Trouvez votre entreprise',
-  'Find your business and we’ll autofill your application.':'Trouvez votre entreprise et nous remplirons automatiquement votre demande.',
+  'We use business registry information to autofill parts of your application.':'Nous utilisons les renseignements du registre des entreprises pour remplir automatiquement des parties de votre demande.',
   'Legal business name or Tax ID':'Dénomination sociale ou numéro d’entreprise',
   'I can’t find my business':'Je ne trouve pas mon entreprise',
   'This is my business':'C’est mon entreprise',
@@ -5694,8 +6100,7 @@ var FR_APP={
   'Registered office':'Siège social',
   'Industry':'Secteur d’activité',
   'Back to search':'Retour à la recherche',
-  'Upload documents to autofill':'Téléversez des documents pour le remplissage automatique',
-  'We were unable to confirm your business from the registry search. However, you can upload a recent business document that we can use to autofill parts of your application.':'Nous n’avons pas pu confirmer votre entreprise à partir de la recherche au registre. Vous pouvez toutefois téléverser un document d’entreprise récent que nous utiliserons pour remplir automatiquement des parties de votre demande.',
+  'We were unable to confirm your business from the registry search. The business name or tax ID you entered will be saved to your application, and you can upload a recent business document to help us verify your details.':'Nous n’avons pas pu confirmer votre entreprise à partir de la recherche au registre. La dénomination sociale ou le numéro d’entreprise que vous avez saisi sera enregistré dans votre demande, et vous pouvez téléverser un document d’entreprise récent pour nous aider à vérifier vos renseignements.',
   'Upload a business document':'Téléverser un document d’entreprise',
   'Certificate or articles of incorporation, registration, or a recent invoice':'Certificat ou statuts constitutifs, immatriculation ou facture récente',
   'Proceed and enter your details manually':'Continuer et entrer mes renseignements manuellement',
@@ -5717,23 +6122,18 @@ var FR_APP={
   /* welcome */
   'Let\'s open your account':'Ouvrons votre compte',
   'Most businesses finish in about 15 minutes, and our team reviews every application before the account opens.':'La plupart des entreprises terminent en environ 15 minutes, et notre équipe examine chaque demande avant l’ouverture du compte.',
-  'Who the business is, what it does, and where it operates.':'Qui est l’entreprise, ce qu’elle fait et où elle exerce ses activités.',
-  'Directors, owners of 25% or more, related businesses, and identity verification.':'Administrateurs, propriétaires de 25 % ou plus, entreprises liées et vérification d’identité.',
   'Usage, documents, and review':'Utilisation, documents et révision',
-  'How you\'ll use Loop, any documents our screening asks for, and a final check before you submit.':'Comment vous utiliserez Loop, les documents demandés par notre filtrage et une dernière vérification avant la soumission.',
   'Working on this with someone?':'Vous travaillez avec quelqu’un?',
-  'Assign a page to a teammate — the business details to your co-founder, the documents to your bookkeeper. They fill in just their part and send it back; you stay the owner and submit.':'Attribuez une page à un coéquipier — les détails de l’entreprise à votre cofondateur, les documents à votre teneur de livres. Il remplit seulement sa partie et vous la renvoie; vous restez propriétaire et soumettez la demande.',
+  'Assign parts of the application to a teammate. Scope their view to the entire application or just their assigned page.':'Attribuez des parties de la demande à un coéquipier. Limitez leur accès à l’ensemble de la demande ou à leur page attribuée seulement.',
   'Assign pages to a teammate':'Attribuer des pages à un coéquipier',
   'Assign this page':'Attribuer cette page',
-  'They fill in just what you assign and send it back. You stay the owner, and only you can submit.':'Il remplit seulement ce que vous attribuez et vous le renvoie. Vous restez propriétaire, et vous seul pouvez soumettre.',
   'Teammate’s email':'Courriel du coéquipier',
   'Pages they’ll fill':'Pages à remplir',
   'What they can see':'Ce qu’il peut voir',
-  'Only the pages you assign':'Seulement les pages que vous attribuez',
-  'Everything else stays private to you.':'Tout le reste demeure privé.',
-  'The whole application — view only':'Toute la demande — lecture seule',
-  'Helpful context; they can still only fill their pages.':'Un contexte utile; il ne peut toujours remplir que ses pages.',
-  'Send assignment':'Envoyer l’attribution',
+  'View assigned pages':'Voir les pages attribuées',
+  'View entire application':'Voir toute la demande',
+  'Invite teammate':'Inviter un coéquipier',
+  'For compliance, Loop records who filled and edited every field.':'Pour des raisons de conformité, Loop enregistre qui a rempli et modifié chaque champ.',
   'People with access':'Personnes ayant accès',
   'Waiting for them to fill':'En attente de remplissage',
   'Returned — review their answers':'Renvoyé — vérifiez ses réponses',
@@ -5906,7 +6306,9 @@ var FR_APP={
   /* wait room: expedite */
   'Expedite your onboarding':'Accélérez votre intégration',
   'Set these up now so everything is ready the moment you are approved.':'Configurez ceci dès maintenant pour que tout soit prêt au moment de votre approbation.',
-  'Make your first deposit':'Effectuez votre premier dépôt',
+  'Schedule your first deposit':'Planifiez votre premier dépôt',
+  'No money moves today. Your deposit is collected once your account opens.':'Aucun montant ne bouge aujourd’hui. Votre dépôt est perçu à l’ouverture de votre compte.',
+  'Instant bank connection':'Connexion bancaire instantanée',
   'Deposit on its way':'Dépôt en route',
   'Deposit method —':'Mode de dépôt —',
   '· Recommended':'· Recommandé',
@@ -5914,11 +6316,11 @@ var FR_APP={
   'Interac e-Transfer':'Virement Interac',
   'EFT deposit':'Dépôt par TEF',
   'Funds are credited the moment your account opens':'Les fonds sont crédités dès l’ouverture de votre compte',
-  'Instant bank account verification — no statements, no micro-deposits':'Vérification instantanée du compte bancaire — sans relevés ni microdépôts',
+  'Instant bank account verification - no statements, no micro-deposits':'Vérification instantanée du compte bancaire - sans relevés ni microdépôts',
   'Makes you eligible for a Loop credit limit application':'Vous rend admissible à une demande de limite de crédit Loop',
-  'Autodeposit is enabled — the reference matches your transfer instantly':'Le dépôt automatique est activé — la référence associe votre virement instantanément',
+  'Autodeposit is enabled - the reference matches your transfer instantly':'Le dépôt automatique est activé - la référence associe votre virement instantanément',
   'To be eligible for a Loop credit limit application, use Instant bank connection rather than Interac e-Transfer':'Pour être admissible à une demande de limite de crédit Loop, utilisez la connexion bancaire instantanée plutôt que le virement Interac',
-  'Set up directly from your current bank — pre-authorized debit or direct deposit':'Configuré directement depuis votre banque actuelle — débit préautorisé ou dépôt direct',
+  'Set up directly from your current bank - pre-authorized debit or direct deposit':'Configuré directement depuis votre banque actuelle - débit préautorisé ou dépôt direct',
   'To be eligible for a Loop credit limit application, use Instant bank connection rather than EFT':'Pour être admissible à une demande de limite de crédit Loop, utilisez la connexion bancaire instantanée plutôt que le TEF',
   'Send an Interac e-Transfer to':'Envoyez un virement Interac à',
   'Reference (include in the message field)':'Référence (à inclure dans le champ de message)',
@@ -5948,18 +6350,70 @@ var FR_APP={
   'We’ll redirect you to the credit application in your Loop dashboard — it lives outside this onboarding.':'Nous vous redirigerons vers la demande de crédit dans votre tableau de bord Loop — elle se trouve à l’extérieur de cette intégration.',
   'Continue to credit application':'Continuer vers la demande de crédit',
   'Connect your bank account first to unlock the application.':'Connectez d’abord votre compte bancaire pour déverrouiller la demande.',
-  'Application submitted! We’ve received your credit application and will review it shortly.':'Demande soumise! Nous avons reçu votre demande de crédit et l’examinerons sous peu.',
+  'Application submitted! We’ve received your credit application and will review it shortly. A representative may reach out to you through email.':'Demande soumise! Nous avons reçu votre demande de crédit et l’examinerons sous peu. Un représentant pourrait vous contacter par courriel.',
   'Get approved faster':'Obtenez une approbation plus rapide',
   'Connect a sales channel to verify your revenue. This helps us approve your credit limit quickly — the more revenue sources you connect, the higher your potential limit.':'Connectez un canal de vente pour vérifier vos revenus. Cela nous aide à approuver votre limite de crédit rapidement — plus vous connectez de sources de revenus, plus votre limite potentielle est élevée.',
   'Connect sales channel':'Connecter un canal de vente',
   'PayPal is connected. We’ll use it to verify your revenue.':'PayPal est connecté. Nous l’utiliserons pour vérifier vos revenus.',
+  'Spend and repay in CAD, USD, GBP, and EUR - save when you spend globally':'Dépensez et remboursez en CAD, USD, GBP et EUR - économisez lors de vos dépenses à l’international',
+  'Get approved faster based on your revenue with no impact on personal credit':'Obtenez une approbation plus rapide selon vos revenus, sans incidence sur votre crédit personnel',
+  'No annual fee, no FX fees, no minimum spend':'Aucuns frais annuels, aucuns frais de change, aucune dépense minimale',
+  'Start credit application':'Commencer la demande de crédit',
+  'Connect your bank account to unlock the credit application, as per compliance requirements.':'Connectez votre compte bancaire pour déverrouiller la demande de crédit, conformément aux exigences de conformité.',
+  /* credit application page */
+  'Return to waiting room':'Retour à la salle d’attente',
+  'Apply for Credit':'Demandez du crédit',
+  'Tell us about your business to get approved for up to $1M in credit':'Parlez-nous de votre entreprise pour obtenir jusqu’à 1 M$ de crédit',
+  'Business Revenue':'Revenus de l’entreprise',
+  'Total Annual Business Revenue':'Revenus annuels totaux de l’entreprise',
+  'Your total revenue over the last 12 months':'Vos revenus totaux des 12 derniers mois',
+  'Average Gross Profit Margin':'Marge bénéficiaire brute moyenne',
+  'Revenue minus cost of goods sold, as a percentage':'Revenus moins le coût des marchandises vendues, en pourcentage',
+  'Is your business currently profitable?':'Votre entreprise est-elle actuellement rentable?',
+  'Debt & Payments':'Dettes et paiements',
+  'Current Total Debt Outstanding':'Dette totale actuelle en cours',
+  'Total business debt including loans, credit lines, etc.':'Dette totale de l’entreprise, y compris les prêts, marges de crédit, etc.',
+  'Average Monthly Debt Payments':'Paiements mensuels moyens de la dette',
+  'Average amount you pay toward debt each month':'Montant moyen que vous versez sur la dette chaque mois',
+  'Revenue & Payment Patterns':'Habitudes de revenus et de paiement',
+  'Primary Source of Revenue':'Source principale de revenus',
+  'Choose the option that best describes your main revenue stream':'Choisissez l’option qui décrit le mieux votre principale source de revenus',
+  'Select your primary revenue source':'Sélectionnez votre source principale de revenus',
+  'How often do you pay your credit card balance in full?':'À quelle fréquence payez-vous le solde de votre carte de crédit en entier?',
+  'Based on the last 12 months':'Selon les 12 derniers mois',
+  'Select frequency':'Sélectionnez la fréquence',
+  'B2B (One-Time Purchases)':'B2B (achats ponctuels)',
+  'B2B (Recurring & Contracted)':'B2B (récurrents et sous contrat)',
+  'B2B (Recurring, Not Contracted)':'B2B (récurrents, sans contrat)',
+  'B2C (One-Time Purchases)':'B2C (achats ponctuels)',
+  'B2C (Subscriptions)':'B2C (abonnements)',
+  '12 Months (Always)':'12 mois (toujours)',
+  '9-12 Months':'9 à 12 mois',
+  '3-9 Months':'3 à 9 mois',
+  '0-3 Months':'0 à 3 mois',
+  'Submit Application':'Soumettre la demande',
+  'Application Submitted!':'Demande soumise!',
+  'We’ve received your credit application and will review it shortly.':'Nous avons reçu votre demande de crédit et l’examinerons sous peu.',
+  'Connect a sales channel to verify your revenue. This helps us approve your credit limit quickly—the more revenue sources you connect, the higher your potential limit.':'Connectez un canal de vente pour vérifier vos revenus. Cela nous aide à approuver votre limite de crédit rapidement — plus vous connectez de sources de revenus, plus votre limite potentielle est élevée.',
+  'Connect Sales Channel':'Connecter un canal de vente',
+  'Connecting…':'Connexion…',
+  'e.g. 100000.00':'p. ex. 100000.00',
+  'e.g. 35':'p. ex. 35',
+  'e.g. 25000.00':'p. ex. 25000.00',
+  'e.g. 2500.00':'p. ex. 2500.00',
   /* wait room: 2FA task */
   'Enable two-factor authentication':'Activez l’authentification à deux facteurs',
   'On':'Activée',
-  'Protect the account before there’s money in it. Choose how you’ll verify each sign-in.':'Protégez le compte avant qu’il contienne de l’argent. Choisissez comment vous vérifierez chaque ouverture de session.',
+  'We recommend adding at least one authentication method to protect your account':'Nous recommandons d’ajouter au moins une méthode d’authentification pour protéger votre compte',
   'Passkey':'Clé d’accès',
-  'Authenticator app':'Application d’authentification',
-  'Use a different method':'Utiliser une autre méthode',
+  'Add a passkey':'Ajouter une clé d’accès',
+  'Authenticator':'Authentificateur',
+  'Add Two-Factor Authentication':'Ajouter l’authentification à deux facteurs',
+  'Scan the QR code with your authenticator app and enter the verification code below.':'Balayez le code QR avec votre application d’authentification et entrez le code de vérification ci-dessous.',
+  'Note':'Remarque',
+  'If you can’t scan the QR code, you can manually enter this code in your authenticator app:':'Si vous ne pouvez pas balayer le code QR, vous pouvez entrer ce code manuellement dans votre application d’authentification :',
+  'Verification Code':'Code de vérification',
+  'Verify & Enable':'Vérifier et activer',
   'Two-factor authentication is on. We’ll ask for your passkey each time you sign in.':'L’authentification à deux facteurs est activée. Nous demanderons votre clé d’accès à chaque ouverture de session.',
   'Two-factor authentication is on. We’ll ask for a code from your authenticator app each time you sign in.':'L’authentification à deux facteurs est activée. Nous demanderons un code de votre application d’authentification à chaque ouverture de session.',
   'Two-factor authentication is on. We’ll email a code to':'L’authentification à deux facteurs est activée. Nous enverrons un code par courriel à',
@@ -6006,14 +6460,15 @@ var FR_APP={
   'Access approved':'Accès approuvé',
   'Simulate approval':'Simuler l’approbation',
   /* approved + live */
-  'One last step. Agree to the account agreements to activate the account.':'Une dernière étape. Acceptez les conventions de compte pour activer le compte.',
+  'Last step before your account is live.':'Dernière étape avant la mise en service de votre compte.',
+  'Your application has been approved. Sign your account agreements to open the account. It only takes a minute.':'Votre demande a été approuvée. Signez vos conventions de compte pour ouvrir le compte. Cela ne prend qu’une minute.',
+  'All optional setup is done. Signing is the only step left.':'Toute la configuration facultative est terminée. Il ne reste qu’à signer.',
   'As an authorized signing officer of':'À titre de signataire autorisé de',
   ', I have read and agree to the agreements below on its behalf.':', j’ai lu et j’accepte en son nom les conventions ci-dessous.',
   'Deposit Account Agreement':'Convention de compte de dépôt',
   'ACH Payment Terms':'Modalités de paiement ACH',
   'Tax Form':'Formulaire fiscal',
-  'Only signing officers can agree to these on the company’s behalf. Each consent is recorded with a timestamp, copies are emailed to':'Seuls les signataires autorisés peuvent les accepter au nom de la société. Chaque consentement est horodaté, des copies sont envoyées par courriel à',
-  ', and you can review them anytime under Settings → Documents.':', et vous pouvez les consulter en tout temps sous Paramètres → Documents.',
+  'Only authorized signing officers can agree to the agreements on the company’s behalf. You will receive a confirmation email after activating the account.':'Seuls les signataires autorisés peuvent accepter les conventions au nom de la société. Vous recevrez un courriel de confirmation après l’activation du compte.',
   'Activate account':'Activer le compte',
   'Sign out':'Fermer la session',
   'You’re live':'Vous êtes en service',
@@ -6221,7 +6676,7 @@ function renderInvSim(){
   }).join('');
   if(invSimStep===0){
     b.innerHTML='<div class="sub-card" style="max-width:520px;width:100%">'+
-      '<h1 style="font-size:25px;font-weight:500;letter-spacing:-.3px;margin-bottom:8px">Hi '+esc(cofillName(c.email))+' &#128075;</h1>'+
+      '<h1 style="font-size:25px;font-weight:500;letter-spacing:-.3px;margin-bottom:8px">Hi '+esc(collabFullName(c))+' &#128075;</h1>'+
       '<p class="lead" style="font-size:14.5px;color:var(--gray-600);line-height:1.6"><strong>'+owner+'</strong> asked you to fill in part of <strong>'+biz+'</strong>&rsquo;s Loop business account application. You&rsquo;ll only be able to edit what&rsquo;s assigned to you:</p>'+
       '<div style="text-align:left;margin:18px 0 4px">'+pgRows+'</div>'+
       '<p class="lead" style="font-size:12.5px;color:var(--gray-500);margin-top:10px">'+(c.visibility==='viewer'?'You can also view the rest of the application, read-only.':'The rest of the application stays private to '+owner+'.')+'</p>'+
@@ -6230,6 +6685,25 @@ function renderInvSim(){
     $('ivsOpen').onclick=function(){invSimStep=1;renderInvSim();};
     $('ivsSkip').onclick=closeInvSim;
   }else if(invSimStep===1){
+    /* legal-name gate: they can't enter the application until it's provided; the
+       name feeds the presence avatar the owner sees */
+    b.innerHTML='<div class="sub-card" style="max-width:520px;width:100%">'+
+      '<h1 style="font-size:24px;font-weight:500;letter-spacing:-.3px;margin-bottom:8px">First, add your legal name</h1>'+
+      '<p class="lead" style="font-size:14.5px;color:var(--gray-600);line-height:1.6">For compliance, Loop records who filled and edited every field. Enter your full legal name to enter the application.</p>'+
+      '<div class="q" style="text-align:left;margin:18px 0 0"><div class="q-label">Full legal name</div><div class="qfield"><input id="ivsName" autocomplete="name" placeholder="e.g. Jamie Chen" value="'+esc(c.fullName||'')+'"></div></div>'+
+      '<button class="btn btn-primary" id="ivsNameGo" style="margin-top:20px"'+(c.fullName?'':' disabled')+'>Continue</button>'+
+      '<div style="margin-top:14px"><button class="btn-link" id="ivsSkip" style="font-size:13.5px;font-weight:500;color:var(--gray-500)">Close preview</button></div></div>';
+    var ni=$('ivsName');
+    ni.addEventListener('input',function(){$('ivsNameGo').disabled=!ni.value.trim();});
+    $('ivsNameGo').onclick=function(){
+      if(this.disabled)return;
+      c.fullName=ni.value.trim();save();
+      renderCollabList();/* the owner-side avatar picks up the real name */
+      invSimStep=2;renderInvSim();
+    };
+    $('ivsSkip').onclick=closeInvSim;
+    ni.focus();
+  }else if(invSimStep===2){
     b.innerHTML='<div class="sub-card" style="max-width:540px;width:100%">'+
       '<h1 style="font-size:24px;font-weight:500;letter-spacing:-.3px;margin-bottom:6px">Your pages on '+biz+'&rsquo;s application</h1>'+
       '<p class="lead" style="font-size:14px;color:var(--gray-600);line-height:1.6">Work through your pages at your own pace &mdash; progress saves as you go. When everything&rsquo;s filled, send it back to '+owner+'.</p>'+
@@ -6237,7 +6711,7 @@ function renderInvSim(){
       '<p class="lead" style="font-size:12.5px;color:var(--gray-500);margin-top:10px">For compliance, Loop records who filled and edited every field.</p>'+
       '<button class="btn btn-primary" id="ivsReturn" style="margin-top:20px">Fill my pages and send back <span style="font-size:12px">(simulated)</span></button>'+
       '<div style="margin-top:14px"><button class="btn-link" id="ivsSkip" style="font-size:13.5px;font-weight:500;color:var(--gray-500)">Close preview</button></div></div>';
-    $('ivsReturn').onclick=function(){simulateReturn(c.id);invSimStep=2;renderInvSim();};
+    $('ivsReturn').onclick=function(){simulateReturn(c.id);invSimStep=3;renderInvSim();};
     $('ivsSkip').onclick=closeInvSim;
   }else{
     b.innerHTML='<div class="sub-card" style="max-width:520px;width:100%">'+
@@ -6372,7 +6846,7 @@ function initHarness(){
 
 /* ============================ wire up ============================ */
 document.addEventListener('DOMContentLoaded',function(){
-  ['logoAuth','logoChangePw','logoReset','logoSms','logoMfa','logoSide','logoSetup','logoInv','logoApproved','logoLive','logoInvSim'].forEach(function(id){$(id).innerHTML=LOGO;});
+  ['logoAuth','logoChangePw','logoReset','logoSms','logoSi2fa','logoMfa','logoSide','logoSetup','logoCredit','logoInv','logoApproved','logoLive','logoInvSim'].forEach(function(id){$(id).innerHTML=LOGO;});
   renderAuthMedia();
   initLang();
   fillSelect($('f-entityType'),ENTITIES);
@@ -6583,19 +7057,30 @@ document.addEventListener('DOMContentLoaded',function(){
     siFailCount=0;
     $('siErr').classList.add('hidden');$('siLock').classList.add('hidden');
     var emv=em.value.trim();
-    /* password accepted → straight in (no sign-in MFA step) */
-    if(emv.toLowerCase()===(S.email||'').toLowerCase()&&S.verified){
-      if(S.activated)show('live');
-      else if(S.submitted){S.approved=true;apMode='choice';persist();show('approved');}
-      else show('app');
-    }else{
-      /* a brand-new application starts at the registry lookup */
-      S=freshKeepSettings();S.email=emv;S.verified=true;S.page='who';save();show('app');
-    }
+    si2faEmail=emv;
+    /* password accepted → hold the destination until the MFA challenge verifies */
+    si2faDest=function(){
+      if(emv.toLowerCase()===(S.email||'').toLowerCase()&&S.verified){
+        if(S.activated)show('live');
+        else if(S.submitted){S.approved=true;apMode='choice';persist();show('approved');}
+        else show('app');
+      }else{
+        /* a brand-new application starts at the registry lookup */
+        S=freshKeepSettings();S.email=emv;S.verified=true;S.page='who';save();show('app');
+      }
+    };
+    /* demo: the account has all three sign-in MFA methods enabled (SMS is
+       temporarily not offered), and the user picks one to finish signing in */
+    si2faMethods=['passkey','authenticator','email'];
+    si2faMethod='';
+    show('si2fa');
   };
 
   /* welcome + continue buttons */
   $('btnStart').onclick=function(){showPage('business');};
+
+  /* credit application page: back to the waiting room */
+  $('creditReturn').onclick=function(){show('setup');window.scrollTo(0,0);};
 
   /* collaborators (welcome) — same assign modal as everywhere else */
   $('btnAddCollab').onclick=function(){openAssignModal();};
