@@ -73,13 +73,30 @@ corner, so it never covers the content in the middle of the screen. Nothing
 demo-related remains in the main UI.
 
 - The menu's sections follow the current screen:
-  - **Collaboration** (application, pre-submit) — **Preview the collaborator
-    experience** (the invite email → scoped view → send-back loop; completing
-    it really returns the pages), plus a **Simulate [name] returning [pages]**
-    button per outstanding assignment. Assignments are asynchronous: a page
-    out with a teammate is read-only for the owner (banner with Remind /
-    Take back) until it comes back, then shows a green "review their answers"
-    banner. There is no simultaneous editing.
+  - **Collaboration** (application, pre-submit). Simulates a teammate editing the
+    same live application. Buttons, in order:
+    - **Alex joins the application / Alex leaves**: brings the Alex Rivera persona
+      online or offline. Their initials avatar appears (or fades) by the sidebar
+      pill and on the welcome block.
+    - **Priya joins too / Priya leaves**: a second persona, for the overlapping
+      avatars look. Priya never edits; she is presence only.
+    - **Alex edits answers on other pages**: applies a few edits to pages other
+      than the one you are on. Blue count badges appear on those steps; visiting
+      shows the field highlights and notes.
+    - **Alex edits this page while you watch**: applies one or two edits to
+      non focused fields on the current page, live, with a brief pulse.
+    - **Alex edits the same field as you**: arms a write conflict. Click a field,
+      type, and leave it; Alex will have changed it too, so the conflict card
+      appears on save.
+    - **Alex enters the same answer as you**: arms the same field case where both
+      of you land on the same value, so there is nothing to resolve.
+    - **Alex changes answers you already reviewed** (review page only): changes
+      two reviewed answers invisibly. Nothing shows until you click Submit, which
+      triggers the one look intercept.
+    - **Simulate coming back after a week**: dates four edits six days ago and
+      shows the "while you were away" banner.
+    - **Alex adds a document / Alex updates a contact**: entity level changes that
+      surface as notes and badges.
   - **Flow shortcuts** (application) — Skip to wait room.
   - **Wait room** (post-submit) — Simulate approval / document request /
     correction request / clear, the in-review state switcher
@@ -87,18 +104,32 @@ demo-related remains in the main UI.
     preview, and per-person "mark verified" for pending identity checks.
   - **Cheatsheet** — the magic values from this file, always visible.
 
-## Collaborators (V2.5 model)
+## Collaborators (V3.2 model)
 
-- **Assign pages, not access.** "Assign this page" in a page header (or the
-  sidebar / welcome buttons) opens one modal: teammate email + page checkboxes
-  + what they can see (only their pages, or the whole application view-only).
-- One assignee per page; a teammate can hold several pages. Already-assigned
-  pages show "With [name]" and are disabled in the modal.
-- Full access is never grantable — the only full-control affordance is the
-  quiet **Transfer ownership…** link at the bottom of the modal (pending until
-  the other person accepts; cancellable).
-- No account opt-ins anywhere: related persons only ever get an IDV link, and
-  the wait room only lets the owner check IDV status and resend links.
+- **Full-access concurrent editing.** Inviting a teammate (by email, from the
+  welcome block or the sidebar pill) gives them full view and edit access to the
+  whole application. There is no page ownership, no locking, no roles, and no
+  scoped visibility. Only the owner submits.
+- **Presence.** Invited teammates who are online show an initials avatar by the
+  sidebar pill and on the welcome block (hover for the full name). The avatar
+  fades and the row closes up when they go offline or are removed.
+- **Three concurrency states, always measured against what you last saw** (never
+  elapsed time). A run with no collaborator activity shows none of this:
+  1. **Write conflict** (you and a teammate changed the same field at the same
+     moment). Shown inline under the field on save, with both values written out
+     so you can pick one.
+  2. **Changed since you looked** (a field changed since you last viewed its
+     page). Shown three ways: a highlight ring plus a note on the field (who,
+     what, and the previous value), a blue count badge on the step, and a "while
+     you were away" banner on return.
+  3. **Changed before submit** (answers changed since you last reviewed them).
+     Shown on the review page as highlighted rows, and intercepted once when you
+     click Submit.
+- **Blue vs grey.** Blue always means "a teammate changed this, informational."
+  Grey (the warn dot and "N incomplete" chip) means "you still have to fill this
+  in." They are different colors on purpose and can appear at the same time.
+- **Transfer ownership** is unchanged: still the quiet link, now living in the
+  People with access panel (Settings), pending until the other person accepts.
 
 ## Approval (V2.5)
 
