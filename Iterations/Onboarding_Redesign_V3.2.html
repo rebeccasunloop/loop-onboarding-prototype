@@ -40,10 +40,17 @@ input,select,textarea{font-family:inherit}
 .idv-head{font-size:15px;font-weight:600;margin:4px 0 14px}
 .idv-center{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
 .idv-center .qr{line-height:0;border:1px solid var(--gray-200);border-radius:10px;padding:8px;background:#fff}
-.idv-alt{display:flex;justify-content:center;gap:10px}
-.idv-alt .btn{width:auto}
+.idv-alt{display:flex;gap:10px}
+.idv-alt .btn{flex:1;width:auto}
 /* ---------- business-info sub-page cue under the page heading ---------- */
 .sub-ticks{color:var(--gray-600);font-size:15.5px;margin-top:8px}
+/* related-person drawer: auto-detected account match (owner or collaborator) */
+.dr-match{display:flex;gap:10px;align-items:flex-start;border:1px solid #bbe5d0;background:var(--brand-25);border-radius:12px;padding:12px 14px}
+.dr-match svg{flex:0 0 auto;margin-top:1px;color:var(--brand-600)}
+.dr-match p{font-size:13px;line-height:1.5;color:var(--brand-700);margin:0}
+/* permissions modal: authorized-signer note under a person's email */
+.pr-signer{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--brand-600);margin-top:3px}
+.pr-signer svg{width:13px;height:13px}
 
 /* ---------- auth ---------- */
 .auth-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--gray-50);padding:40px 20px}
@@ -492,6 +499,17 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .who-decline .t{font-size:14px;font-weight:600;margin-bottom:3px}
 .who-decline .d{font-size:13.5px;color:var(--gray-600);line-height:1.55}
 [data-theme="dark"] .who-decline{background:var(--gray-50)}
+/* pre-revenue proof of operation: upload + auto-parse result */
+.proof-label{display:block;font-size:13.5px;font-weight:600;color:var(--gray-700);margin-bottom:4px}
+.proof-hint{font-size:13px;color:var(--gray-600);line-height:1.55;margin-bottom:12px;max-width:560px}
+.proof-checks{display:flex;flex-direction:column;gap:9px;margin-top:12px;border:1px solid var(--success-100);background:var(--success-25);border-radius:12px;padding:14px 16px}
+.proof-checks .pc-h{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:var(--success-800)}
+.proof-checks .pc{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--success-800)}
+.proof-checks .pc svg{flex:0 0 15px;color:var(--success-700)}
+[data-theme="dark"] .proof-checks{background:rgba(4,91,63,.16)}
+/* ownership percentage: a gray "%" baked into the right of the input; digits only */
+.field.has-pct .pct-suffix{position:absolute;right:16px;top:auto;bottom:27px;transform:translateY(50%);color:var(--gray-500);font-size:15px;pointer-events:none}
+.field.has-pct .err-dot{right:40px}
 
 /* pre-eligibility questionnaire: a shared, smaller question header and a tight option
    list so a 7-option question fits one viewport. Revenue and Quebec share this size. */
@@ -501,7 +519,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .scr-opts .elig-opt{padding:11px 15px}
 /* Q1 website confirm: the address sits in an input with a pencil to edit it inline */
 .field.has-edit input{padding-right:44px}
-.field .edit-btn{position:absolute;right:10px;top:auto;bottom:22px;transform:translateY(50%);display:flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:none;background:none;color:var(--gray-500);cursor:pointer;border-radius:6px;transition:color .12s}
+.field .edit-btn{position:absolute;right:10px;top:auto;bottom:27px;transform:translateY(50%);display:flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:none;background:none;color:var(--gray-500);cursor:pointer;border-radius:6px;transition:color .12s}
 .field .edit-btn:hover{color:var(--brand-600)}
 .field .edit-btn:focus-visible{outline:none;color:var(--brand-600);box-shadow:0 0 0 3px rgba(4,91,63,.18)}
 /* thin progress bar attached to the bottom edge of the top nav, no text; only during
@@ -512,6 +530,10 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* pre-application: only the top border, logo, and settings — the stepper keeps its
    grid cell (visibility, not display) so the settings button stays on the right */
 #app.preapp .flow-center{visibility:hidden}
+/* pre-eligibility screening (Find your business): collaboration isn't available yet.
+   The invite pill and presence avatars (and the Permissions menu row, gated in JS)
+   only appear once the application proper begins — welcome onward. */
+#app.screening .cofill-side,#app.screening .collab-presence{display:none}
 /* the navigation fades and settles in the first time the application proper opens */
 @keyframes navIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
 .flow-top.nav-in .flow-center{animation:navIn .5s cubic-bezier(.22,.8,.36,1) both}
@@ -618,6 +640,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .dr-step.cur{color:var(--brand-700);background:var(--brand-25)}
 .dr-step.cur .n{border-color:var(--brand-500);background:var(--brand-500);color:#fff}
 .dr-step.done{color:var(--gray-600);cursor:pointer}
+.dr-steps.locked .dr-step{cursor:default;pointer-events:none}
 .dr-step.done .n{border-color:var(--brand-500);background:var(--brand-500);color:#fff}
 .dr-step .n svg{width:9px;height:9px;display:block}
 /* legacy list-card ghost styles (still used by invited-fill rows elsewhere) */
@@ -678,7 +701,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .rev-head h2{font-size:21px;font-weight:600;letter-spacing:-.3px}
 .rev-head .spacer{flex:1}
 .rev-head a.edit{font-size:14px;font-weight:600}
-.chip-warn{background:var(--warn-50);color:var(--warn-700);font-size:12px;font-weight:700;border-radius:6px;padding:3px 9px}
+.chip-warn{background:var(--error-50);color:var(--error-700);font-size:12px;font-weight:700;border-radius:6px;padding:3px 9px}
 .rev-card{border:1px solid var(--gray-200);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm);overflow:hidden}
 .rev-row{padding:13px 18px;border-bottom:1px solid var(--gray-100)}
 .rev-row:last-child{border-bottom:none}
@@ -693,12 +716,22 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .signcard .cert{font-size:14px;color:var(--gray-600);line-height:1.6;margin-bottom:18px}
 .smallprint{font-size:12.5px;color:var(--gray-500);line-height:1.65;margin:18px 0 22px}
 .smallprint a{color:var(--gray-600);font-weight:600}
-.gaps{border:1px solid var(--warn-100);background:var(--warn-50);border-radius:12px;padding:18px 20px;margin-top:26px}
-.gaps h4{font-size:14.5px;font-weight:700;color:var(--warn-700);margin-bottom:8px}
-.gaps a{display:block;font-size:13.5px;color:var(--warn-700);padding:3px 0;text-decoration:underline;text-underline-offset:3px}
-.gaps .gaps-toggle{display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:6px 0 0;font-size:13px;font-weight:700;color:var(--warn-700);cursor:pointer}
+.gaps{border:1px solid var(--error-100);background:var(--error-25);border-radius:12px;padding:18px 20px;margin-top:26px}
+.gaps h4{font-size:14.5px;font-weight:700;color:var(--error-700);margin-bottom:8px}
+.gaps a{display:block;font-size:13.5px;color:var(--error-700);padding:3px 0;text-decoration:underline;text-underline-offset:3px}
+/* a red page heading groups the incomplete fields under the exact page they live on */
+.gaps .gaps-page{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--error-700);margin:14px 0 3px}
+.gaps .gaps-page:first-of-type{margin-top:10px}
+/* a specific reason the application can't go in yet, e.g. no signing officer */
+.gaps .gaps-note{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--error-800);line-height:1.55;background:#fff;border:1px solid var(--error-100);border-radius:10px;padding:11px 13px;margin:2px 0 6px}
+.gaps .gaps-note svg{flex:0 0 16px;margin-top:1px;color:var(--error-600)}
+.gaps .gaps-note b{font-weight:700}
+.gaps .gaps-note a{display:inline;padding:0;color:var(--error-700);font-weight:700}
+.gaps .gaps-toggle{display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:6px 0 0;font-size:13px;font-weight:700;color:var(--error-700);cursor:pointer}
 .gaps .gaps-toggle svg{transition:transform .18s ease}
 .gaps .gaps-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+[data-theme="dark"] .gaps{background:rgba(227,27,84,.12)}
+[data-theme="dark"] .gaps .gaps-note{background:var(--gray-50)}
 
 /* modal */
 .modal{background:#fff;border-radius:14px;box-shadow:var(--shadow-overlay);width:100%;max-width:480px;overflow:hidden}
@@ -898,7 +931,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .pill.blue{background:var(--blue-50);color:var(--blue-700)}
 
 /* tax-id format warning */
-.fhelp.warn{color:var(--warn-700);font-weight:600}
+.fhelp.warn{color:var(--error-600);font-weight:600}
 
 /* hover tooltip */
 .tip{position:relative;display:inline-flex;vertical-align:-3px;margin-left:6px;color:var(--gray-400);cursor:help}
@@ -1051,6 +1084,11 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .inv-pop{position:fixed;left:22px;bottom:78px;z-index:80;width:320px;max-width:calc(100vw - 44px);background:#fff;border:1px solid var(--gray-200);border-radius:14px;box-shadow:var(--shadow-overlay);padding:16px}
 .inv-pop h4{font-size:14px;font-weight:600;margin-bottom:10px}
 .inv-pop .invite-form{margin-bottom:0}
+/* secondary action in the popover: jump to the People-with-access (permissions) modal */
+.inv-pop .inv-perm{margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-200)}
+.inv-pop .inv-perm-btn{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:7px 4px;font-size:13px;font-weight:600;color:var(--brand-600);border-radius:8px;cursor:pointer}
+.inv-pop .inv-perm-btn:hover{background:var(--brand-25)}
+.inv-pop .inv-perm-btn svg{width:15px;height:15px}
 [data-theme="dark"] .inv-pop{background:var(--gray-50);border-color:var(--gray-200)}
 /* transient toast (invite sent) */
 .mini-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(10px);z-index:130;background:var(--gray-900);color:#fff;font-size:13.5px;font-weight:500;padding:11px 18px;border-radius:999px;box-shadow:var(--shadow-overlay);opacity:0;transition:opacity .18s ease,transform .18s ease;pointer-events:none;display:flex;align-items:center;gap:9px}
@@ -1092,22 +1130,49 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 [data-theme="dark"] .away-banner .ab-body{color:var(--gray-800)}
 [data-theme="dark"] .away-banner .ab-links a{color:var(--brand-300)}
 /* Feature E: inline conflict card under the field (no overlay) */
-/* Feature F: review changed rows + info chip + submit intercept card */
-.rev-row.changed{border-left:3px solid var(--brand-400);background:var(--brand-25);padding-left:11px;border-radius:0 8px 8px 0}
+/* Feature F: a changed row is marked by a green left rule only — no fill, no "previous
+   input" tooltip. Reviewing the before/after choice happens in the submit modal (.rcm-*). */
+.rev-row.changed{border-left:3px solid var(--brand-400);padding-left:15px}
 .chip-info{font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--brand-50);color:var(--brand-700);white-space:nowrap;margin-left:8px}
-[data-theme="dark"] .rev-row.changed{background:rgba(4,91,63,.16)}
 [data-theme="dark"] .chip-info{background:var(--brand-600);color:#fff}
-#chgConfirm{border:1px solid var(--brand-100);background:var(--brand-25);border-radius:14px;padding:18px 20px;margin:0 0 18px}
-#chgConfirm h4{font-size:16px;font-weight:600;color:var(--gray-900);margin-bottom:4px}
-#chgConfirm .cc-sub{font-size:13.5px;color:var(--gray-600);margin-bottom:12px}
-#chgConfirm .cc-row{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--brand-100);font-size:13.5px}
-#chgConfirm .cc-row a{font-weight:600;color:var(--brand-700)}
-#chgConfirm .cc-row .cc-delta{color:var(--gray-700)}
-#chgConfirm .cc-row .cc-delta b{color:var(--gray-900);font-weight:600}
-#chgConfirm .cc-row .cc-when{color:var(--gray-500);font-size:12.5px}
-#chgConfirm .cc-actions{display:flex;gap:10px;margin-top:16px}
-[data-theme="dark"] #chgConfirm{background:rgba(4,91,63,.16);border-color:var(--brand-600)}
-[data-theme="dark"] #chgConfirm .cc-row{border-color:var(--brand-600)}
+/* submit intercept modal: one updated question per screen; keep the before or the after */
+#revChgOverlay{position:fixed;inset:0;background:rgba(18,25,38,.45);z-index:98;display:flex;align-items:center;justify-content:center;padding:20px}
+.rcm-modal{background:#fff;border-radius:18px;box-shadow:var(--shadow-overlay),0 24px 60px rgba(18,25,38,.28);width:100%;max-width:520px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;animation:rcmIn .22s cubic-bezier(.22,.8,.36,1)}
+@keyframes rcmIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.rcm-modal{animation:none}}
+.rcm-head{display:flex;align-items:center;gap:12px;padding:20px 22px 0}
+.rcm-dots{display:flex;align-items:center;gap:6px;flex:1}
+.rcm-dots .rcm-dot{width:7px;height:7px;background:var(--gray-200);transition:background .2s,width .2s;border-radius:999px}
+.rcm-dots .rcm-dot.done{background:var(--brand-300)}
+.rcm-dots .rcm-dot.cur{background:var(--brand-500);width:20px}
+.rcm-count{font-size:12px;font-weight:700;letter-spacing:.03em;color:var(--gray-500);white-space:nowrap}
+.rcm-x{background:none;border:none;color:var(--gray-500);padding:7px;border-radius:8px;cursor:pointer;margin:-6px -6px 0 0}
+.rcm-x:hover{background:var(--gray-100);color:var(--gray-900)}
+.rcm-body{padding:16px 22px 4px;overflow-y:auto}
+.rcm-kicker{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--brand-700);background:var(--brand-25);border-radius:999px;padding:4px 11px;margin-bottom:14px}
+.rcm-kicker .rcm-dot-live{width:7px;height:7px;border-radius:50%;background:var(--brand-500)}
+.rcm-q{font-size:20px;font-weight:600;letter-spacing:-.2px;color:var(--gray-900);margin-bottom:6px}
+.rcm-sub{font-size:13.5px;color:var(--gray-600);line-height:1.55;margin-bottom:18px}
+.rcm-sub b{color:var(--gray-900);font-weight:600}
+.rcm-opts{display:flex;flex-direction:column;gap:12px}
+.rcm-opt{display:block;width:100%;text-align:left;border:1.5px solid var(--gray-200);border-radius:14px;padding:14px 44px 14px 16px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s;position:relative}
+.rcm-opt:hover{border-color:var(--gray-300)}
+.rcm-opt .rcm-opt-tag{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--gray-500);margin-bottom:6px}
+.rcm-opt .rcm-opt-val{font-size:15px;color:var(--gray-900);line-height:1.5;word-break:break-word}
+.rcm-opt .rcm-opt-val.muted{color:var(--gray-400);font-style:italic}
+.rcm-opt .rcm-tick{position:absolute;top:14px;right:14px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gray-300);display:flex;align-items:center;justify-content:center;color:#fff;transition:background .15s,border-color .15s}
+.rcm-opt .rcm-tick svg{opacity:0;transition:opacity .12s}
+.rcm-opt.sel{border-color:var(--brand-500);background:var(--brand-25);box-shadow:0 0 0 3px rgba(4,91,63,.10)}
+.rcm-opt.sel .rcm-opt-tag{color:var(--brand-700)}
+.rcm-opt.sel .rcm-tick{background:var(--brand-500);border-color:var(--brand-500)}
+.rcm-opt.sel .rcm-tick svg{opacity:1}
+.rcm-foot{display:flex;gap:10px;align-items:center;padding:18px 22px 22px}
+.rcm-foot .rcm-spacer{flex:1}
+.rcm-foot .btn{width:auto}
+[data-theme="dark"] .rcm-modal{background:var(--gray-25)}
+[data-theme="dark"] .rcm-opt{background:var(--gray-50);border-color:var(--gray-200)}
+[data-theme="dark"] .rcm-opt.sel{background:rgba(4,91,63,.18)}
+[data-theme="dark"] .rcm-kicker{background:rgba(4,91,63,.18);color:var(--brand-300)}
 
 /* co-fill: current-page indicator, collaborator shortcut, access level */
 
@@ -1357,8 +1422,12 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 /* ---- bottom-left utility cluster ---- */
 .flow-utils{position:fixed;left:22px;bottom:18px;z-index:55;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .flow-utils .cofill-side{order:2;width:auto;margin:0;border-radius:999px;padding:8px 14px;background:#fff}
-/* presence avatars sit directly above the assign pill */
-.flow-utils .collab-presence{order:2;margin:0 0 2px}
+/* presence avatars sit directly BELOW the assign pill, so the invite popover
+   (which opens upward from the pill) never covers the active teammate avatars.
+   When nobody is online the box is empty and collapses, leaving the pill flush
+   at the bottom-left corner. */
+.flow-utils .collab-presence{order:3;margin:6px 0 0}
+.flow-utils .collab-presence:empty{display:none}
 .flow-utils .cofill-side .cnt{margin-left:4px}
 .flow-utils .settings-trigger{order:1;width:auto;background:#fff;border:1px solid var(--gray-200);border-radius:999px;padding:7px 13px;box-shadow:var(--shadow-sm)}
 .flow-utils .settings-trigger:hover{background:var(--gray-50)}
@@ -1410,7 +1479,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 
 /* ============== collaboration layer + global demo harness (prototype) ============== */
 /* inline audit stamp under a field; cross-fades when the editor changes */
-/* review rows a teammate changed mid-review — soft informational tint after "Keep editing" */
+/* review rows a teammate changed mid-review — green left rule only; resolved in the submit modal */
 /* floating harness: hidden by default behind a small top-left trigger; menu drops down
    from the corner so it never covers the content in the middle of the screen */
 .hz{position:fixed;top:10px;left:4px;z-index:99;font-family:'DM Mono',monospace}
@@ -1463,14 +1532,14 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <div class="auth-inner">
 
       <div id="authSignup">
-        <h1>Create an account</h1>
-        <p class="auth-sub">Sign up to get started</p>
+        <h1>Open a business account</h1>
+        <p class="auth-sub">Apply in as little as 10 minutes</p>
         <div class="fgrid">
           <div class="row">
-            <div class="field"><input id="su-fn" autocomplete="given-name"><label for="su-fn">Legal first name</label><span class="err-dot">!</span></div>
-            <div class="field"><input id="su-ln" autocomplete="family-name"><label for="su-ln">Legal last name</label><span class="err-dot">!</span></div>
+            <div class="field"><input id="su-fn" autocomplete="given-name" placeholder="Jane"><label for="su-fn">Your legal first name</label><span class="err-dot">!</span></div>
+            <div class="field"><input id="su-ln" autocomplete="family-name" placeholder="Okafor"><label for="su-ln">Your legal last name</label><span class="err-dot">!</span></div>
           </div>
-          <div class="field"><input id="su-email" type="email" autocomplete="email"><label for="su-email">Work email</label><span class="err-dot">!</span><span class="field-err">Enter a valid email address.</span></div>
+          <div class="field"><input id="su-email" type="email" autocomplete="email" placeholder="jane@company.com"><label for="su-email">Work email</label><span class="err-dot">!</span><span class="field-err">Enter a valid email address.</span></div>
           <div class="auth-callout hidden" id="suExists" role="alert"></div>
           <div class="field phone-field">
             <label for="su-phone">Mobile number</label>
@@ -1562,9 +1631,9 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <div class="auth-inner">
       <button type="button" class="back-link back-top" id="cpBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
       <h1>Change password</h1>
-      <p class="auth-sub">We will send you an email with instructions to reset your password.</p>
+      <p class="auth-sub">If your email is associated with an existing Loop account, we will email you instructions to reset your password.</p>
       <div class="fgrid">
-        <div class="field"><input id="cp-email" type="email" autocomplete="email"><label for="cp-email">Email</label><span class="err-dot">!</span><span class="field-err">Enter a valid email address.</span></div>
+        <div class="field"><input id="cp-email" type="email" autocomplete="email" placeholder="you@company.com"><label for="cp-email">Email</label><span class="err-dot">!</span><span class="field-err">Enter a valid email address.</span></div>
         <button class="btn btn-primary" id="cpSend">Reset password</button>
         <div class="cp-callout hidden" id="cpSent" role="status">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8.5 12.5 11 15 15.5 9.5"/></svg>
@@ -1649,7 +1718,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           <div class="sk sk-btn" style="margin-top:56px;width:200px"></div>
         </div>
         <h1 class="page-h">Let's open your account</h1>
-        <p class="page-sub">Most businesses finish in about 15 minutes, and our team reviews every application before the account opens.</p>
+        <p class="page-sub">Most businesses finish in about 15 minutes</p>
         <div class="welcome-collab" style="margin-top:34px">
           <h2>Working on this with someone?</h2>
           <p class="cc-sub">Invite a teammate to fill this application with you. They can see and edit everything, and you are still the one who reviews and submits.</p>
@@ -1821,10 +1890,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
               <div class="chips" id="incomeSeg"></div>
               <p class="fhelp" style="margin-top:10px"><strong>Active</strong> income comes from selling products or services. <strong>Passive</strong> income comes from investments, rent, royalties, or holding assets.</p>
             </div>
-            <div class="q" id="q-regions" style="margin-top:26px">
-              <div class="q-label">Which countries do you expect to send or receive money from? <span class="req-mark">(select all that apply)</span></div>
-              <div class="msel" id="regionsMsel"></div>
-            </div>
             <!-- MVP credit: a yes/no expression of interest, surfaced before any bank connection -->
             <div class="chips-wrap" id="creditIntWrap" style="margin-top:26px">
               <div class="chips-label">Are you interested in a Loop credit line? <span class="req-star">*</span></div>
@@ -1900,7 +1965,6 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="rev-sec">
           <div class="rev-head"><h2>Submit</h2></div>
           <div class="signcard">
-            <div id="chgConfirm" class="hidden"></div>
             <div style="display:flex;gap:12px"><button class="btn btn-secondary btn-back" data-back="review"><span>&#8592;</span> Back</button><button class="btn btn-primary" id="btnSubmit" style="flex:1;width:auto">Submit application</button></div>
             <p class="smallprint" style="margin:16px 0 0">Only related members with managerial authority can submit this application on behalf of your company. You certify that the information entered is true and accurate.</p>
             <p class="smallprint" style="margin:8px 0 0">Once approved, you'll sign the Deposit Account Agreement, ACH Payment Terms, and Tax Form to activate the account. After submission the application is locked for review and can't be edited.</p>
@@ -1994,7 +2058,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
   <div class="sub-brand"><span class="logo" id="logoLive"></span></div>
   <div class="sub-card">
     <div class="sub-check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-    <h1>You're live</h1>
+    <h1>You're all <strong>Looped</strong> in!</h1>
     <p class="lead" id="liveLead">Your account is open and ready.</p>
     <div class="live-rows" id="liveRows"></div>
     <a class="btn btn-primary" href="https://app.bankonloop.com" target="_blank" rel="noopener" style="text-decoration:none;margin-top:10px">Go to your account</a>
@@ -2046,7 +2110,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="rolecard" data-role="Signing officer"><div><div class="rt">Signing officer</div><div class="rd">Authorized to sign documents and financial agreements on behalf of the business, or who exercises significant control over it day to day.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
         <div class="rolecard" data-role="Beneficial owner"><div><div class="rt">Beneficial owner</div><div class="rd">Owns 25% or more of the business, directly or indirectly.</div></div><div style="flex:1"></div><span class="cb"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
       </div>
-      <div class="field hidden" id="ownPctWrap" style="margin-top:4px"><input id="d-ownPct" inputmode="numeric" maxlength="3"><label for="d-ownPct">Ownership percentage<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+      <div class="field has-pct hidden" id="ownPctWrap" style="margin-top:4px"><input id="d-ownPct" inputmode="numeric" maxlength="3"><label for="d-ownPct">Ownership percentage<span class="req-star">*</span></label><span class="pct-suffix">%</span><span class="err-dot">!</span></div>
     </div>
 
     <div class="dr-sec" id="secDetails">
@@ -2057,19 +2121,15 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
           <div class="field"><input id="d-firstName"><label for="d-firstName">First name<span class="req-star">*</span></label><span class="err-dot">!</span></div>
           <div class="field"><input id="d-lastName"><label for="d-lastName">Last name<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         </div>
-        <!-- the name matches the applicant's — confirm before continuing -->
-        <div class="chips-wrap hidden" id="isYouWrap" style="margin:0 0 4px">
-          <div class="chips-label">This matches your name &mdash; is this you? <span class="req-star">*</span></div>
-          <div class="chips" id="isYouSeg">
-            <label class="chip" data-isyou="Yes"><span>Yes, this is me</span></label>
-            <label class="chip" data-isyou="No"><span>No, someone else</span></label>
-          </div>
-          <p class="fhelp hidden" id="isYouNote" style="margin-top:8px">We&rsquo;ve filled in your email and phone number, and you&rsquo;ll be able to complete your own identity verification.</p>
-        </div>
         <div class="field fixed"><input id="d-dob" inputmode="numeric" placeholder="YYYY-MM-DD" maxlength="10" autocomplete="bday"><label for="d-dob">Date of birth<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         <p class="fhelp hidden" id="dobErr" style="color:var(--error-600);font-weight:600">This person is under 18. Key contacts must be at least 18 years old.</p>
         <div class="field"><input id="d-email" type="email" autocapitalize="off"><label for="d-email">Email<span class="req-star">*</span></label><span class="err-dot">!</span></div>
         <p class="fhelp hidden" id="emailLockHint">Locked to your sign-in email.</p>
+        <!-- auto-detected when the email matches the account owner or an existing collaborator -->
+        <div class="dr-match hidden" id="emailMatch" style="margin:-2px 0 2px">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+          <p id="emailMatchMsg"></p>
+        </div>
         <div class="row" id="phoneRow" style="grid-template-columns:130px 1fr">
           <div class="fixedbox"><span class="t">Country</span><span class="v">&#127464;&#127462; +1</span></div>
           <div class="field"><input id="d-phone" type="tel" inputmode="tel"><label for="d-phone">Phone number<span class="req-star">*</span></label><span class="err-dot">!</span></div>
@@ -2151,7 +2211,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
         <div class="field"><input id="rbm-altName"><label for="rbm-altName">Alternative name</label><span class="err-dot">!</span></div>
         <div class="field"><select id="rbm-relType"></select><label for="rbm-relType">Relationship type<span class="req-star">*</span><span class="info-tip" tabindex="0">?<span class="tipbox"><strong>Parent</strong>: owns a controlling stake in your company<br><strong>Holding company</strong>: exists mainly to hold shares or assets<br><strong>Affiliate</strong>: shares a common parent with your company<br><strong>Trust or investment fund</strong>: holds shares on behalf of beneficiaries or investors<br><strong>Other</strong>: any other controlling entity</span></span></label><span class="chev">&#9662;</span><span class="err-dot">!</span></div>
         <div class="row">
-          <div class="field"><input id="rbm-ownPct" inputmode="numeric" maxlength="3"><label for="rbm-ownPct">Ownership percent<span class="req-star">*</span></label><span class="err-dot">!</span></div>
+          <div class="field has-pct"><input id="rbm-ownPct" inputmode="numeric" maxlength="3"><label for="rbm-ownPct">Ownership percent<span class="req-star">*</span></label><span class="pct-suffix">%</span><span class="err-dot">!</span></div>
           <div class="field"><input id="rbm-shares" inputmode="numeric"><label for="rbm-shares">Shares allocated</label><span class="err-dot">!</span></div>
         </div>
       </div>
@@ -2237,6 +2297,19 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
       <button class="pm-x" id="permClose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="pm-body" id="permBody"></div>
+  </div>
+</div>
+
+<!-- submit intercept: one updated question per screen, keep the before or the after -->
+<div id="revChgOverlay" class="hidden">
+  <div class="rcm-modal" role="dialog" aria-modal="true" aria-labelledby="rcmQ">
+    <div class="rcm-head">
+      <div class="rcm-dots" id="rcmDots"></div>
+      <span class="rcm-count" id="rcmCount"></span>
+      <button class="rcm-x" id="rcmClose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="rcm-body" id="rcmBody"></div>
+    <div class="rcm-foot" id="rcmFoot"></div>
   </div>
 </div>
 
@@ -2436,7 +2509,7 @@ var COFILL_STRUCT = [
     {t:'Related businesses',keys:['relBiz','rbName','rbOwnPct','rbShares','rbRelType','rbCountry']}
   ]},
   {page:'usage',title:'Expected usage',sections:[
-    {t:'Account usage',keys:['intendedUse','incomeType','regions']}
+    {t:'Account usage',keys:['intendedUse','incomeType']}
   ]},
   {page:'documents',title:'Documents',sections:[
     {t:'Supporting documents',keys:['docs']}
@@ -2519,7 +2592,6 @@ function settingsMenuHTML(showPerm){
     '<div class="settings-row has-sub" data-sub="language"><span class="ic">'+SVGI.globe+'</span><span class="lbl">Language</span><span class="val">'+lgL+'</span><span class="arrow">'+SVGI.chevR+'</span>'+
       '<div class="settings-sub hidden" data-submenu="language">'+settingsOpt('language','en','English')+settingsOpt('language','fr','Français')+'</div></div>'+
     (showPerm?'<div class="settings-row" data-act="permissions"><span class="ic">'+SVGI.users+'</span><span class="lbl">Permissions</span></div>':'')+
-    '<div class="settings-row" data-act="docs"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="lbl">Documents</span></div>'+
     '<div class="settings-row" data-act="help"><span class="ic">'+SVGI.help+'</span><span class="lbl">Help</span></div>'+
     '<div class="settings-sep"></div>'+
     '<div class="settings-row" data-act="signout"><span class="ic">'+SVGI.logout+'</span><span class="lbl">Sign out</span></div>';
@@ -2528,7 +2600,7 @@ function settingsMenuHTML(showPerm){
 function renderSettingsMenu(keepSub){
   var menu=$('settingsMenu');
   if(menu.classList.contains('hidden')||!settingsAnchor)return;
-  var showPerm=settingsAnchor.id==='settingsTrigger';
+  var showPerm=settingsAnchor.id==='settingsTrigger'&&S.page!=='who';
   menu.innerHTML=settingsMenuHTML(showPerm);
   wireSettingsMenu();
   if(keepSub){var s=menu.querySelector('[data-submenu="'+keepSub+'"]');if(s){s.classList.remove('hidden');s.closest('.settings-row').classList.add('open');}}
@@ -2549,7 +2621,6 @@ function wireSettingsMenu(){
     b.onclick=function(e){e.stopPropagation();if(b.dataset.set==='appearance')setAppearance(b.dataset.val);else setLanguage(b.dataset.val);};
   });
   var perm=menu.querySelector('[data-act="permissions"]');if(perm)perm.onclick=function(){closeSettingsMenu();openPermissions();};
-  var dcs=menu.querySelector('[data-act="docs"]');if(dcs)dcs.onclick=function(){closeSettingsMenu();openAgreeDocs();};
   var hlp=menu.querySelector('[data-act="help"]');if(hlp)hlp.onclick=function(){closeSettingsMenu();var p=$('chatPanel');if(p&&p.classList.contains('hidden')){var f=$('chatFab');if(f)f.click();}};
   var so=menu.querySelector('[data-act="signout"]');if(so)so.onclick=function(){closeSettingsMenu();doSignOut();};
 }
@@ -2560,7 +2631,7 @@ function openSettingsMenu(trigger){
   settingsAnchor=trigger;
   var topbar=trigger.id==='setupSettingsTrigger'||trigger.id==='settingsTrigger';
   menu.classList.toggle('flip-left',topbar);
-  menu.innerHTML=settingsMenuHTML(trigger.id==='settingsTrigger');
+  menu.innerHTML=settingsMenuHTML(trigger.id==='settingsTrigger'&&S.page!=='who');
   menu.classList.remove('hidden');
   var r=trigger.getBoundingClientRect();
   var W=topbar?240:208;
@@ -2582,29 +2653,34 @@ function closeSettingsMenu(){
 }
 
 /* permissions modal: everyone who can see or help with the application */
-function permRow(name,email,badge,badgeCls,onRemove){
+var PR_SIGN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V6z"/><polyline points="9 12 11 14 15 10"/></svg>';
+function permRow(name,email,badge,badgeCls,onRemove,signerNote){
   var av=((name||email||'?').trim()||'?').slice(0,1).toUpperCase();
   var row=el('div','perm-row',
     '<div class="pr-av">'+esc(av)+'</div>'+
-    '<div class="pr-who"><div class="pr-nm">'+esc(name||cofillName(email))+'</div>'+(email?'<div class="pr-em">'+esc(email)+'</div>':'')+'</div>'+
+    '<div class="pr-who"><div class="pr-nm">'+esc(name||cofillName(email))+'</div>'+(email?'<div class="pr-em">'+esc(email)+'</div>':'')+(signerNote?'<div class="pr-signer">'+PR_SIGN+esc(signerNote)+'</div>':'')+'</div>'+
     '<span class="pr-access '+(badgeCls||'')+'">'+esc(badge)+'</span>'+
     (onRemove?'<button class="pr-remove" aria-label="Remove">'+SVGI.trash+'</button>':''));
   if(onRemove)row.querySelector('.pr-remove').onclick=onRemove;
   return row;
 }
+/* roles carried to an account from the related-person profiles it is linked to */
+function linkedRoles(pred){var out=[];(S.f.individuals||[]).forEach(function(p){if(pred(p)&&p.roles)out=out.concat(p.roles);});return out;}
+function signerNoteFor(roles){return roles.indexOf('Signing officer')>=0?'Authorized signer':null;}
 function renderPermissions(){
   var body=$('permBody');body.innerHTML='';
   var meName=((S.firstName||'')+' '+(S.lastName||'')).trim()||S.email;
   body.appendChild(el('div','perm-group-h','You'));
-  body.appendChild(permRow(meName,S.email,'Owner','you',null));
+  body.appendChild(permRow(meName,S.email,'Owner','you',null,signerNoteFor(linkedRoles(function(p){return p.isMe;}))));
 
   body.appendChild(el('div','perm-group-h','Collaborators'));
   var collabs=S.collaborators||[];
   if(collabs.length){
     collabs.forEach(function(c){
+      var roles=linkedRoles(function(p){return (p.linkedCollab&&p.linkedCollab===c.id)||(p.email&&c.email&&String(p.email).toLowerCase()===String(c.email).toLowerCase());});
       body.appendChild(permRow(collabFullName(c),c.email,c.online?'Online now':'Invited',c.online?'you':'lim',function(){
         removeCollaborator(c.id);renderPermissions();
-      }));
+      },signerNoteFor(roles)));
     });
   }else body.appendChild(el('div','perm-empty','No collaborators yet. Invite a teammate from the welcome page or the sidebar.'));
 
@@ -2760,7 +2836,6 @@ function missingPage(id){
   }else if(id==='usage'){
     if(!f.intendedUse.length)m.push('intendedUse');
     K_USAGE.forEach(function(k){if(!f[k])m.push(k);});
-    if(!f.regions.length)m.push('regions');
   }else if(id==='documents'){
     if(docRequirements().length&&!f.docs.length)m.push('docs');
   }
@@ -3086,6 +3161,8 @@ function showPage(id,forceDir){
   var appEl=$('app'),wasPre=appEl.classList.contains('preapp');
   var ft=appEl.querySelector('.flow-top');
   appEl.classList.toggle('preapp',pre);
+  /* the "who" screening is pre-application: no collaboration affordances yet */
+  appEl.classList.toggle('screening',id==='who');
   if(pre)ft.classList.remove('nav-in');
   else if(wasPre){void ft.offsetWidth;ft.classList.add('nav-in');}
   /* finish any exit animation still in flight, then note which page is on screen */
@@ -3116,7 +3193,7 @@ function showPage(id,forceDir){
     if(id==='documents'){startDocScreen();renderDocs();}
     /* reaching review is the moment gaps become visible: from here on, every
        page shows error states for its unfilled mandatory fields */
-    if(id==='review'){PAGE_ORDER.forEach(function(p){S.attempted[p]=true;});persist();renderReview();}
+    if(id==='review'){PAGE_ORDER.forEach(function(p){S.attempted[p]=true;});persist();captureReviewBaseline();renderReview();}
     refreshInvalid(id);
     if(id!=='review'){markPageSeen(id);paintVisitChanges(id);clearAwayIfDone(id);}
   }
@@ -3490,7 +3567,6 @@ function renderMselFor(boxId,qId,key,options,placeholder,exclusive){
   });
 }
 function renderMsel(){
-  renderMselFor('regionsMsel','q-regions','regions',REGIONS,'Select all regions that apply','Domestic only');
   renderMselFor('useMsel','q-intendedUse','intendedUse',USES,'Select all that apply',null);
 }
 
@@ -3516,7 +3592,6 @@ function refreshInvalid(id){
   if(id==='usage'){
     $('q-intendedUse').classList.toggle('invalid',miss.indexOf('intendedUse')>=0);
     $('incomeWrap').classList.toggle('invalid',miss.indexOf('incomeType')>=0);
-    $('q-regions').classList.toggle('invalid',miss.indexOf('regions')>=0);
     $('creditIntWrap').classList.toggle('invalid',miss.indexOf('creditInterest')>=0);
   }
   if(id==='documents')renderDocs();
@@ -3813,11 +3888,15 @@ function renderDrStep(){
   strip.innerHTML=steps.map(function(s,i){
     return '<button type="button" class="dr-step'+(i===drStep?' cur':(i<drStep||free?' done':''))+'" data-drstep="'+i+'"><span class="n">'+(i<drStep?'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':(i+1))+'</span>'+esc(s.t)+'</button>';
   }).join('');
+  /* once the applicant is on their own identity-verification step, they can't go back to
+     edit earlier steps: no Back button and the step strip is locked */
+  var isMeIdv=cur.k==='idv'&&$('d-isMe')&&$('d-isMe').checked;
+  strip.classList.toggle('locked',isMeIdv);
   strip.querySelectorAll('[data-drstep]').forEach(function(b){
-    b.onclick=function(){var i=+b.dataset.drstep;if(i<drStep||free){drStep=i;renderDrStep();}};
+    b.onclick=function(){if(isMeIdv)return;var i=+b.dataset.drstep;if(i<drStep||free){drStep=i;renderDrStep();}};
   });
   var last=drStep===steps.length-1;
-  back.classList.toggle('hidden',drStep===0);
+  back.classList.toggle('hidden',drStep===0||isMeIdv);
   next.classList.toggle('hidden',last);
   saveB.classList.toggle('hidden',!last);
   if(cur.k==='idv')renderIdv();
@@ -4001,7 +4080,7 @@ function renderIdvSelf(){
   });
   var send=$('idvSend');
   if(send)send.onclick=function(){
-    this.outerHTML='<p class="idv-ok" style="margin-top:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Link on its way \u2014 your entry shows as pending until the check is done.</p>';
+    this.outerHTML='<p class="idv-ok" style="margin-top:10px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Link sent, please check your inbox</p>';
   };
 }
 /* verification page for someone else: pick a channel (email link with a personal
@@ -4057,9 +4136,31 @@ function syncIsMe(){
   $('emailLockHint').classList.add('hidden');
   renderIdv();
 }
-/* the current user is auto-detected as a key contact when the email entered matches their sign-in email */
-function detectSelf(){
-  $('d-isMe').checked=!!S.email&&($('d-email').value||'').trim().toLowerCase()===(S.email||'').trim().toLowerCase();
+/* the email decides who this profile belongs to — no "is this you?" question. If it
+   matches the account owner it's marked as them (self IDV); if it matches an existing
+   collaborator, the profile is linked to that collaborator's account, so whatever roles
+   are assigned here (e.g. authorized signer) apply to them and they verify themselves. */
+var drLinkedCollab=null;
+function detectEmailMatch(){
+  var em=($('d-email').value||'').trim().toLowerCase();
+  var isOwner=!!S.email&&em===String(S.email||'').toLowerCase();
+  var collab=(!isOwner&&em)?collabByEmail(em):null;
+  $('d-isMe').checked=isOwner;
+  drLinkedCollab=collab?collab.id:null;
+  var box=$('emailMatch'),msg=$('emailMatchMsg');
+  if(box&&msg){
+    if(isOwner){
+      /* it's the applicant's own email: switch to self-verification silently — no banner */
+      box.classList.add('hidden');
+    }else if(collab){
+      box.classList.remove('hidden');
+      msg.innerHTML='<strong>'+esc(collabFullName(collab))+'</strong> is already a collaborator on this application. This profile links to their account &mdash; the roles you assign here apply to them, and they verify their own identity.';
+      /* borrow their name if we don't have one yet */
+      if(collab.fullName){var parts=collab.fullName.split(/\s+/);
+        if(!$('d-firstName').value&&parts[0]){$('d-firstName').value=parts[0];$('d-firstName').closest('.field').classList.add('filled');}
+        if(!$('d-lastName').value&&parts.length>1){$('d-lastName').value=parts.slice(1).join(' ');$('d-lastName').closest('.field').classList.add('filled');}}
+    }else box.classList.add('hidden');
+  }
   syncIsMe();
 }
 function openDrawer(idx,mode){
@@ -4093,8 +4194,7 @@ function openDrawer(idx,mode){
   /* wizard: start on the first category page; seed verification choices from the person */
   drStep=0;
   drIntro=(idx<0&&(mode||'add')==='add');/* brand-new add: ask who fills it out first */
-  drIsYou=p&&p.isMe?'Yes':'';
-  checkNameSelf();
+  detectEmailMatch();
   drIdvChan=(p&&p.idvChannel)||'email';
   drIdvNote=p?(p.idvNote||''):'';
   drIdvPhone=p?(p.idvPhone||''):'';
@@ -4158,7 +4258,7 @@ function saveDrawer(){
   }
   /* self can be saved with IDV still pending — they can finish from their tree node */
   var isMe=$('d-isMe').checked;
-  var p={roles:drRoles.slice(),ownPct:$('d-ownPct').value,isMe:isMe,idv:isMe?drIdv:false,taxResident:drTaxRes};
+  var p={roles:drRoles.slice(),ownPct:$('d-ownPct').value,isMe:isMe,idv:isMe?drIdv:false,taxResident:drTaxRes,linkedCollab:isMe?null:(drLinkedCollab||null)};
   DK.forEach(function(k){p[k]=$('d-'+k).value;});
   if(drTaxRes!=='Yes'){p.taxCountry='';p.taxIdOther='';}
   if(!drIsBO()){p.sin='';p.tin='';p.taxCountry='';p.taxIdOther='';p.taxResident='';}
@@ -4211,9 +4311,9 @@ function cancelTransfer(){S.transfer=null;permTransferMode=false;save();if(!$('p
 /* ---- invite a teammate: full-access concurrent editing, no page ownership ---- */
 function buildInviteForm(idPrefix){
   return '<div class="invite-form"><div class="inv-row">'+
-    '<input id="'+idPrefix+'Email" type="email" autocapitalize="off" autocomplete="off" placeholder="Teammate\u2019s work email">'+
+    '<input id="'+idPrefix+'Email" type="email" autocapitalize="off" autocomplete="off" placeholder="Their work email">'+
     '<button class="btn btn-primary btn-sm inv-btn" id="'+idPrefix+'Send">Send invite</button></div>'+
-    '<p class="inv-help">They get full edit access right away. Only you can submit the application.</p></div>';
+    '<p class="inv-help">They’ll have full edit access. Only a verified authorized signer can submit the application.</p></div>';
 }
 function wireInviteForm(idPrefix,onDone){
   var inp=$(idPrefix+'Email'),btn=$(idPrefix+'Send');
@@ -4247,10 +4347,16 @@ function openInvitePopover(){
   closeNav();
   var pop=el('div','inv-pop');
   pop.id='invPop';
-  pop.innerHTML='<h4>Invite a teammate</h4>'+buildInviteForm('ip');
+  pop.innerHTML='<h4>Invite a teammate</h4>'+buildInviteForm('ip')+
+    '<div class="inv-perm"><button type="button" class="inv-perm-btn" id="ipManagePerms">'+SVGI.users+'<span>Manage permissions</span></button></div>';
   document.body.appendChild(pop);
+  /* anchor the popover just above the pill. The pill floats higher when presence
+     avatars sit below it, so measure rather than assume a fixed offset. */
+  var pill=$('cofillSideBtn');
+  if(pill){var r=pill.getBoundingClientRect();pop.style.bottom=(window.innerHeight-r.top+8)+'px';pop.style.left=r.left+'px';}
   invitePopOpen=true;
   wireInviteForm('ip',function(){closeInvitePopover();});
+  var mp=$('ipManagePerms');if(mp)mp.onclick=function(){closeInvitePopover();openPermissions();};
   setTimeout(function(){document.addEventListener('mousedown',invitePopOutside);},0);
 }
 function invitePopOutside(e){
@@ -4334,53 +4440,112 @@ function kvCard(page,keys){
   });
   return card;
 }
-/* review baseline: which tracked answers are unseen as of THIS render, and the
-   version of every tracked key at render time (for the submit intercept) */
+/* review baseline: the version of every tracked key when review was last (re)entered.
+   The submit intercept fires for any key that has moved past this baseline — so a change
+   that lands WHILE reviewing is flagged, while the baseline itself is left untouched by
+   live repaints (paintReviewChanges) so the modal still gets its chance on submit. */
 var reviewSnapshot={},reviewChangedKeys=[];
 function captureReviewBaseline(){
-  reviewChangedKeys=trackedKeys().filter(isUnseen);
   reviewSnapshot={};trackedKeys().forEach(function(k){reviewSnapshot[k]=metaOf(k).v;});
 }
+/* mark every unseen answer with the green left rule + a "who changed it" note.
+   Idempotent: it recomputes the unseen set and repaints, so it can run live when a
+   teammate's edit lands mid-review without disturbing the submit baseline. */
 function paintReviewChanges(){
+  reviewChangedKeys=trackedKeys().filter(isUnseen);
+  var R=$('reviewSections');if(!R)return;
+  R.querySelectorAll('.rev-row.changed').forEach(function(r){r.classList.remove('changed');});
+  R.querySelectorAll('.rev-row .chg-note').forEach(function(n){n.remove();});
   reviewChangedKeys.forEach(function(k){
-    var row=document.querySelector('#reviewSections .rev-row[data-rk="'+k+'"]');
+    var row=R.querySelector('.rev-row[data-rk="'+k+'"]');
     if(!row)return;
     row.classList.add('changed');
     var m=metaOf(k),name=esc(collabName(m.by));
-    var txt=m.prev?('<b>'+name+'</b> changed this '+timeAgo(m.at)+' '+wasTip(m.prev)):('<b>'+name+'</b> filled this in '+timeAgo(m.at));
+    /* the green left rule carries "changed"; the note names who, no "previous input" tooltip */
+    var txt=m.prev?('<b>'+name+'</b> changed this '+timeAgo(m.at)):('<b>'+name+'</b> filled this in '+timeAgo(m.at));
     var n=el('div','');n.innerHTML='<div class="chg-note" style="margin-top:6px"><span class="chg-dot"></span><span>'+txt+'</span></div>';
     row.appendChild(n.firstChild);
   });
 }
-/* submit intercept: one inline look at changes that landed since the last review */
-function renderSubmitIntercept(keys){
-  var box=$('chgConfirm');if(!box)return;
-  var byName=collabName(metaOf(keys[0]).by);
-  var s=keys.length===1?'':'s';
-  var rows=keys.map(function(k){
-    var m=metaOf(k),now=fieldVal(k)||trackedValue(k);
-    return '<div class="cc-row"><a href="#" data-ccrow="'+esc(k)+'">'+esc(labelFor(k))+'</a>'+
-      '<span class="cc-delta">was <b>"'+esc(m.prev||'')+'"</b> · now <b>"'+esc(now)+'"</b></span>'+
-      '<span class="cc-when">'+timeAgo(m.at)+'</span></div>';
+/* ---- submit intercept modal: one updated question per screen ----
+   A signing officer hits Submit; any answer a teammate changed since this user last
+   reviewed it is queued. Each screen shows one question's before and after and asks
+   which to keep. Closing the modal cancels submission but leaves the rows flagged. */
+var revQ=[],revStep=0,revChoice=null;
+function reviewChoiceValue(k,which){
+  var m=metaOf(k);
+  return which==='before'?(m.prev||''):(fieldVal(k)||trackedValue(k));
+}
+/* apply the picked version, then take the key out of the "unseen" / "late" sets */
+function applyReviewChoice(k,which){
+  var m=metaOf(k);
+  if(which==='before'){
+    var cur=trackedValue(k),prev=m.prev||'';
+    if(k==='intendedUse'||k==='regions')S.f[k]=prev?prev.split(', '):[];
+    else S.f[k]=prev;
+    noteOwnEdit(k,cur);/* reverting is your own edit: bumps version, marks seen for you */
+    applyKeyToDom(k);
+  }else{
+    S.seen[k]=m.v;/* accept the teammate's value: just mark it seen */
+  }
+  reviewSnapshot[k]=metaOf(k).v;/* no longer counts as changed-since-review */
+  save();
+}
+function openReviewChangeModal(keys){
+  revQ=keys.slice();revStep=0;revChoice=null;
+  $('revChgOverlay').classList.remove('hidden');
+  updateChatVisibility();
+  renderReviewChangeStep();
+}
+function closeReviewChangeModal(){
+  $('revChgOverlay').classList.add('hidden');
+  updateChatVisibility();
+  renderReview();/* keep the review page in sync: resolved rows clear, rest stay flagged */
+}
+function renderReviewChangeStep(){
+  var k=revQ[revStep];if(!k){closeReviewChangeModal();return;}
+  var m=metaOf(k),name=esc(collabName(m.by)),last=revStep===revQ.length-1;
+  revChoice=null;
+  /* progress: a dot per queued question, elongated on the current one */
+  $('rcmDots').innerHTML=revQ.map(function(_,i){
+    return '<span class="rcm-dot'+(i<revStep?' done':i===revStep?' cur':'')+'"></span>';
   }).join('');
-  box.innerHTML='<h4>One more look before you submit</h4>'+
-    '<p class="cc-sub">'+esc(byName)+' changed '+keys.length+' answer'+s+' since you last reviewed them.</p>'+
-    rows+
-    '<div class="cc-actions"><button class="btn btn-primary" type="button" data-chgproceed style="width:auto">Submit application</button>'+
-    '<button class="btn btn-secondary" type="button" data-chgkeep style="width:auto">Keep reviewing</button></div>';
-  box.classList.remove('hidden');
-  box.querySelectorAll('[data-ccrow]').forEach(function(a){
-    a.onclick=function(e){e.preventDefault();
-      var row=document.querySelector('#reviewSections .rev-row[data-rk="'+a.dataset.ccrow+'"]');
-      if(row){row.classList.add('changed');row.scrollIntoView({behavior:'smooth',block:'center'});}
+  $('rcmCount').textContent=(revStep+1)+' of '+revQ.length;
+  var before=reviewChoiceValue(k,'before'),after=reviewChoiceValue(k,'after');
+  var tick='<span class="rcm-tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
+  function optVal(v){return v?esc(v):'<span class="rcm-opt-val muted">Not provided</span>';}
+  $('rcmBody').innerHTML=
+    '<span class="rcm-kicker"><span class="rcm-dot-live"></span>Updated during your review</span>'+
+    '<h3 class="rcm-q" id="rcmQ">'+esc(labelFor(k))+'</h3>'+
+    '<p class="rcm-sub"><b>'+name+'</b> changed this answer '+timeAgo(m.at)+'. Choose which version to submit.</p>'+
+    '<div class="rcm-opts">'+
+      '<button type="button" class="rcm-opt" data-choice="before"><span class="rcm-opt-tag">Your reviewed answer</span>'+
+        (before?'<span class="rcm-opt-val">'+esc(before)+'</span>':optVal(''))+tick+'</button>'+
+      '<button type="button" class="rcm-opt" data-choice="after"><span class="rcm-opt-tag">'+name+'&rsquo;s update</span>'+
+        (after?'<span class="rcm-opt-val">'+esc(after)+'</span>':optVal(''))+tick+'</button>'+
+    '</div>';
+  $('rcmFoot').innerHTML='<button type="button" class="btn btn-secondary rcm-spacer" id="rcmDismiss">Review later</button>'+
+    '<button type="button" class="btn btn-primary" id="rcmNext" disabled>'+(last?'Confirm and submit':'Confirm and continue')+'</button>';
+  $('rcmBody').querySelectorAll('.rcm-opt').forEach(function(b){
+    b.onclick=function(){
+      revChoice=b.dataset.choice;
+      $('rcmBody').querySelectorAll('.rcm-opt').forEach(function(o){o.classList.toggle('sel',o===b);});
+      $('rcmNext').disabled=false;
     };
   });
-  box.scrollIntoView({behavior:'smooth',block:'center'});
+  $('rcmDismiss').onclick=closeReviewChangeModal;
+  $('rcmNext').onclick=function(){
+    if(!revChoice)return;
+    applyReviewChoice(k,revChoice);
+    if(last){$('revChgOverlay').classList.add('hidden');updateChatVisibility();doSubmit();}
+    else{revStep++;renderReviewChangeStep();}
+  };
 }
+/* renders the review DOM against current values and repaints change flags. The submit
+   baseline (reviewSnapshot) is captured on review ENTRY, not here, so re-rendering after a
+   dismissed intercept keeps unresolved changes flagged and re-prompts on the next submit. */
 function renderReview(){
   var R=$('reviewSections');R.innerHTML='';
-  captureReviewBaseline();
-  var cc=$('chgConfirm');if(cc){cc.classList.add('hidden');cc.innerHTML='';}
 
   var bizKeys=['legalName'].concat(S.f.hasTradeName?['operatingName']:[]).concat(['phone','website','taxId','entityType','industry','subIndustry','description','address1','address2','provState','city','postal']);
   var bCard=kvCard('business',bizKeys);
@@ -4419,7 +4584,7 @@ function renderReview(){
   }
   R.appendChild(revSection('Business contacts','contacts',missingPage('contacts'),pCard));
 
-  R.appendChild(revSection('Expected usage','usage',missingPage('usage'),kvCard('usage',['intendedUse','incomeType','regions','creditInterest','hearAbout'])));
+  R.appendChild(revSection('Expected usage','usage',missingPage('usage'),kvCard('usage',['intendedUse','incomeType','creditInterest','hearAbout'])));
 
   var dCard=el('div','rev-card');
   var dreq=docRequirements();
@@ -4446,18 +4611,35 @@ function paintGaps(){
   var box=$('gapsBox');var all=allMissing();
   var auth=submitAuthorized();
   $('btnSubmit').disabled=all.length>0||!auth;
-  if(!all.length){box.innerHTML='';gapsExpanded=false;return;}
-  /* long lists collapse to the first few items behind a "show all" toggle */
-  var COLLAPSE_AT=5,collapsed=all.length>COLLAPSE_AT&&!gapsExpanded;
-  var shown=collapsed?all.slice(0,COLLAPSE_AT):all;
-  var html='<div class="gaps"><h4>Complete '+all.length+' required item'+(all.length>1?'s':'')+' to submit</h4>';
-  shown.forEach(function(k){
-    html+='<a href="#" data-goto="'+keyPage(k)+'" data-key="'+k+'">'+esc(labelFor(k))+'</a>';
-  });
-  if(all.length>COLLAPSE_AT){
-    html+='<button type="button" class="gaps-toggle" id="gapsToggle" aria-expanded="'+(!collapsed)+'">'+
-      (collapsed?'Show all '+all.length+' items':'Show fewer items')+
-      ' <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>';
+  /* nothing blocking submission: clear the box */
+  if(!all.length&&auth){box.innerHTML='';gapsExpanded=false;return;}
+  var html='<div class="gaps">';
+  html+='<h4>'+(all.length
+      ?'Complete '+all.length+' required item'+(all.length>1?'s':'')+' to submit'
+      :'One more step before you can submit')+'</h4>';
+  /* specific blocker: nobody on the application can actually sign and submit it. This is
+     the case a usability test tripped on (only a beneficial owner was added), so spell it out. */
+  if(!auth){
+    html+='<div class="gaps-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
+      '<div>No signing officer added. Your application needs at least one signing officer or director, someone authorized to sign and submit on the company&rsquo;s behalf, before it can go in. Add one on <a href="#" data-goto="contacts" data-key="individuals">Business contacts</a>.</div></div>';
+  }
+  /* the remaining incomplete fields, grouped under the exact page (in red) they live on */
+  if(all.length){
+    var COLLAPSE_AT=6,collapsed=all.length>COLLAPSE_AT&&!gapsExpanded;
+    var shown=collapsed?all.slice(0,COLLAPSE_AT):all;
+    ['business','contacts','usage','documents'].forEach(function(p){
+      var items=shown.filter(function(k){return keyPage(k)===p;});
+      if(!items.length)return;
+      html+='<div class="gaps-page">'+esc(pageTitle(p))+'</div>';
+      items.forEach(function(k){
+        html+='<a href="#" data-goto="'+p+'" data-key="'+k+'">'+esc(labelFor(k))+'</a>';
+      });
+    });
+    if(all.length>COLLAPSE_AT){
+      html+='<button type="button" class="gaps-toggle" id="gapsToggle" aria-expanded="'+(!collapsed)+'">'+
+        (collapsed?'Show all '+all.length+' items':'Show fewer items')+
+        ' <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>';
+    }
   }
   html+='</div>';
   box.innerHTML=html;
@@ -5353,8 +5535,7 @@ function renderSi2fa(){
   if(!si2faMethod){
     body.innerHTML=head+
       '<p class="auth-sub">Choose how you&rsquo;d like to verify your identity to finish signing in.</p>'+
-      si2faMethods.map(mCard).join('')+
-      '<p class="auth-foot" style="text-align:left;margin-top:18px">Text message (SMS) verification is temporarily unavailable.</p>';
+      si2faMethods.map(mCard).join('');
     $('si2faBack').onclick=function(){
       show('auth');
       $('authSignup').classList.add('hidden');$('authSignin').classList.remove('hidden');syncAuthButtons();
@@ -5675,7 +5856,7 @@ function applyRegistryPrefill(r){
   S.bizGaps=missingPage('business').slice();
   hydrateFields();save();
 }
-var whoRec=null,whoMode='name',whoTyped='';/* runtime only — the record being confirmed + the search text captured when the user can't find their business */
+var whoRec=null,whoMode='name',whoTyped='',whoCantFind=false;/* runtime only — the record being confirmed + the search text captured when the user can't find their business */
 /* "I can't find my business": whatever they typed is real data, not a failed query —
    digits land in the application's tax-ID field, anything else in legal business name */
 function applyWhoTyped(){
@@ -5698,6 +5879,7 @@ function setScrProgress(step){
    swaps the input area for a removable record card. */
 function renderWhoSearch(){
   var body=$('whoBody');if(!body)return;
+  whoCantFind=false;
   var mid;
   if(whoRec){
     mid='<div class="who-card"><div class="wc-head"><div><div class="wc-name">'+esc(whoRec.name)+'</div><div class="wc-meta">'+regMeta(whoRec)+'</div></div>'+
@@ -5718,11 +5900,14 @@ function renderWhoSearch(){
   }
   setScrProgress(0);
   body.innerHTML='<h1 class="page-h">Find your business</h1>'+
-    '<p class="page-sub">Search your legal business name or tax ID. If we find it in the registry we’ll autofill your application; if not, we’ll use what you enter here.</p>'+
+    '<p class="page-sub">Search your legal business name or tax ID to autofill your application. If you can’t find your business, we’ll use what you enter here.</p>'+
     '<div class="fgrid" style="margin-top:34px">'+mid+'</div>';
   var cf=$('whoConfirm');
   if(cf)cf.onclick=function(){
-    if(this.disabled||!whoRec)return;
+    if(this.disabled)return;
+    /* "I can't find my business" mode: proceed with whatever they typed */
+    if(whoCantFind){whoRec=null;applyWhoTyped();startWhoScreen();return;}
+    if(!whoRec)return;
     renderWhoPull();
   };
   if(whoRec){
@@ -5732,6 +5917,7 @@ function renderWhoSearch(){
   var q=$('whoQ'),menu=$('whoMenu'),list=$('whoList');
   var results=[];
   function paint(){
+    if(whoCantFind)return;/* in can't-find mode the menu stays closed */
     var v=q.value.trim();
     if(v.length<2){menu.classList.add('hidden');return;}
     results=regSearch(v);
@@ -5743,11 +5929,11 @@ function renderWhoSearch(){
     });
     menu.classList.remove('hidden');
   }
-  q.addEventListener('input',function(){q.closest('.field').classList.toggle('filled',!!q.value);paint();});
+  q.addEventListener('input',function(){q.closest('.field').classList.toggle('filled',!!q.value);if(whoCantFind){whoCantFind=false;cf.textContent='This is my business';cf.disabled=true;}paint();});
   q.addEventListener('focus',paint);
   document.addEventListener('click',function(e){if(!e.target.closest('.who-field')){menu.classList.add('hidden');}});
   /* can't find it in the registry: take the typed legal name / tax ID as-is and move on */
-  $('whoNF').onclick=function(){whoTyped=q.value.trim();whoRec=null;applyWhoTyped();startWhoScreen();};
+  $('whoNF').onclick=function(){whoTyped=q.value.trim();whoCantFind=true;menu.classList.add('hidden');cf.textContent='Continue';cf.disabled=false;};
   q.focus();
 }
 /* short registry pull once the business is confirmed, then ask for the website
@@ -5758,7 +5944,7 @@ function renderWhoPull(){
   var CHECK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   var steps=['Confirming registration with the corporate registry','Pulling corporate details and business number'];
   body.innerHTML='<h1 class="page-h">Setting things up</h1>'+
-    '<p class="page-sub">Pulling the registry record for '+esc(whoRec.name)+'&hellip;</p>'+
+    '<p class="page-sub">Collecting information on '+esc(whoRec.name)+'&hellip;</p>'+
     '<div class="reg-panel" style="max-width:560px;margin-top:30px">'+
     steps.map(function(t,i){return '<div class="reg-row" id="whoStep'+i+'"><span class="ic"></span><span class="t">'+t+'</span></div>';}).join('')+
     '</div>';
@@ -5781,6 +5967,9 @@ function renderWhoPull(){
    last gates eligibility for now (Growth will refine the revenue bands later). */
 var SCREEN_REVENUE=['Pre-revenue','$1-$10K','$10K-$30K','$30K-$80K','$80K-$200K','$200K-$1M','$1M+'];
 var screenRevenue='',eligQcsp='';
+/* pre-revenue proof of operation: the uploaded file, its auto-parse state, and an
+   optional professional presence (LinkedIn) */
+var screenProof=null,screenProofState='idle',screenLinkedIn='';
 function eligOpt(val,label){return '<button type="button" class="elig-opt" data-elig="'+esc(val)+'"><span class="ro"></span><span>'+esc(label)+'</span></button>';}
 function wireEligOpts(body,current,set){
   var go=$('eligGo');
@@ -5794,18 +5983,21 @@ function wireEligOpts(body,current,set){
 }
 /* the website we can pre-fill: from the registry record, an already-entered site, or
    the domain of a non-personal work email (most people sign up with one) */
+var PERSONAL_EMAIL_DOMAINS=['gmail.com','outlook.com','hotmail.com','yahoo.com','yahoo.ca','icloud.com','proton.me','protonmail.com','aol.com','live.com','me.com'];
+/* true when the account email is on a business/work domain (not a consumer inbox) */
+function hasWorkEmail(){
+  var em=(S.email||''),at=em.indexOf('@');
+  if(at<0)return false;
+  return PERSONAL_EMAIL_DOMAINS.indexOf(em.slice(at+1).toLowerCase())<0;
+}
 function detectWebsite(){
   if(whoRec&&whoRec.website)return {url:whoRec.website,source:'registry'};
   if(S.f.website)return {url:S.f.website,source:'entered'};
   var em=(S.email||''),at=em.indexOf('@');
-  if(at>0){
-    var dom=em.slice(at+1).toLowerCase();
-    var personal=['gmail.com','outlook.com','hotmail.com','yahoo.com','yahoo.ca','icloud.com','proton.me','protonmail.com','aol.com','live.com','me.com'];
-    if(personal.indexOf(dom)<0)return {url:dom,source:'email'};
-  }
+  if(at>0&&hasWorkEmail())return {url:em.slice(at+1).toLowerCase(),source:'email'};
   return {url:'',source:'none'};
 }
-function startWhoScreen(){screenRevenue='';eligQcsp='';renderWhoQ1Website();}
+function startWhoScreen(){screenRevenue='';eligQcsp='';screenProof=null;screenProofState='idle';screenLinkedIn='';renderWhoQ1Website();}
 /* Q1: confirm (detected) or add / update the business website. Forward-only. */
 var PENCIL_SVG='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 function renderWhoQ1Website(){
@@ -5832,18 +6024,33 @@ function renderWhoQ1Website(){
   /* no detection (e.g. a personal email): they add it themselves */
   body.innerHTML=
     '<h1 class="scr-q">Add your business website</h1>'+
-    '<p class="scr-sub">We could not locate it from your email, so please add it. In most cases we can find it from a work email address.</p>'+
+    '<p class="scr-sub">We could not locate it from your email; please add one manually if applicable.</p>'+
     '<div class="fgrid" style="margin-top:24px;max-width:560px">'+
       '<div class="field'+(S.f.website?' filled':'')+'"><input id="whoWebInput" type="url" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="yourbusiness.ca" value="'+esc(S.f.website||'')+'"><label for="whoWebInput">Business website</label></div>'+
       '<button class="btn btn-primary" id="whoWebGo"'+(S.f.website?'':' disabled')+'>Continue</button>'+
     '</div>'+
-    '<p class="who-foot"><a href="#" id="whoWebSkip">Skip, I don’t have a business website</a></p>';
+    '<p class="who-foot"><a href="#" id="whoWebSkip">Skip, we don’t have a business website</a></p>';
   slideIn(body,'fwd');
   var inp2=$('whoWebInput'),btn=$('whoWebGo');
   inp2.addEventListener('input',function(){inp2.closest('.field').classList.toggle('filled',!!inp2.value);btn.disabled=!inp2.value.trim();});
   btn.onclick=function(){if(this.disabled)return;S.f.website=inp2.value.trim();hydrateFields();save();renderWhoRevenue();};
-  var sk=$('whoWebSkip');if(sk)sk.onclick=function(e){e.preventDefault();S.f.website='';hydrateFields();save();renderWhoRevenue();};
+  var sk=$('whoWebSkip');if(sk)sk.onclick=function(e){e.preventDefault();S.f.website='';hydrateFields();save();
+    /* neither a work email domain nor a business website: block for security */
+    if(!hasWorkEmail()){renderWhoWebBlocked();return;}
+    renderWhoRevenue();};
   inp2.focus();
+}
+/* security block: a personal-email applicant who also skips the business website has
+   neither signal we can verify against. Recoverable — they may have signed up with the
+   wrong email, so "here" returns to the start of the application. */
+function renderWhoWebBlocked(){
+  var body=$('whoBody');if(!body)return;
+  whoRec=null;setScrProgress(0);
+  body.innerHTML='<h1 class="page-h">We couldn’t verify your business</h1>'+
+    '<p class="page-sub" style="max-width:560px">For security purposes, we can’t allow individuals with neither a work email domain nor a business website to proceed with the application.</p>'+
+    '<p class="page-sub" style="max-width:560px;margin-top:10px">If you believe there was a mistake, return to the start of the application <a href="#" id="whoBlockRestart">here</a>.</p>';
+  slideIn(body,'fwd');
+  var r=$('whoBlockRestart');if(r)r.onclick=function(e){e.preventDefault();screenRevenue='';eligQcsp='';S.f.website='';renderWhoSearch();};
 }
 /* Q2: average monthly revenue (bands mirror the current onboarding flow) */
 function renderWhoRevenue(){
@@ -5892,8 +6099,79 @@ function renderWhoDeclined(){
     '</div>';
   slideIn(body,'fwd');
 }
-/* soft decline: pre-revenue. Warmer, come-back-later tone. */
+/* soft decline: pre-revenue. Rather than turning them away, ask them to prove the
+   business is genuinely active. A proof of operation is auto-parsed for recency and
+   validity, and a professional presence (LinkedIn) can be added on top. */
 function renderWhoSoftDeclined(){
+  var body=$('whoBody');if(!body)return;
+  /* keep whoRec so the registry prefill still applies once they clear the Quebec gate */
+  setScrProgress(2);
+  body.innerHTML='<h1 class="scr-q">Let&rsquo;s confirm your business is active</h1>'+
+    '<p class="scr-sub" style="max-width:600px">Loop is built for revenue-generating businesses. Because yours is pre-revenue, we ask you to confirm it is genuinely operating by sharing a recent proof of operation, or a professional presence such as a LinkedIn profile. We review what you provide automatically to check that it is recent, valid, and shows a real, active business.</p>'+
+    '<div class="fgrid" style="margin-top:26px;max-width:600px">'+
+      '<div>'+
+        '<span class="proof-label">Proof of operation</span>'+
+        '<p class="proof-hint">A recent bank statement, signed customer contract, commercial lease, or supplier invoice. PDF, JPEG, or PNG, up to 10 MB.</p>'+
+        '<div id="proofUp"></div>'+
+        '<div id="proofResult"></div>'+
+      '</div>'+
+      '<div class="field" style="margin-top:6px"><input id="whoLinkedIn" type="text" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="linkedin.com/company/yourbusiness" value="'+esc(screenLinkedIn)+'"><label for="whoLinkedIn">LinkedIn profile <span class="opt">(optional)</span></label></div>'+
+      '<button class="btn btn-primary" id="eligGo" disabled>Continue</button>'+
+    '</div>'+
+    '<p class="who-foot"><a href="https://www.bankonloop.com" target="_blank" rel="noopener">Not ready yet? Return to bankonloop.com</a></p>';
+  slideIn(body,'fwd');
+  mountProofUpload();
+  renderProofResult();
+  var li=$('whoLinkedIn');
+  if(li){
+    li.closest('.field').classList.toggle('filled',!!li.value);
+    li.addEventListener('input',function(){screenLinkedIn=li.value;li.closest('.field').classList.toggle('filled',!!li.value);syncEligGo();});
+  }
+  syncEligGo();
+  $('eligGo').onclick=function(){if(this.disabled)return;renderWhoQuebec();};
+  return;
+}
+/* Continue unlocks once we have either a validated proof of operation or a professional
+   presence (LinkedIn), matching "proof of operation or professional presence". */
+function syncEligGo(){
+  var go=$('eligGo');if(!go)return;
+  go.disabled=!(screenProofState==='valid'||(screenLinkedIn||'').trim().length>3);
+}
+function mountProofUpload(){
+  uploadBox('proofUp',function(){return screenProof;},function(v){
+    screenProof=v;
+    if(v){screenProofState='parsing';mountProofUpload();renderProofResult();syncEligGo();parseProof(v);}
+    else{screenProofState='idle';mountProofUpload();renderProofResult();syncEligGo();}
+  },{label:'Drag and drop, or click to upload',hint:'PDF, JPEG, or PNG, up to 10 MB'});
+}
+/* simulated document parse: a moment of "reviewing", then a recency/validity/activity
+   read-out. Filenames that don't look like an accepted proof come back unrecognised. */
+function parseProof(v){
+  var name=v.name;
+  setTimeout(function(){
+    if(screenProof!==v)return;/* replaced or removed before the parse finished */
+    screenProofState=docMismatch(name)?'invalid':'valid';
+    renderProofResult();syncEligGo();
+  },1500);
+}
+function renderProofResult(){
+  var r=$('proofResult');if(!r)return;
+  var CHK='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  if(screenProofState==='parsing'){
+    r.innerHTML='<div class="reg-panel" style="margin-top:12px;padding:8px 18px"><div class="reg-row" style="border:none"><span class="ic"><span class="spinner"></span></span><span class="t">Reviewing your proof of operation&hellip;</span></div></div>';
+  }else if(screenProofState==='valid'){
+    r.innerHTML='<div class="proof-checks">'+
+      '<div class="pc-h">'+CHK+' Verified as a proof of an operating business</div>'+
+      '<div class="pc">'+CHK+' Recent, dated within the last 90 days</div>'+
+      '<div class="pc">'+CHK+' Valid, accepted document type</div>'+
+      '<div class="pc">'+CHK+' Shows active business operations</div>'+
+      '</div>';
+  }else if(screenProofState==='invalid'){
+    r.innerHTML='<div class="docreq" style="margin-top:12px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B54708" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 18px;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><div><div class="dt">This doesn&rsquo;t look like a proof of operation</div><div class="dd">Upload a recent bank statement, signed contract, commercial lease, or supplier invoice, or add a LinkedIn profile below.</div></div></div>';
+  }else r.innerHTML='';
+}
+/* (kept for reference) the old terminal pre-revenue decline */
+function renderWhoSoftDeclinedTerminal(){
   var body=$('whoBody');if(!body)return;
   whoRec=null;setScrProgress(0);
   body.innerHTML='<h1 class="page-h">Loop isn’t the right fit just yet</h1>'+
@@ -5937,7 +6215,7 @@ function markRegGaps(){
 function renderBizView(){
   syncBizPrefill();
   var note=$('regNote');
-  if(note&&S.regPrefilled)note.innerHTML='We&rsquo;ve auto-filled this page from your '+(S.regSource==='document'?'document':'registry record')+'. Please double-check everything and complete any fields marked in red.';
+  if(note&&S.regPrefilled)note.innerHTML='We&rsquo;ve auto-filled this page from your '+(S.regSource==='document'?'document':'registry record')+'. Please double-check everything and complete any empty mandatory fields.';
   var sub=S.bizSub||0;
   document.querySelectorAll('#page-business .pagebody > .fsec').forEach(function(s,i){
     s.classList.toggle('step-hidden',i!==sub);
@@ -6104,7 +6382,7 @@ function updateChatVisibility(){
   var v=S.view;
   var allowed=appOpen||v==='setup'||v==='approved'||v==='live';
   /* tuck the bot away while a modal/drawer covers the screen so it doesn't overlap */
-  var overlay=!$('drawer').classList.contains('hidden')||!$('permOverlay').classList.contains('hidden');
+  var overlay=!$('drawer').classList.contains('hidden')||!$('permOverlay').classList.contains('hidden')||!$('revChgOverlay').classList.contains('hidden');
   var visible=allowed&&!overlay;
   fab.classList.toggle('hidden',!visible);
   if(!visible)$('chatPanel').classList.add('hidden');
@@ -6198,10 +6476,10 @@ function renderAuthMedia(){
 var LANG=(function(){try{return localStorage.getItem('loopLang')||'en';}catch(e){return 'en';}})();
 var FR={
   /* sign up */
-  'Create an account':'Créer un compte',
-  'Sign up to get started':'Inscrivez-vous pour commencer',
-  'Legal first name':'Prénom légal',
-  'Legal last name':'Nom de famille légal',
+  'Open a business account':'Ouvrir un compte d’entreprise',
+  'Apply in as little as 10 minutes':'Faites une demande en aussi peu que 10 minutes',
+  'Your legal first name':'Votre prénom légal',
+  'Your legal last name':'Votre nom de famille légal',
   'Work email':'Courriel professionnel',
   'Enter a valid email address.':'Entrez une adresse courriel valide.',
   'Mobile number':'Numéro de cellulaire',
@@ -6250,7 +6528,6 @@ var FR={
   /* sign-in verification */
   'Verify it’s you':'Vérifiez votre identité',
   'Choose how you’d like to verify your identity to finish signing in.':'Choisissez comment vous souhaitez vérifier votre identité pour terminer l’ouverture de session.',
-  'Text message (SMS) verification is temporarily unavailable.':'La vérification par texto (SMS) est temporairement indisponible.',
   '. Enter it below.':'. Entrez-le ci-dessous.',
   'We emailed a 6-digit code to':'Nous avons envoyé un code à 6 chiffres par courriel à',
   'Enter the 6-digit code from your authenticator app.':'Entrez le code à 6 chiffres de votre application d’authentification.',
@@ -6289,7 +6566,7 @@ var FR={
   'Didn’t get the code?':'Vous n’avez pas reçu le code?',
   /* change password */
   'Change password':'Changer le mot de passe',
-  'We will send you an email with instructions to reset your password.':'Nous vous enverrons un courriel avec les instructions pour réinitialiser votre mot de passe.',
+  'If your email is associated with an existing Loop account, we will email you instructions to reset your password.':'Si votre courriel est associé à un compte Loop existant, nous vous enverrons les instructions pour réinitialiser votre mot de passe.',
   'Email':'Courriel',
   'Reset password':'Réinitialiser le mot de passe',
   'Email sent':'Courriel envoyé',
@@ -6352,7 +6629,7 @@ var FR_APP={
   'Skip, we don’t have a business website':'Ignorer, nous n’avons pas de site Web d’entreprise',
   /* welcome */
   'Let\'s open your account':'Ouvrons votre compte',
-  'Most businesses finish in about 15 minutes, and our team reviews every application before the account opens.':'La plupart des entreprises terminent en environ 15 minutes, et notre équipe examine chaque demande avant l’ouverture du compte.',
+  'Most businesses finish in about 15 minutes':'La plupart des entreprises terminent en environ 15 minutes',
   'Usage, documents, and review':'Utilisation, documents et révision',
   'Working on this with someone?':'Vous travaillez avec quelqu’un?',
   'Assign parts of the application to a teammate. Scope their view to the entire application or just their assigned page.':'Attribuez des parties de la demande à un coéquipier. Limitez leur accès à l’ensemble de la demande ou à leur page attribuée seulement.',
@@ -6420,8 +6697,8 @@ var FR_APP={
   'Province or territory':'Province ou territoire',
   'City':'Ville',
   'Postal code':'Code postal',
-  'We’ve auto-filled this page from your registry record. Please double-check everything and complete any fields marked in red.':'Nous avons rempli automatiquement cette page à partir de votre dossier au registre. Veuillez tout vérifier et remplir les champs marqués en rouge.',
-  'We’ve auto-filled this page from your document. Please double-check everything and complete any fields marked in red.':'Nous avons rempli automatiquement cette page à partir de votre document. Veuillez tout vérifier et remplir les champs marqués en rouge.',
+  'We’ve auto-filled this page from your registry record. Please double-check everything and complete any empty mandatory fields.':'Nous avons rempli automatiquement cette page à partir de votre dossier au registre. Veuillez tout vérifier et remplir les champs obligatoires vides.',
+  'We’ve auto-filled this page from your document. Please double-check everything and complete any empty mandatory fields.':'Nous avons rempli automatiquement cette page à partir de votre document. Veuillez tout vérifier et remplir les champs obligatoires vides.',
   'Corporation (federal)':'Société par actions (fédérale)',
   'Corporation (provincial)':'Société par actions (provinciale)',
   'Sole proprietorship':'Entreprise individuelle',
@@ -6747,7 +7024,7 @@ var FR_RX=[
   [/^(\d+) pending$/,'$1 en attente'],
   [/^(\d+) teammates? queued$/,function(_,n){return n+(n==='1'?' coéquipier en file':' coéquipiers en file');}],
   [/^Submitted on ([A-Za-z]+) (\d+)$/,function(_,mo,d){return 'Soumise le '+d+' '+(FR_MONTHS[mo]||mo);}],
-  [/^Pulling the registry record for (.+)…$/,'Extraction du dossier du registre pour $1…'],
+  [/^Collecting information on (.+)…$/,'Collecte des renseignements sur $1…'],
   [/^Incorporated (\d{4}) · (.+)$/,'Constituée en $1 · $2'],
   [/^Identity verification — (.+)$/,'Vérification d’identité — $1'],
   [/^(.+) · You$/,'$1 · Vous'],
@@ -6774,7 +7051,7 @@ var FR_RX_REV=[
   [/^(\d+) en attente$/,'$1 pending'],
   [/^(\d+) coéquipiers? en file$/,function(_,n){return n+(n==='1'?' teammate queued':' teammates queued');}],
   [/^Soumise le (\d+) ([A-Za-zéû]+)$/,function(_,d,mo){return 'Submitted on '+(FR_MONTHS_REV[mo]||mo)+' '+d;}],
-  [/^Extraction du dossier du registre pour (.+)…$/,'Pulling the registry record for $1…'],
+  [/^Collecte des renseignements sur (.+)…$/,'Collecting information on $1…'],
   [/^Constituée en (\d{4}) · (.+)$/,'Incorporated $1 · $2'],
   [/^Vérification d’identité — (.+)$/,'Identity verification — $1'],
   [/^(.+) · Vous$/,'$1 · You'],
@@ -6906,7 +7183,7 @@ var ALEX_EDITS={
   regions:{fill:['Domestic only'],alt:['USA / Mexico','UK / Europe']}
 };
 var ALEX_SCALAR_KEYS=['description','website','phone','operatingName','address1','city','postal','incomeType'];
-var ALEX_CHIP_KEYS=['intendedUse','regions'];
+var ALEX_CHIP_KEYS=['intendedUse'];
 function alexValueFor(k){
   var e=ALEX_EDITS[k];if(!e)return null;
   var cur=trackedValue(k);
@@ -6956,14 +7233,17 @@ function harnessAlexEditHere(){
   keys.slice(0,2).forEach(function(k){alexSet(k,alexValueFor(k));});
   persist();scheduleFieldPoll();
 }
-/* button 7: Alex changes 2 already-filled answers, invisibly, without re-rendering review */
+/* button 7: Alex changes 2 already-reviewed answers. They flag on the review page right
+   away (green left rule + note) but the submit baseline is left alone, so clicking Submit
+   still opens the intercept modal for them. */
 function harnessAlexReview(){
   var filled=ALEX_SCALAR_KEYS.concat(ALEX_CHIP_KEYS).filter(function(k){return trackedValue(k);});
   if(filled.length<2){/* seed a couple so the demo always has something to change */
     ['description','incomeType'].forEach(function(k){if(!trackedValue(k)&&filled.indexOf(k)<0){S.f[k]=(k==='incomeType'?'Active income':ALEX_EDITS[k].fill);filled.push(k);}});
   }
   filled.slice(0,2).forEach(function(k){alexSet(k,alexValueFor(k));});
-  persist();/* deliberately no paintNav/renderReview: invisible until Submit */
+  persist();
+  if(S.page==='review')paintReviewChanges();/* reflect on the review page without moving the baseline */
 }
 /* button 8: four edits dated six days ago, then the away banner */
 function harnessWeekAway(){
@@ -7390,20 +7670,17 @@ document.addEventListener('DOMContentLoaded',function(){
   $('btnSubmit').onclick=function(){
     S.attempted['review']=true;
     if(allMissing().length||!submitAuthorized()){paintGaps();return;}
-    /* changes that landed since this user last reviewed them (harness or live) get
-       one inline look before the application goes in */
+    /* answers a teammate changed since this user last reviewed them (harness or live)
+       must be resolved one at a time in the intercept modal before the app goes in */
     var late=trackedKeys().filter(function(k){return metaOf(k).v>(reviewSnapshot[k]||0)&&metaOf(k).by&&metaOf(k).by!=='you';});
-    if(late.length){renderSubmitIntercept(late);return;}
+    if(late.length){openReviewChangeModal(late);return;}
     doSubmit();
   };
-  $('chgConfirm').addEventListener('click',function(e){
-    var proceed=e.target.closest('[data-chgproceed]'),keep=e.target.closest('[data-chgkeep]');
-    if(proceed){doSubmit();}
-    else if(keep){
-      $('chgConfirm').classList.add('hidden');$('chgConfirm').innerHTML='';
-      renderReview();/* re-render so the new changes show as highlighted rows */
-    }
+  /* clicking the backdrop cancels submission but leaves the changes flagged for review */
+  $('revChgOverlay').addEventListener('click',function(e){
+    if(e.target===$('revChgOverlay'))closeReviewChangeModal();
   });
+  $('rcmClose').onclick=closeReviewChangeModal;
 
   /* approved: choice state first, then agreements; checkboxes gate activation */
   $('apToSign').onclick=function(){apMode='sign';renderApproved();};
@@ -7421,6 +7698,16 @@ document.addEventListener('DOMContentLoaded',function(){
   var bif=$('btnInviteFill');if(bif)bif.onclick=function(){openDrawer(-1,'invite');};
   $('drClose').onclick=closeDrawer;
   $('drCancel').onclick=closeDrawer;
+  /* ownership percentage: keep the "%" adornment clean by allowing digits only (0-100),
+     so the sign can never be typed into the field */
+  ['d-ownPct','rbm-ownPct'].forEach(function(id){
+    var inp=$(id);if(!inp)return;
+    inp.addEventListener('input',function(){
+      var v=inp.value.replace(/[^0-9]/g,'');
+      if(v!==''&&+v>100)v='100';
+      if(v!==inp.value)inp.value=v;
+    });
+  });
   /* wizard navigation */
   ['input','change'].forEach(function(ev){$('drawer').addEventListener(ev,drSyncNext);});
   $('drawer').addEventListener('click',function(){setTimeout(drSyncNext,0);});
@@ -7462,11 +7749,7 @@ document.addEventListener('DOMContentLoaded',function(){
   /* intro page: fill it out myself vs send it to them */
   $('introSelf').onclick=function(){drIntro=false;drMode='add';syncDrMode();renderDrStep();};
   $('introInvite').onclick=function(){drIntro=false;drMode='invite';syncDrMode();renderDrStep();};
-  /* mandatory "is this you?" once the typed name matches the applicant */
-  ['d-firstName','d-lastName'].forEach(function(id){$(id).addEventListener('input',checkNameSelf);});
-  document.querySelectorAll('#isYouSeg .chip').forEach(function(c){
-    c.addEventListener('click',function(){answerIsYou(c.dataset.isyou);});
-  });
+  ['d-firstName','d-lastName'].forEach(function(id){$(id).addEventListener('input',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');});});
   /* home-address autofill: typing a street suggests full addresses */
   (function(){
     var inp=$('d-street');if(!inp)return;
@@ -7501,8 +7784,8 @@ document.addEventListener('DOMContentLoaded',function(){
     inp.addEventListener('blur',function(){setTimeout(function(){menu.classList.add('hidden');},150);});
   })();
   $('d-isMe').addEventListener('change',syncIsMe);
-  /* auto-detect "this is me" from the email entered */
-  $('d-email').addEventListener('input',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');detectSelf();});
+  /* auto-detect who the email belongs to (owner or collaborator) as it is typed */
+  $('d-email').addEventListener('input',function(){this.closest('.field').classList.toggle('filled',!!this.value);this.closest('.field').classList.remove('invalid');detectEmailMatch();});
   /* typed DOB: digits only, dashes inserted as you type (YYYY-MM-DD) */
   $('d-dob').addEventListener('input',function(){
     var d=this.value.replace(/\D/g,'').slice(0,8);
