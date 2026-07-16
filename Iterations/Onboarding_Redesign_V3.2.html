@@ -1855,7 +1855,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <h2>Related persons and businesses</h2>
             <p class="why">We&rsquo;re legally required to collect information about your business, including:</p>
             <ul class="why-list">
-              <li>All signing officers. <span class="uhint" tabindex="0">At least three verify their identity.<span class="tipbox">If there are more than three signing officers, only three need to verify. If there are fewer than three, they all verify. Only signing officers can submit the application.</span></span></li>
+              <li>All signing officers. <span class="uhint" tabindex="0">Minimum 3<span class="tipbox">If there are more than three signing officers, only three need to verify. If there are fewer than three, they all verify. Only signing officers can submit the application.</span></span></li>
               <li>All directors</li>
               <li>All beneficial owners that control 25% or more of the shares in your company, if any</li>
               <li>All business entities that control 25% or more of the shares in your company, if any</li>
@@ -2111,7 +2111,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 <aside id="drawer" class="hidden" role="dialog" aria-modal="true" aria-label="Add related person">
   <div class="dr-head">
     <h2 class="dr-title" id="drTitle">Add related person</h2>
-    <p class="dr-sub" id="drSub">All signing officers, directors, and beneficial owners</p>
+    <p class="dr-sub" id="drSub">All signing officers, directors, and beneficial owners, including yourself if applicable.</p>
     <button class="dr-x" id="drClose" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <!-- category steps: one modal page per section, verification as its own page -->
     <div class="dr-steps hidden" id="drSteps"></div>
@@ -2125,8 +2125,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
     <div class="dr-sec hidden" id="secIntro">
       <h3>How would you like to add this person?</h3>
       <div class="roles-wrap">
-        <div class="rolecard" id="introSelf"><div><div class="rt">Fill it out myself</div><div class="rd">You enter their role, details, and address &mdash; they only complete identity verification.</div></div><div style="flex:1"></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gray-400)"><polyline points="9 18 15 12 9 6"/></svg></div>
-        <div class="rolecard" id="introInvite"><div><div class="rt">Send it to them to fill out</div><div class="rd">They get an email link to complete their own details and verify their identity.</div></div><div style="flex:1"></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gray-400)"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <div class="rolecard" id="introSelf"><div><div class="rt">Fill it out myself</div><div class="rd">You enter their role, details, and address. They may be required to verify their identity.</div></div><div style="flex:1"></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gray-400)"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <div class="rolecard" id="introInvite"><div><div class="rt">Request them to fill out</div><div class="rd">They get an email link to complete their own details.</div></div><div style="flex:1"></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gray-400)"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
     </div>
     <div class="dr-sec" id="secRole">
@@ -4157,7 +4157,7 @@ function syncDrMode(){
   $('d-linkedin').closest('.field').classList.toggle('hidden',invite);
   if(invite)$('dobErr').classList.add('hidden');
   $('drTitle').textContent=invite?(editing?'Edit invitation':'Invite a related person to fill'):(editing?'Edit related person':'Add related person');
-  $('drSub').textContent=invite?'They complete and verify their own entry':'All signing officers, directors, and beneficial owners';
+  $('drSub').textContent=invite?'They complete and verify their own entry':'All signing officers, directors, and beneficial owners, including yourself if applicable.';
   $('drSave').textContent=invite?(editing?'Save invitation':'Send invitation'):(editing?'Save changes':'Add related person');
 }
 function checkDobAge(){
@@ -6890,7 +6890,7 @@ var FR_APP={
   'Related persons and businesses':'Personnes et entreprises liées',
   'We’re legally required to collect information about your business, including:':'La loi nous oblige à recueillir des renseignements sur votre entreprise, notamment :',
   'All signing officers.':'Tous les signataires autorisés.',
-  'At least three verify their identity.':'Au moins trois vérifient leur identité.',
+  'Minimum 3':'Minimum 3',
   'If there are more than three signing officers, only three need to verify. If there are fewer than three, they all verify. Only signing officers can submit the application.':'S’il y a plus de trois signataires autorisés, seuls trois doivent se vérifier. S’il y en a moins de trois, ils se vérifient tous. Seuls les signataires autorisés peuvent soumettre la demande.',
   'All directors':'Tous les administrateurs',
   'All beneficial owners that control 25% or more of the shares in your company, if any':'Tous les propriétaires bénéficiaires qui contrôlent 25 % ou plus des actions de votre société, le cas échéant',
