@@ -49,7 +49,7 @@ input,select,textarea{font-family:inherit}
 .dr-match svg{flex:0 0 auto;margin-top:1px;color:var(--brand-600)}
 .dr-match p{font-size:13px;line-height:1.5;color:var(--brand-700);margin:0}
 /* "I am this person" switch: locks name + email to the signed-in session */
-.isme-row{display:flex;align-items:flex-start;gap:12px;margin:18px 0 2px;padding:14px 16px;border:1px solid var(--gray-200);border-radius:12px;background:var(--gray-25)}
+.isme-row{display:flex;align-items:flex-start;gap:12px;margin:18px 0 24px;padding:14px 16px;border:1px solid var(--gray-200);border-radius:12px;background:var(--gray-25)}
 .isme-row .isme-t{font-size:14px;font-weight:600;color:var(--gray-700);line-height:1.4}
 .isme-row.disabled .isme-t{color:var(--gray-400)}
 .isme-row .fhelp{margin:3px 0 0}
@@ -509,6 +509,8 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .elig-opt.sel{border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(4,91,63,.10)}
 .elig-opt.sel .ro{border-color:var(--brand-500)}
 .elig-opt.sel .ro::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--brand-500)}
+.elig-opt.multi .ro{border-radius:5px}
+.elig-opt.multi.sel .ro::after{inset:4px;border-radius:2px}
 [data-theme="dark"] .elig-opt{background:var(--gray-50)}
 /* soft decline: the reason card */
 .who-decline{max-width:560px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--gray-200);background:var(--gray-25);border-radius:14px;padding:16px 18px;margin-top:28px}
@@ -710,6 +712,17 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
 .rev-head h2{font-size:21px;font-weight:600;letter-spacing:-.3px}
 .rev-head .spacer{flex:1}
 .rev-head a.edit{font-size:14px;font-weight:600}
+/* review accordion: header toggles a section open/closed; chevron + collapsed summary line */
+.rev-head{cursor:pointer}
+.rev-head a.edit{cursor:pointer}
+.rev-chev{flex:0 0 18px;width:18px;height:18px;color:var(--gray-400);display:inline-flex;align-items:center;justify-content:center;transition:transform .18s ease}
+.rev-chev svg{width:18px;height:18px}
+.rev-sec.collapsed .rev-chev{transform:rotate(-90deg)}
+.rev-sec.collapsed .rev-head{margin-bottom:6px}
+.rev-summary{margin:0 0 0 30px;font-size:13.5px;font-style:italic;color:var(--gray-400);line-height:1.5}
+.rev-sec:not(.collapsed) .rev-summary{display:none}
+.rev-sec.collapsed .rev-body{display:none}
+.rev-head:focus-visible{outline:2px solid var(--brand-400);outline-offset:3px;border-radius:8px}
 .chip-warn{background:var(--error-50);color:var(--error-700);font-size:12px;font-weight:700;border-radius:6px;padding:3px 9px}
 .rev-card{border:1px solid var(--gray-200);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm);overflow:hidden}
 .rev-row{padding:13px 18px;border-bottom:1px solid var(--gray-100)}
@@ -1855,7 +1868,7 @@ ul.accepts li::before{content:"";flex:0 0 14px;height:14px;margin-top:3px;backgr
             <h2>Related persons and businesses</h2>
             <p class="why">We&rsquo;re legally required to collect information about your business, including:</p>
             <ul class="why-list">
-              <li>All signing officers. <span class="uhint" tabindex="0">Minimum 3<span class="tipbox">If there are more than three signing officers, only three need to verify. If there are fewer than three, they all verify. Only signing officers can submit the application.</span></span></li>
+              <li>All signing officers. <span class="uhint" tabindex="0">One to three of whom must complete identity verification<span class="tipbox">If your company has more than 3 signing officers, only 3 of them need to complete an identity check. If there are less than 3, all of them will need to complete an identity check.</span></span>.</li>
               <li>All directors</li>
               <li>All beneficial owners that control 25% or more of the shares in your company, if any</li>
               <li>All business entities that control 25% or more of the shares in your company, if any</li>
@@ -4186,7 +4199,7 @@ function syncIsMe(){
     tgl.disabled=taken;
     tgl.classList.toggle('on',on);
     tgl.setAttribute('aria-checked',on?'true':'false');
-    if(taken){hint.textContent=indName(S.f.individuals[oi])+' is already marked as you. Only one contact can be the signed-in user.';hint.classList.remove('hidden');}
+    if(taken){hint.textContent=indName(S.f.individuals[oi])+' is already marked as you.';hint.classList.remove('hidden');}
     else hint.classList.add('hidden');
   }
   /* on: identity comes from the session — fill and lock; off: editable, whatever they hold */
@@ -4483,16 +4496,29 @@ function wireGapLinks(root){
     };
   });
 }
-function revSection(title,page,miss,bodyEl,topMargin){
-  var sec=el('div','rev-sec');
-  if(topMargin)sec.style.marginTop=topMargin;
+var REV_CHEV='<span class="rev-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
+function revSection(title,page,miss,bodyEl,summary,topMargin){
   /* grey "incomplete" (you must act) and blue "updated" (informational) coexist and read differently */
   var chg=(reviewChangedKeys||[]).filter(function(k){return pageOfKey(k)===page;}).length;
-  sec.appendChild(el('div','rev-head','<h2>'+title+'</h2>'+
+  /* smart default: collapse only sections that are 100% complete and carry no flags;
+     anything incomplete or updated stays open so the user sees it right away */
+  var collapsed=(miss.length===0&&chg===0);
+  var sec=el('div','rev-sec'+(collapsed?' collapsed':''));
+  if(topMargin)sec.style.marginTop=topMargin;
+  var head=el('div','rev-head',REV_CHEV+'<h2>'+title+'</h2>'+
     (miss.length?'<span class="chip-warn">'+miss.length+' incomplete</span>':'')+
     (chg?'<span class="chip-info">'+chg+' updated</span>':'')+
-    '<div class="spacer"></div><a class="edit" href="#" data-goto="'+page+'">Edit</a>'));
-  sec.appendChild(bodyEl);
+    '<div class="spacer"></div><a class="edit" href="#" data-goto="'+page+'">Edit</a>');
+  head.setAttribute('role','button');
+  head.setAttribute('tabindex','0');
+  head.setAttribute('aria-expanded',String(!collapsed));
+  sec.appendChild(head);
+  if(summary)sec.appendChild(el('div','rev-summary',summary));
+  var body=el('div','rev-body');body.appendChild(bodyEl);
+  sec.appendChild(body);
+  function toggle(){var c=sec.classList.toggle('collapsed');head.setAttribute('aria-expanded',String(!c));}
+  head.addEventListener('click',function(e){if(e.target.closest('a.edit'))return;toggle();});
+  head.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&!e.target.closest('a.edit')){e.preventDefault();toggle();}});
   return sec;
 }
 function kvCard(page,keys){
@@ -4616,10 +4642,13 @@ function renderReviewChangeStep(){
    dismissed intercept keeps unresolved changes flagged and re-prompts on the next submit. */
 function renderReview(){
   var R=$('reviewSections');R.innerHTML='';
+  /* compute changed keys before building sections so per-section flags and collapse defaults are accurate */
+  reviewChangedKeys=trackedKeys().filter(isUnseen);
 
   var bizKeys=['legalName'].concat(S.f.hasTradeName?['operatingName']:[]).concat(['phone','website','taxId','entityType','industry','subIndustry','description','address1','address2','provState','city','postal']);
   var bCard=kvCard('business',bizKeys);
-  R.appendChild(revSection('Business information','business',missingPage('business'),bCard,'38px'));
+  var bizSummary=esc(fieldVal('legalName')||S.f.legalName||'Business details')+(S.f.entityType?' · '+esc(S.f.entityType):'');
+  R.appendChild(revSection('Business information','business',missingPage('business'),bCard,bizSummary,'38px'));
 
   var pCard=el('div','rev-card');
   if(S.f.individuals.length){
@@ -4652,9 +4681,15 @@ function renderReview(){
           :reqLink('contacts','rbx:'+i+':'+(b.name?(b.ownPct?(b.relType?'country':'relType'):'ownPct'):'name')))));
     });
   }
-  R.appendChild(revSection('Business contacts','contacts',missingPage('contacts'),pCard));
+  var ppl=S.f.individuals||[];
+  var contactsSummary=ppl.length
+    ?esc(indName(ppl.filter(function(p){return p.isMe;})[0]||ppl[0]))+(ppl.length>1?' and '+(ppl.length-1)+' other'+(ppl.length-1>1?'s':''):'')
+    :'No contacts added yet';
+  R.appendChild(revSection('Business contacts','contacts',missingPage('contacts'),pCard,contactsSummary));
 
-  R.appendChild(revSection('Expected usage','usage',missingPage('usage'),kvCard('usage',['intendedUse','incomeType','creditInterest','hearAbout'])));
+  var uUses=S.f.intendedUse||[];
+  var usageSummary=(uUses.length?esc(uUses.slice(0,2).join(', '))+(uUses.length>2?' +'+(uUses.length-2)+' more':''):'No usage selected')+(S.f.incomeType?' · '+esc(S.f.incomeType):'');
+  R.appendChild(revSection('Expected usage','usage',missingPage('usage'),kvCard('usage',['intendedUse','incomeType','creditInterest','hearAbout']),usageSummary));
 
   var dCard=el('div','rev-card');
   var dreq=docRequirements();
@@ -4670,7 +4705,10 @@ function renderReview(){
   }else if(dreq.length){
     dCard.appendChild(el('div','rev-row','<div class="rl">'+esc(LABELS.docs)+'</div>'+reqLink('documents','docs')));
   }
-  R.appendChild(revSection('Documents','documents',missingPage('documents'),dCard));
+  var docsSummary=(S.f.docs&&S.f.docs.length)
+    ?S.f.docs.map(function(d){return esc(d.name);}).join(', ')
+    :(dreq.length?dreq.length+' document'+(dreq.length>1?'s':'')+' requested':'No additional documents required');
+  R.appendChild(revSection('Documents','documents',missingPage('documents'),dCard,docsSummary));
 
   wireGapLinks(R);
   paintGaps();
@@ -4691,7 +4729,7 @@ function paintGaps(){
      the case a usability test tripped on (only a beneficial owner was added), so spell it out. */
   if(!auth){
     html+='<div class="gaps-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
-      '<div>No signing officer added. Your application needs at least one signing officer or director, someone authorized to sign and submit on the company&rsquo;s behalf, before it can go in. Add one on <a href="#" data-goto="contacts" data-key="individuals">Business contacts</a>.</div></div>';
+      '<div>No signing officer added, your application needs at least one verified and authorized signing officer to submit the application on the Company&rsquo;s behalf. Add one in <a href="#" data-goto="contacts" data-key="individuals">Business Contacts</a>.</div></div>';
   }
   /* the remaining incomplete fields, grouped under the exact page (in red) they live on */
   if(all.length){
@@ -6033,6 +6071,7 @@ function setScrProgress(step){
 function renderWhoSearch(){
   var body=$('whoBody');if(!body)return;
   var sub='Search your legal business name or tax ID to autofill your application. If you can’t find your business, we’ll use what you enter here.';
+  var head='What is your business called?';
   var mid;
   if(whoRec){
     mid='<div class="who-card"><div class="wc-head"><div><div class="wc-name">'+esc(whoRec.name)+'</div><div class="wc-meta">'+regMeta(whoRec)+'</div></div>'+
@@ -6045,6 +6084,7 @@ function renderWhoSearch(){
   }else if(whoDocMode){
     /* manual document upload: the drop box is primary; the registry search moves under a
        divider as the alternative option */
+    head='Autofill with registry documents';
     sub='Upload your registry documents and we’ll read them to auto-file your application.';
     mid='<p class="fhelp" style="margin:-16px 0 14px 2px">We parse the information on your document to auto-file your application.</p>'+
       '<div id="whoDocUp"></div>'+
@@ -6063,7 +6103,7 @@ function renderWhoSearch(){
       '<button type="button" class="btn btn-secondary" id="whoToDoc" style="margin-top:6px">Upload registry documents</button>';
   }
   setScrProgress(0);
-  body.innerHTML='<h1 class="page-h">Find your business</h1>'+
+  body.innerHTML='<h1 class="page-h">'+head+'</h1>'+
     '<p class="page-sub">'+sub+'</p>'+
     '<div class="fgrid" style="margin-top:34px">'+mid+'</div>';
   /* record selected: confirm pulls its details */
@@ -6170,8 +6210,17 @@ function renderWhoPull(){
    website, average monthly revenue, and the Quebec sole-proprietorship check. Only the
    last gates eligibility for now (Growth will refine the revenue bands later). */
 var SCREEN_REVENUE=['Pre-revenue','$1-$10K','$10K-$30K','$30K-$80K','$80K-$200K','$200K-$1M','$1M+'];
-var screenRevenue='',eligQcsp='';
+var screenRevenue='',eligFlags=[];
+/* disqualifying self-declarations: any one of these is a hard decline */
+var ELIG_FLAGS=[
+  {v:'qcsp',label:'My company is a sole proprietorship based in Quebec'},
+  {v:'firearms',label:'My company operates in firearms'},
+  {v:'crypto',label:'My company operates in cryptocurrency or digital assets'},
+  {v:'gambling',label:'My company operates in gambling or casinos'},
+  {v:'cannabis',label:'My company operates in cannabis'}
+];
 function eligOpt(val,label){return '<button type="button" class="elig-opt" data-elig="'+esc(val)+'"><span class="ro"></span><span>'+esc(label)+'</span></button>';}
+function eligCheck(val,label){return '<button type="button" class="elig-opt multi" data-elig="'+esc(val)+'"><span class="ro"></span><span>'+esc(label)+'</span></button>';}
 function wireEligOpts(body,current,set){
   var go=$('eligGo');
   body.querySelectorAll('.elig-opt').forEach(function(b){
@@ -6181,6 +6230,27 @@ function wireEligOpts(body,current,set){
       b.classList.add('sel');set(b.dataset.elig);if(go)go.disabled=false;
     };
   });
+}
+/* multi-select: several options can be picked; "none" is mutually exclusive with the rest */
+function wireEligMulti(body){
+  var go=$('eligGo');
+  function sync(){
+    body.querySelectorAll('.elig-opt').forEach(function(b){b.classList.toggle('sel',eligFlags.indexOf(b.dataset.elig)>=0);});
+    if(go)go.disabled=eligFlags.length===0;
+  }
+  body.querySelectorAll('.elig-opt').forEach(function(b){
+    b.onclick=function(){
+      var v=b.dataset.elig;
+      if(v==='none'){eligFlags=(eligFlags.indexOf('none')>=0)?[]:['none'];}
+      else{
+        eligFlags=eligFlags.filter(function(x){return x!=='none';});
+        var i=eligFlags.indexOf(v);
+        if(i>=0)eligFlags.splice(i,1);else eligFlags.push(v);
+      }
+      sync();
+    };
+  });
+  sync();
 }
 /* the website we can pre-fill: from the registry record, an already-entered site, or
    the domain of a non-personal work email (most people sign up with one) */
@@ -6198,7 +6268,7 @@ function detectWebsite(){
   if(at>0&&hasWorkEmail())return {url:em.slice(at+1).toLowerCase(),source:'email'};
   return {url:'',source:'none'};
 }
-function startWhoScreen(){screenRevenue='';eligQcsp='';preRevProof=null;preRevProofValid=false;preRevLinkedin='';renderWhoQ1Website();}
+function startWhoScreen(){screenRevenue='';eligFlags=[];preRevProof=null;preRevProofValid=false;preRevLinkedin='';renderWhoQ1Website();}
 /* Q1: confirm (detected) or add / update the business website. Forward-only. */
 var PENCIL_SVG='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 function renderWhoQ1Website(){
@@ -6251,7 +6321,7 @@ function renderWhoWebBlocked(){
     '<p class="page-sub" style="max-width:560px">For security purposes, we can’t allow individuals with neither a work email domain nor a business website to proceed with the application.</p>'+
     '<p class="page-sub" style="max-width:560px;margin-top:10px">If you believe there was a mistake, return to the start of the application <a href="#" id="whoBlockRestart">here</a>.</p>';
   slideIn(body,'fwd');
-  var r=$('whoBlockRestart');if(r)r.onclick=function(e){e.preventDefault();screenRevenue='';eligQcsp='';S.f.website='';renderWhoSearch();};
+  var r=$('whoBlockRestart');if(r)r.onclick=function(e){e.preventDefault();screenRevenue='';eligFlags=[];S.f.website='';renderWhoSearch();};
 }
 /* Q2: average monthly revenue (bands mirror the current onboarding flow) */
 function renderWhoRevenue(){
@@ -6335,17 +6405,19 @@ function renderWhoQuebec(){
   var body=$('whoBody');if(!body)return;
   setScrProgress(3);
   body.innerHTML=
-    '<h1 class="scr-q">Is your business a sole proprietorship based in Quebec?</h1>'+
+    '<h1 class="scr-q">Does any of the following apply to your company?</h1>'+
+    '<p class="scr-sub">Select everything that applies.</p>'+
     '<div class="scr-opts">'+
-      eligOpt('yes','Yes')+
-      eligOpt('no','No')+
+      ELIG_FLAGS.map(function(o){return eligCheck(o.v,o.label);}).join('')+
+      eligCheck('none','None of these apply')+
     '</div>'+
     '<div class="fgrid" style="margin-top:18px;max-width:560px"><button class="btn btn-primary" id="eligGo" disabled>Continue</button></div>';
   slideIn(body,'fwd');
-  wireEligOpts(body,eligQcsp,function(v){eligQcsp=v;});
+  wireEligMulti(body);
   $('eligGo').onclick=function(){
     if(this.disabled)return;
-    if(eligQcsp==='yes')renderWhoDeclined();
+    /* any disqualifying declaration (not "none") is a hard decline */
+    if(eligFlags.filter(function(v){return v!=='none';}).length)renderWhoDeclined();
     else whoScreenDone();
   };
 }
@@ -6778,6 +6850,8 @@ var FR_APP={
   'Getting started':'Pour commencer',
   /* find your business */
   'Find your business':'Trouvez votre entreprise',
+  'What is your business called?':'Quel est le nom de votre entreprise?',
+  'Autofill with registry documents':'Remplir automatiquement avec des documents du registre',
   'We use business registry information to autofill parts of your application.':'Nous utilisons les renseignements du registre des entreprises pour remplir automatiquement des parties de votre demande.',
   'Legal business name or Tax ID':'Dénomination sociale ou numéro d’entreprise',
   'I can’t find my business':'Je ne trouve pas mon entreprise',
@@ -6800,7 +6874,14 @@ var FR_APP={
   'None of the above':'Aucun de ces secteurs',
   'Gambling or casinos':'Jeux d’argent ou casinos',
   'Cryptocurrency or digital assets':'Cryptomonnaie ou actifs numériques',
-  'Is your business a sole proprietorship registered in the province of Quebec?':'Votre entreprise est-elle une entreprise individuelle immatriculée dans la province de Québec?',
+  'Does any of the following apply to your company?':'L’un des éléments suivants s’applique-t-il à votre entreprise?',
+  'Select everything that applies.':'Sélectionnez tout ce qui s’applique.',
+  'My company is a sole proprietorship based in Quebec':'Mon entreprise est une entreprise individuelle établie au Québec',
+  'My company operates in firearms':'Mon entreprise œuvre dans les armes à feu',
+  'My company operates in cryptocurrency or digital assets':'Mon entreprise œuvre dans la cryptomonnaie ou les actifs numériques',
+  'My company operates in gambling or casinos':'Mon entreprise œuvre dans les jeux d’argent ou les casinos',
+  'My company operates in cannabis':'Mon entreprise œuvre dans le cannabis',
+  'None of these apply':'Aucun de ces éléments ne s’applique',
   'We can’t open a Loop account for your business right now':'Nous ne pouvons pas ouvrir de compte Loop pour votre entreprise pour le moment',
   'Thank you for your interest in Loop. Unfortunately, we are unable to work with your business at this time. We are actively working to expand who we can serve, and we’d love to work with you when that changes.':'Merci de votre intérêt pour Loop. Malheureusement, nous ne pouvons pas travailler avec votre entreprise pour le moment. Nous travaillons activement à élargir notre clientèle et nous serions ravis de collaborer avec vous lorsque cela changera.',
   'Return to bankonloop.com':'Retourner à bankonloop.com',
@@ -6890,8 +6971,8 @@ var FR_APP={
   'Related persons and businesses':'Personnes et entreprises liées',
   'We’re legally required to collect information about your business, including:':'La loi nous oblige à recueillir des renseignements sur votre entreprise, notamment :',
   'All signing officers.':'Tous les signataires autorisés.',
-  'Minimum 3':'Minimum 3',
-  'If there are more than three signing officers, only three need to verify. If there are fewer than three, they all verify. Only signing officers can submit the application.':'S’il y a plus de trois signataires autorisés, seuls trois doivent se vérifier. S’il y en a moins de trois, ils se vérifient tous. Seuls les signataires autorisés peuvent soumettre la demande.',
+  'One to three of whom must complete identity verification':'Une à trois d’entre eux doivent effectuer une vérification d’identité',
+  'If your company has more than 3 signing officers, only 3 of them need to complete an identity check. If there are less than 3, all of them will need to complete an identity check.':'Si votre entreprise compte plus de 3 signataires autorisés, seuls 3 d’entre eux doivent effectuer une vérification d’identité. S’il y en a moins de 3, ils devront tous en effectuer une.',
   'All directors':'Tous les administrateurs',
   'All beneficial owners that control 25% or more of the shares in your company, if any':'Tous les propriétaires bénéficiaires qui contrôlent 25 % ou plus des actions de votre société, le cas échéant',
   'All business entities that control 25% or more of the shares in your company, if any':'Toutes les entités commerciales qui contrôlent 25 % ou plus des actions de votre société, le cas échéant',
@@ -7483,6 +7564,10 @@ function renderHarness(){
     }).join('')+
       '<p class="hz-note">Jump straight to any screen or case. Some jumps set demo state (a signed-in user, a submitted application) so the screen has something to show.</p>';
   }else{
+  html+='<div class="hz-h">Quick fill</div><div class="hz-row">'+
+    hzBtn('fillall','Fill entire application →')+
+    '</div>'+
+    '<p class="hz-note">Fills business information, every business contact (all identity-verified), expected usage and consent, then lands on Review and submit ready to go.</p>';
   if(inApp&&!S.submitted){
     var alex=collabByEmail(COLLAB_PERSONAS.alex.email),priya=collabByEmail(COLLAB_PERSONAS.priya.email);
     var alexOn=!!(alex&&alex.online),priyaOn=!!(priya&&priya.online);
@@ -7542,7 +7627,8 @@ function renderHarness(){
   p.querySelectorAll('[data-hz]').forEach(function(b){
     b.onclick=function(){
       var id=b.dataset.hz;
-      if(id==='waitroom')protoSkipToWaitroom();
+      if(id==='fillall')protoFillAll();
+      else if(id==='waitroom')protoSkipToWaitroom();
       else if(id==='alex:toggle')harnessTogglePersona('alex');
       else if(id==='priya:toggle')harnessTogglePersona('priya');
       else if(id==='alexOther')harnessAlexEditOther();
@@ -7561,6 +7647,46 @@ function renderHarness(){
       renderHarness();
     };
   });
+}
+/* fill the whole application with a coherent, complete demo business (every contact
+   verified) and land on Review and submit, ready to go */
+function protoFillPerson(o){
+  return Object.assign({
+    firstName:'',lastName:'',dob:'',email:'',phone:'',occupation:'',linkedin:'',
+    sin:'',tin:'',taxCountry:'',taxIdOther:'',street:'',unit:'',city:'',province:'',postal:'',country:'Canada',
+    roles:[],ownPct:'',isMe:false,idv:false,extIdv:false,idvInvited:false,idvChannel:'email',idvNote:'',idvPhone:'',
+    taxResident:'',linkedCollab:null
+  },o);
+}
+function protoFillAll(){
+  if(!S.email)S.email='jane@northwindrobotics.ca';
+  S.verified=true;S.submitted=false;S.approved=false;S.activated=false;
+  var f=S.f;
+  /* business information */
+  f.legalName='Northwind Robotics Inc.';f.hasTradeName=false;f.operatingName='';
+  f.phone='(416) 555-0142';f.website='https://northwindrobotics.ca';f.taxId='123456782';
+  f.entityType='Corporation (federal)';f.industry='Software and technology';f.subIndustry='IT services and consulting';
+  f.description='We design, build, and service warehouse automation robots for mid-size logistics companies across North America.';
+  f.address1='200 King Street West, Suite 1400';f.address2='';f.provState='Ontario';f.city='Toronto';f.postal='M5H 3T4';f.country='Canada';
+  S.regPrefilled=true;S.regName=f.legalName;S.regSource='registry';S.bizGaps=[];
+  /* every business contact, all roles covered, all identity-verified */
+  f.individuals=[
+    protoFillPerson({firstName:'Jane',lastName:'Doe',dob:'1985-04-12',email:S.email,phone:'(416) 555-0110',occupation:'Chief Executive Officer',linkedin:'https://linkedin.com/in/janedoe',roles:['Signing officer','Beneficial owner'],ownPct:'40',isMe:true,idv:true,taxResident:'Yes',sin:'046454286',street:'18 Palmerston Ave',city:'Toronto',province:'Ontario',postal:'M6J 2J2',idvChannel:'qr'}),
+    protoFillPerson({firstName:'Marcus',lastName:'Liu',dob:'1982-09-03',email:'marcus.liu@northwindrobotics.ca',phone:'(416) 555-0112',occupation:'Chief Financial Officer',roles:['Signing officer'],extIdv:true,street:'55 Bathurst St',city:'Toronto',province:'Ontario',postal:'M5V 3W7'}),
+    protoFillPerson({firstName:'Priya',lastName:'Raman',dob:'1990-01-27',email:'priya.raman@northwindrobotics.ca',phone:'(416) 555-0114',occupation:'Chief Technology Officer',roles:['Beneficial owner'],ownPct:'30',extIdv:true,taxResident:'Yes',sin:'193456787',street:'240 Richmond St W',city:'Toronto',province:'Ontario',postal:'M5V 1V6'}),
+    protoFillPerson({firstName:'Sarah',lastName:'Chen',dob:'1979-11-15',email:'sarah.chen@northwindrobotics.ca',phone:'(416) 555-0116',occupation:'Director',roles:['Director'],extIdv:true,street:'9 Spadina Ave',city:'Toronto',province:'Ontario',postal:'M5V 3Y4'}),
+    protoFillPerson({firstName:'Daniel',lastName:'Okafor',dob:'1975-06-08',email:'daniel.okafor@northwindrobotics.ca',phone:'(416) 555-0118',occupation:'Director',roles:['Director'],extIdv:true,street:'12 Front St E',city:'Toronto',province:'Ontario',postal:'M5E 1B3'})
+  ];
+  f.consent=true;f.relBiz='No';f.relBizExtra=[];
+  /* expected usage */
+  f.intendedUse=['Receive business revenue','Pay business expenses','Cross-border business payments'];
+  f.incomeType='Active income';f.regions=['Domestic only','USA / Mexico'];
+  f.hearAbout='Referral from a friend or colleague';f.creditInterest='Yes';
+  /* a corporation with no related business needs no documents */
+  f.docs=[];
+  ['welcome','business','contacts','usage','documents','review'].forEach(function(pg){S.visited[pg]=true;});
+  S.page='review';
+  hydrateFields();save();show('app');
 }
 /* prototype shortcuts (bodies moved here from the old in-UI wr-proto buttons) */
 function protoSkipToWaitroom(){
