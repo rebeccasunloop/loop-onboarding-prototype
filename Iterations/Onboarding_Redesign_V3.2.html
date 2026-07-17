@@ -6238,6 +6238,13 @@ function applyRegistryPrefill(r){
 var whoRec=null,whoMode='name',whoTyped='';/* runtime only — the record being confirmed + the search text the user enters */
 /* registry-document upload path: the mode toggle, the uploaded file, and the OCR-parsed record */
 var whoDocMode=false,whoDocFile=null,whoDoc=null;
+/* screening runs once; a timeout/upload detour after it should not re-ask the questions */
+var whoScreened=false;
+/* demo: this one business always times out on the registry poll; every other record pulls
+   successfully. Trigger it by searching and selecting this business. */
+var POLL_TIMEOUT_BUSINESS='Bluepine Outfitters Inc.';
+/* leave the "find your business" flow and enter the application, resetting its runtime state */
+function enterApplication(){whoScreened=false;whoRec=null;whoDoc=null;whoDocFile=null;whoDocMode=false;showPage('welcome');}
 /* "I can't find my business": whatever they typed is real data, not a failed query —
    digits land in the application's tax-ID field, anything else in legal business name */
 function applyWhoTyped(){
@@ -6296,9 +6303,10 @@ function renderWhoSearch(){
   body.innerHTML='<h1 class="page-h">'+head+'</h1>'+
     '<p class="page-sub">'+sub+'</p>'+
     '<div class="fgrid" style="margin-top:34px">'+mid+'</div>';
-  /* record selected: confirm pulls its details */
+  /* record selected: go straight into screening — the registry poll now runs at the end,
+     which gives the backend more time to return the record */
   if(whoRec){
-    $('whoConfirm').onclick=function(){renderWhoPull();};
+    $('whoConfirm').onclick=function(){startWhoScreen();};
     $('whoClear').onclick=function(){whoRec=null;renderWhoSearch();var q=$('whoQ');if(q)q.focus();};
     return;
   }
@@ -6364,19 +6372,21 @@ function renderWhoParse(){
   function step(){
     if(!$('whoStep0'))return;/* user navigated away mid-parse */
     if(i>0){var prev=$('whoStep'+(i-1));if(prev){prev.classList.add('done');prev.querySelector('.ic').innerHTML=CHECK;}}
-    if(i>=steps.length){whoDoc=DOC_PARSED;startWhoScreen();return;}
+    if(i>=steps.length){whoDoc=DOC_PARSED;if(whoScreened)whoScreenDone();else startWhoScreen();return;}
     var row=$('whoStep'+i);if(row)row.querySelector('.ic').innerHTML='<span class="spinner"></span>';
     i++;setTimeout(step,i===1?700:800);
   }
   step();
 }
-/* short registry pull once the business is confirmed, then ask for the website
-   manually. (The registry can't provide emails or reliable websites, so nothing
-   is suggested — the user types it or skips.) */
-function renderWhoPull(){
+/* registry poll — runs at the END of screening (more backend time to return the record).
+   The same loading screen shows for every record so the user sees their info being pulled;
+   one demo business (POLL_TIMEOUT_BUSINESS) hangs and times out into the failure screen. */
+function renderWhoPoll(){
   var body=$('whoBody');if(!body||!whoRec)return;
+  setScrProgress(0);
   var CHECK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#087443" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   var steps=['Confirming registration with the corporate registry','Pulling corporate details and business number'];
+  var isTimeout=(whoRec.name===POLL_TIMEOUT_BUSINESS);
   body.innerHTML='<h1 class="page-h">Setting things up</h1>'+
     '<p class="page-sub">Collecting information on '+esc(whoRec.name)+'&hellip;</p>'+
     '<div class="reg-panel" style="max-width:560px;margin-top:30px">'+
@@ -6384,16 +6394,48 @@ function renderWhoPull(){
     '</div>';
   var i=0;
   function step(){
-    if(!$('whoStep0'))return;/* user navigated away mid-pull */
+    if(!$('whoStep0'))return;/* user navigated away mid-poll */
     if(i>0){var prev=$('whoStep'+(i-1));if(prev){prev.classList.add('done');prev.querySelector('.ic').innerHTML=CHECK;}}
     if(i>=steps.length){
-      /* registry record pulled; the three-question pre-screening runs next */
-      startWhoScreen();return;
+      /* poll succeeded: apply the registry prefill and enter the application */
+      whoRec.website=S.f.website||whoRec.website;applyRegistryPrefill(whoRec);hydrateFields();save();
+      enterApplication();return;
     }
     var row=$('whoStep'+i);if(row)row.querySelector('.ic').innerHTML='<span class="spinner"></span>';
-    i++;setTimeout(step,i===1?700:800);
+    var last=(i===steps.length-1);
+    i++;
+    if(last&&isTimeout){
+      /* the poll hangs on the final step, then times out */
+      setTimeout(function(){if($('whoStep0'))renderWhoPollFailed();},2600);
+    }else{
+      setTimeout(step,i===1?700:800);
+    }
   }
   step();
+}
+/* registry poll timed out: we couldn't pull the record. Prompt the user to upload their
+   registry documents (OCR) or enter the details manually. Screening is preserved. */
+function renderWhoPollFailed(){
+  var body=$('whoBody');if(!body)return;
+  var nm=whoRec?whoRec.name:'your business';
+  setScrProgress(0);
+  body.innerHTML='<h1 class="page-h">We couldn’t reach the business registry</h1>'+
+    '<p class="page-sub" style="max-width:560px">The registry lookup for '+esc(nm)+' timed out, so we couldn’t pull your details automatically. Upload your registry documents and we’ll read them, or enter your details manually.</p>'+
+    '<div class="fgrid" style="margin-top:26px;max-width:560px">'+
+      '<button class="btn btn-primary" id="pollUpload">Upload registry documents</button>'+
+      '<button type="button" class="btn btn-secondary" id="pollManual" style="margin-top:10px">Enter details manually</button>'+
+    '</div>';
+  slideIn(body,'fwd');
+  $('pollUpload').onclick=function(){
+    /* keep the name and tax ID so nothing is lost, then switch to the document-upload path;
+       screening already ran, so the OCR parse goes straight into the application */
+    if(whoRec){S.f.legalName=whoRec.name;S.f.taxId=whoRec.taxId||'';}
+    whoRec=null;whoDocMode=true;whoScreened=true;renderWhoSearch();
+  };
+  $('pollManual').onclick=function(){
+    if(whoRec){S.f.legalName=whoRec.name;S.f.taxId=whoRec.taxId||'';}
+    S.regPrefilled=false;hydrateFields();save();enterApplication();
+  };
 }
 /* ============================ pre-screening (three questions) ============================ */
 /* After the business is identified, a short screening runs for everyone: confirm the
@@ -6458,7 +6500,7 @@ function detectWebsite(){
   if(at>0&&hasWorkEmail())return {url:em.slice(at+1).toLowerCase(),source:'email'};
   return {url:'',source:'none'};
 }
-function startWhoScreen(){screenRevenue='';eligFlags=[];preRevProof=null;preRevProofValid=false;preRevLinkedin='';renderWhoQ1Website();}
+function startWhoScreen(){whoScreened=true;screenRevenue='';eligFlags=[];preRevProof=null;preRevProofValid=false;preRevLinkedin='';renderWhoQ1Website();}
 /* Q1: confirm (detected) or add / update the business website. Forward-only. */
 var PENCIL_SVG='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 function renderWhoQ1Website(){
@@ -6550,11 +6592,13 @@ function renderWhoPreRev(){
       '</div>'+
       '<div class="field'+(preRevLinkedin?' filled':'')+'" style="margin-top:8px"><input id="preRevLi" type="url" autocapitalize="off" spellcheck="false" placeholder="https://linkedin.com/company/yourbusiness" value="'+esc(preRevLinkedin)+'"><label for="preRevLi">LinkedIn profile <span class="opt">(optional)</span></label></div>'+
       '<button class="btn btn-primary" id="preRevGo"'+(preRevProofValid?'':' disabled')+'>Continue</button>'+
+      '<button type="button" class="btn btn-secondary" id="preRevBack" style="margin-top:10px">Made a mistake? Go back to the previous screen</button>'+
     '</div>';
   slideIn(body,'fwd');
   var li=$('preRevLi');
   li.addEventListener('input',function(){li.closest('.field').classList.toggle('filled',!!li.value);preRevLinkedin=li.value.trim();});
   $('preRevGo').onclick=function(){if(this.disabled)return;renderWhoQuebec();};
+  $('preRevBack').onclick=function(){renderWhoRevenue();};
   mountPreRevUpload();
   /* a proof carried over from a previous visit stays confirmed */
   if(preRevProof&&preRevProofValid){var st=$('preRevStatus');if(st){st.className='sms-status ok';st.innerHTML=CHECK_SVG+' Verified. This looks like a valid proof of operations.';}}
@@ -6611,15 +6655,17 @@ function renderWhoQuebec(){
     else whoScreenDone();
   };
 }
-/* hard decline: does not meet eligibility. Terminal, no way back. */
+/* hard decline (Quebec sole proprietorship, restricted industries): a hard block, no way
+   forward or back. The only action is to contact support. */
 function renderWhoDeclined(){
   var body=$('whoBody');if(!body)return;
   whoRec=null;setScrProgress(0);
   body.innerHTML='<h1 class="page-h">We’re unable to support your business at this time</h1>'+
-    '<p class="page-sub" style="max-width:560px">Based on the information provided, your business does not currently meet Loop’s eligibility requirements.</p>'+
-    '<p class="page-sub" style="max-width:560px;margin-top:10px">Our eligibility criteria may change in the future. Contact our Support team if you believe you received this message in error.</p>'+
+    '<p class="page-sub" style="max-width:560px">Based on the information provided, your business does not currently meet Loop’s eligibility requirements, so we can’t continue with this application.</p>'+
+    '<p class="page-sub" style="max-width:560px;margin-top:10px">Our eligibility criteria may change in the future. If you believe you received this message in error, our Support team can help.</p>'+
     '<div class="fgrid" style="margin-top:26px;max-width:560px">'+
-      '<a class="btn btn-secondary" href="https://www.bankonloop.com" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Return to bankonloop.com</a>'+
+      '<a class="btn btn-primary" href="mailto:support@bankonloop.com?subject=Business%20account%20eligibility" style="text-align:center;text-decoration:none">Contact customer support</a>'+
+      '<a class="btn btn-secondary" href="https://www.bankonloop.com" target="_blank" rel="noopener" style="text-align:center;text-decoration:none;margin-top:10px">Return to bankonloop.com</a>'+
     '</div>';
   slideIn(body,'fwd');
 }
@@ -6627,10 +6673,12 @@ function renderWhoDeclined(){
    enter the application */
 function whoScreenDone(){
   setScrProgress(0);
-  if(whoRec){whoRec.website=S.f.website||whoRec.website;applyRegistryPrefill(whoRec);hydrateFields();save();whoRec=null;}
-  else if(whoDoc){applyRegistryPrefill(whoDoc);S.regSource='document';hydrateFields();save();whoDoc=null;whoDocFile=null;whoDocMode=false;}
-  else{hydrateFields();save();}
-  showPage('welcome');
+  /* registry record: run the poll now (success -> prefill; timeout -> failure screen) */
+  if(whoRec){renderWhoPoll();return;}
+  /* parsed document: apply its prefill (no registry poll needed) */
+  if(whoDoc){applyRegistryPrefill(whoDoc);S.regSource='document';hydrateFields();save();enterApplication();return;}
+  /* manual entry */
+  hydrateFields();save();enterApplication();
 }
 
 /* ============================ business page: three steps of input fields ============================ */
@@ -7043,6 +7091,12 @@ var FR_APP={
   'What is your business called?':'Quel est le nom de votre entreprise?',
   'Autofill with registry documents':'Remplir automatiquement avec des documents du registre',
   'We use business registry information to autofill parts of your application.':'Nous utilisons les renseignements du registre des entreprises pour remplir automatiquement des parties de votre demande.',
+  'Setting things up':'Préparation en cours',
+  'We couldn’t reach the business registry':'Nous n’avons pas pu joindre le registre des entreprises',
+  'Upload registry documents':'Téléverser des documents du registre',
+  'Enter details manually':'Saisir les renseignements manuellement',
+  'Made a mistake? Go back to the previous screen':'Une erreur? Revenez à l’écran précédent',
+  'Contact customer support':'Communiquer avec le service à la clientèle',
   'Legal business name or Tax ID':'Dénomination sociale ou numéro d’entreprise',
   'I can’t find my business':'Je ne trouve pas mon entreprise',
   'This is my business':'C’est mon entreprise',
